@@ -2,7 +2,7 @@ import {
   Collection, Db, MongoClient,
 } from 'mongodb';
 import {
-  DbApiToken, DbUser,
+  DbApiToken, DbQuestion, DbQuestionSet, DbUser,
 } from './types';
 import { config } from '../config';
 
@@ -15,11 +15,17 @@ export class DbManager {
 
   public apiTokensCollection: Collection<DbApiToken>;
 
+  public questionSetsCollection: Collection<DbQuestionSet>;
+
+  public questionsCollection: Collection<DbQuestion>;
+
   constructor(client: MongoClient) {
     this.client = client;
     this.db = this.client.db();
     this.usersCollection = this.db.collection<DbUser>('users');
     this.apiTokensCollection = this.db.collection<DbApiToken>('api-tokens');
+    this.questionSetsCollection = this.db.collection<DbQuestionSet>('question-sets');
+    this.questionsCollection = this.db.collection<DbQuestion>('questions');
   }
 
   async init() {
@@ -27,6 +33,11 @@ export class DbManager {
 
     await this.apiTokensCollection.createIndex({ tokenId: 1 }, { unique: true });
     await this.apiTokensCollection.createIndex({ ownerId: 1 });
+
+    await this.questionSetsCollection.createIndex({ ownerId: 1 });
+    await this.questionSetsCollection.createIndex({ shortId: 1 }, { unique: true });
+
+    await this.questionsCollection.createIndex({ questionSetId: 1 });
   }
 }
 

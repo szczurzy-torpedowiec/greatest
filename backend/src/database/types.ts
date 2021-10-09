@@ -15,3 +15,40 @@ export interface DbApiToken {
   name: string;
   createdOn: Date;
 }
+
+export interface DbQuestionSet {
+  _id: ObjectId;
+  shortId: string;
+  ownerId: ObjectId;
+}
+
+export interface DbQuestionBase {
+  _id: ObjectId;
+  questionSetId: ObjectId;
+  maxPoints: number;
+  type: string;
+}
+
+export interface DbQuestionQuiz extends DbQuestionBase {
+  type: 'quiz';
+  variants: DbQuestionVariantQuiz[]
+}
+
+export interface DbQuestionVariantQuiz {
+  _id: ObjectId;
+  content: string;
+  correctAnswer: string;
+  incorrectAnswers: string[];
+}
+
+export interface DbQuestionOpen extends DbQuestionBase {
+  type: 'open';
+  variants: DbQuestionVariantOpen[]
+}
+
+export interface DbQuestionVariantOpen {
+  _id: ObjectId;
+  content: string;
+}
+
+export type DbQuestion = DbQuestionQuiz | DbQuestionOpen;
