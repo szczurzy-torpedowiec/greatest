@@ -1,36 +1,4 @@
 import { ObjectId } from 'mongodb';
-import { RecursiveRole, Role } from 'greatest-api-schemas';
-
-export interface Pos {
-  x: number;
-  y: number;
-}
-
-export interface DbImageBoard {
-  ratio: number;
-  topLeft: Pos;
-  topRight: Pos;
-  bottomRight: Pos;
-  bottomLeft: Pos;
-  mmWidth: number;
-  mmHeight: number;
-}
-
-export type DbCompressedImageSize = 'full' | 'small' | 'medium' | 'large';
-export interface DbImage {
-  _id: ObjectId;
-  shortId: string;
-  rawFile: {
-    path: string;
-    mimeType: string;
-  }
-  compressedFilePaths: Record<DbCompressedImageSize, string>;
-  capturedOnDay: string;
-  uploadedOn: Date;
-  boards: DbImageBoard[] | null;
-  uploaderId: ObjectId;
-  folderId: ObjectId;
-}
 
 export interface DbUser {
   _id: ObjectId;
@@ -48,31 +16,40 @@ export interface DbApiToken {
   createdOn: Date;
 }
 
-export interface DbFolderRule {
-  email: string;
-  role: Role;
-}
-
-export interface DbFolderCache {
-  shareRootFor: string[];
-  userRecursiveRole: Record<string, RecursiveRole>;
-}
-
-export interface DbFolderCommon {
-  _id: ObjectId,
-  rules: DbFolderRule[];
-  name: string;
+export interface DbQuestionSet {
+  _id: ObjectId;
   shortId: string;
-  cache: DbFolderCache;
-}
-
-export interface DbRootFolder extends DbFolderCommon {
   ownerId: ObjectId;
-  parentFolderId: null;
+  name: string;
 }
 
-export interface DbChildFolder extends DbFolderCommon {
-  parentFolderId: ObjectId;
+export interface DbQuestionBase {
+  _id: ObjectId;
+  questionSetId: ObjectId;
+  maxPoints: number;
+  type: string;
 }
 
-export type DbFolder = DbRootFolder | DbChildFolder;
+export interface DbQuestionQuiz extends DbQuestionBase {
+  type: 'quiz';
+  variants: DbQuestionVariantQuiz[]
+}
+
+export interface DbQuestionVariantQuiz {
+  _id: ObjectId;
+  content: string;
+  correctAnswer: string;
+  incorrectAnswers: string[];
+}
+
+export interface DbQuestionOpen extends DbQuestionBase {
+  type: 'open';
+  variants: DbQuestionVariantOpen[]
+}
+
+export interface DbQuestionVariantOpen {
+  _id: ObjectId;
+  content: string;
+}
+
+export type DbQuestion = DbQuestionQuiz | DbQuestionOpen;

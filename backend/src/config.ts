@@ -4,7 +4,6 @@ import { requireEnv } from './utils';
 export const config = {
   port: requireEnv('PORT'),
   mongodbUrl: 'mongodb://mongodb:27017/greatest',
-  storagePath: '/data/images',
   baseUrl: requireEnv('BASE_URL'),
   development: requireEnv('SERVER_MODE') === 'development',
 };

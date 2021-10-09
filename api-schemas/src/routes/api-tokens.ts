@@ -1,5 +1,5 @@
 import { Static, Type } from '@sinclair/typebox';
-import { trimmedStringSchema } from '../common';
+import { emptyReplySchema, trimmedStringSchema } from '../common';
 
 const tokenNameSchema = trimmedStringSchema({
   maxLength: 64,
@@ -48,3 +48,5 @@ export const revokeTokenBodySchema = Type.Union([
   }),
 ]);
 export type RevokeTokenBody = Static<typeof revokeTokenBodySchema>;
+export const revokeTokenReplySchema = emptyReplySchema;
+export type RevokeTokenReply = Static<typeof revokeTokenReplySchema>;
