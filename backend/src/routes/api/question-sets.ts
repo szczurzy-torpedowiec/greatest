@@ -12,7 +12,7 @@ import {
   createQuestionVariantBodySchema,
   CreateQuestionVariantReply,
   createQuestionVariantReplySchema,
-  DeleteQuestionReply,
+  DeleteQuestionReply, DeleteQuestionSetReply,
   DeleteQuestionVariantReply,
   deleteQuestionVariantReplySchema,
   GetQuestionReply,
@@ -197,6 +197,32 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
         name: request.body.name,
       },
     });
+    return {};
+  });
+
+  apiInstance.delete<{
+    Params: QuestionSetParams,
+    Reply: DeleteQuestionSetReply,
+  }>('/question-sets/:setShortId', {
+    schema: {
+      params: questionSetParamsSchema,
+      response: {
+        200: patchQuestionSetReplySchema,
+      },
+    },
+  }, async (request) => {
+    await dbManager.withSession(
+      (session) => session.withTransaction(async () => {
+        const user = await requireAuthentication(request, dbManager, true);
+        const questionSet = await requireQuestionSet(request.params.setShortId, user);
+        await dbManager.questionSetsCollection.deleteOne({
+          _id: questionSet._id,
+        });
+        await dbManager.questionsCollection.deleteMany({
+          questionSetId: questionSet._id,
+        });
+      }),
+    );
     return {};
   });
 

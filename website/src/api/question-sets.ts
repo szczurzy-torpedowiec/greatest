@@ -4,7 +4,10 @@ import {
   CreateQuestionSetBody,
   CreateQuestionSetReply,
   CreateQuestionVariantBody,
-  CreateQuestionVariantReply, DeleteQuestionReply, DeleteQuestionVariantReply,
+  CreateQuestionVariantReply,
+  DeleteQuestionReply,
+  DeleteQuestionSetReply,
+  DeleteQuestionVariantReply,
   GetQuestionSetReply,
   ListQuestionSetsReply,
   PatchQuestionBody,
@@ -30,6 +33,10 @@ export function getQuestionSet(setShortId: string) {
 
 export function patchQuestionSet(setShortId: string, body: PatchQuestionSetBody) {
   return ky.post(`/api/question-sets/${setShortId}`, { json: body }).json<PatchQuestionSetReply>();
+}
+
+export function deleteQuestionSet(setShortId: string) {
+  return ky.delete(`/api/question-sets/${setShortId}`).json<DeleteQuestionSetReply>();
 }
 
 export function createQuestion(setShortId: string, body: CreateQuestionBody) {
