@@ -1,45 +1,70 @@
 import { FastifyInstance } from 'fastify';
 import {
-  CreateQuestionBody, createQuestionBodySchema, CreateQuestionReply, createQuestionReplySchema,
+  CreateQuestionBody,
+  createQuestionBodySchema,
+  CreateQuestionReply,
+  createQuestionReplySchema,
   CreateQuestionSetBody,
   createQuestionSetBodySchema,
   CreateQuestionSetReply,
   createQuestionSetReplySchema,
+  CreateQuestionVariantBody,
+  createQuestionVariantBodySchema,
+  CreateQuestionVariantReply,
+  createQuestionVariantReplySchema,
+  GetQuestionReply,
+  getQuestionReplySchema, GetQuestionSetReply, getQuestionSetReplySchema,
   ListQuestionSetsReply,
-  listQuestionSetsReplySchema, ListQuestionsReply, listQuestionsReplySchema,
-  PatchQuestionSetBody, patchQuestionSetBodySchema,
-  PatchQuestionSetReply, patchQuestionSetReplySchema,
+  listQuestionSetsReplySchema,
+  PatchQuestionBody,
+  PatchQuestionReply,
+  PatchQuestionSetBody,
+  patchQuestionSetBodySchema,
+  PatchQuestionSetReply,
+  patchQuestionSetReplySchema,
+  PatchQuestionVariantBody,
+  patchQuestionVariantBodySchema,
+  PatchQuestionVariantReply, patchQuestionVariantReplySchema,
+  QuestionParams,
+  questionParamsSchema,
   QuestionSetParams,
-  questionSetParamsSchema, QuestionWithIds,
+  questionSetParamsSchema,
+  QuestionVariantOpen,
+  QuestionVariantParams,
+  questionVariantParamsSchema,
+  QuestionVariantQuiz,
+  QuestionWithIds,
 } from 'greatest-api-schemas';
 import { nanoid } from 'nanoid';
+import { UpdateFilter } from 'mongodb';
 import { DbManager } from '../../database/database';
 import { requireAuthentication } from '../../guards';
-import { DbUser } from '../../database/types';
+import {
+  DbQuestion,
+  DbQuestionVariantOpen,
+  DbQuestionVariantQuiz,
+  DbUser,
+} from '../../database/types';
 
 export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: DbManager) {
-  apiInstance.post<{
-    Body: CreateQuestionSetBody,
-    Reply: CreateQuestionSetReply,
-  }>('/question-sets/create', {
-    schema: {
-      body: createQuestionSetBodySchema,
-      response: {
-        200: createQuestionSetReplySchema,
-      },
-    },
-  }, async (request) => {
-    const user = await requireAuthentication(request, dbManager, true);
-    const shortId = nanoid(10);
-    await dbManager.questionSetsCollection.insertOne({
-      name: request.body.name,
-      ownerId: user._id,
+  const requireQuestionSet = async (shortId: string, user: DbUser) => {
+    const questionSet = await dbManager.questionSetsCollection.findOne({
       shortId,
     });
-    return {
-      shortId,
-    };
-  });
+    if (questionSet === null) return apiInstance.httpErrors.notFound('Question set not found');
+    if (!questionSet.ownerId.equals(user._id)) throw apiInstance.httpErrors.forbidden();
+    return questionSet;
+  };
+
+  const requireQuestion = async (setShortId: string, questionShortId: string, user: DbUser) => {
+    const questionSet = await requireQuestionSet(setShortId, user);
+    const question = await dbManager.questionsCollection.findOne({
+      questionSetId: questionSet._id,
+      shortId: questionShortId,
+    });
+    if (question === null) throw apiInstance.httpErrors.notFound('Question not found');
+    return { questionSet, question };
+  };
 
   apiInstance.get<{
     Reply: ListQuestionSetsReply,
@@ -67,14 +92,82 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
     };
   });
 
-  const requireQuestionSet = async (shortId: string, user: DbUser) => {
-    const questionSet = await dbManager.questionSetsCollection.findOne({
+  apiInstance.post<{
+    Body: CreateQuestionSetBody,
+    Reply: CreateQuestionSetReply,
+  }>('/question-sets/create', {
+    schema: {
+      body: createQuestionSetBodySchema,
+      response: {
+        200: createQuestionSetReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const shortId = nanoid(10);
+    await dbManager.questionSetsCollection.insertOne({
+      name: request.body.name,
+      ownerId: user._id,
       shortId,
     });
-    if (questionSet === null) return apiInstance.httpErrors.notFound('Question set not found');
-    if (!questionSet.ownerId.equals(user._id)) throw apiInstance.httpErrors.forbidden();
-    return questionSet;
+    return {
+      shortId,
+    };
+  });
+
+  const mapQuestion = (question: DbQuestion) => {
+    const common = {
+      shortId: question.shortId,
+      maxPoints: question.maxPoints,
+    };
+    let mappedQuestion: QuestionWithIds;
+    switch (question.type) {
+      case 'quiz':
+        mappedQuestion = {
+          ...common,
+          type: 'quiz',
+          variants: question.variants.map((variant) => ({
+            shortId: variant.shortId,
+            content: variant.content,
+            correctAnswer: variant.correctAnswer,
+            incorrectAnswers: variant.incorrectAnswers,
+          })),
+        };
+        break;
+      case 'open':
+        mappedQuestion = {
+          ...common,
+          type: 'open',
+          variants: question.variants.map((variant) => ({
+            shortId: variant.shortId,
+            content: variant.content,
+          })),
+        };
+        break;
+    }
+    return mappedQuestion;
   };
+
+  apiInstance.get<{
+    Params: QuestionSetParams,
+    Reply: GetQuestionSetReply,
+  }>('/question-sets/:setShortId', {
+    schema: {
+      params: questionSetParamsSchema,
+      response: {
+        200: getQuestionSetReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const questionSet = await requireQuestionSet(request.params.setShortId, user);
+    return {
+      name: questionSet.name,
+      questions: await dbManager.questionsCollection.find({
+        questionSetId: questionSet._id,
+      }).map(mapQuestion).toArray(),
+    };
+  });
 
   apiInstance.patch<{
     Params: QuestionSetParams,
@@ -150,53 +243,162 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
   });
 
   apiInstance.get<{
-    Params: QuestionSetParams,
-    Reply: ListQuestionsReply,
-  }>('/question-sets/:setShortId/questions/list', {
+    Params: QuestionParams,
+    Reply: GetQuestionReply,
+  }>('/question-sets/:setShortId/questions/:questionShortId', {
     schema: {
-      params: questionSetParamsSchema,
+      params: questionParamsSchema,
       response: {
-        200: listQuestionsReplySchema,
+        200: getQuestionReplySchema,
       },
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
-    const questionSet = await requireQuestionSet(request.params.setShortId, user);
-    return {
-      questions: await dbManager.questionsCollection.find({
-        questionSetId: questionSet._id,
-      }).map((question) => {
-        const common = {
-          shortId: question.shortId,
-          maxPoints: question.maxPoints,
+    const { question } = await requireQuestion(
+      request.params.setShortId,
+      request.params.questionShortId,
+      user,
+    );
+    return mapQuestion(question);
+  });
+
+  apiInstance.patch<{
+    Params: QuestionParams,
+    Body: PatchQuestionBody,
+    Reply: PatchQuestionReply,
+  }>('/question-sets/:setShortId/questions/:questionShortId', {
+    schema: {
+      params: questionParamsSchema,
+      body: patchQuestionSetBodySchema,
+      response: {
+        200: getQuestionReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const { question } = await requireQuestion(
+      request.params.setShortId,
+      request.params.questionShortId,
+      user,
+    );
+    await dbManager.questionsCollection.updateOne({
+      _id: question._id,
+    }, {
+      maxPoints: request.body.maxPoints,
+    });
+    return {};
+  });
+
+  apiInstance.post<{
+    Params: QuestionParams,
+    Body: CreateQuestionVariantBody,
+    Reply: CreateQuestionVariantReply,
+  }>('/question-sets/:setShortId/questions/:questionShortId/variants/create', {
+    schema: {
+      params: questionParamsSchema,
+      body: createQuestionVariantBodySchema,
+      response: {
+        200: createQuestionVariantReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const { question } = await requireQuestion(
+      request.params.setShortId,
+      request.params.questionShortId,
+      user,
+    );
+    if (question.type !== request.body.type) {
+      throw apiInstance.httpErrors.badRequest('Variant type does not match question type');
+    }
+    const shortId = nanoid(10);
+    const update = (variant: DbQuestionVariantQuiz | DbQuestionVariantOpen) => dbManager
+      .questionsCollection.updateOne({
+        _id: question._id,
+      }, {
+        $push: { variants: variant },
+      });
+
+    switch (request.body.type) {
+      case 'open': {
+        const variant: QuestionVariantOpen = {
+          shortId,
+          content: request.body.content,
         };
-        let mappedQuestion: QuestionWithIds;
-        switch (question.type) {
-          case 'quiz':
-            mappedQuestion = {
-              ...common,
-              type: 'quiz',
-              variants: question.variants.map((variant) => ({
-                shortId: variant.shortId,
-                content: variant.content,
-                correctAnswer: variant.correctAnswer,
-                incorrectAnswers: variant.incorrectAnswers,
-              })),
-            };
-            break;
-          case 'open':
-            mappedQuestion = {
-              ...common,
-              type: 'open',
-              variants: question.variants.map((variant) => ({
-                shortId: variant.shortId,
-                content: variant.content,
-              })),
-            };
-            break;
-        }
-        return mappedQuestion;
-      }).toArray(),
+        await update(variant);
+        break;
+      }
+      case 'quiz': {
+        const variant: QuestionVariantQuiz = {
+          shortId,
+          content: request.body.content,
+          incorrectAnswers: request.body.incorrectAnswers,
+          correctAnswer: request.body.correctAnswer,
+        };
+        await update(variant);
+        break;
+      }
+    }
+    return {
+      shortId,
     };
+  });
+
+  apiInstance.patch<{
+    Params: QuestionVariantParams,
+    Body: PatchQuestionVariantBody,
+    Reply: PatchQuestionVariantReply,
+  }>('/question-sets/:setShortId/questions/:questionShortId/variants/:variantShortId', {
+    schema: {
+      params: questionVariantParamsSchema,
+      body: patchQuestionVariantBodySchema,
+      response: {
+        200: patchQuestionVariantReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const { question } = await requireQuestion(
+      request.params.setShortId,
+      request.params.questionShortId,
+      user,
+    );
+    if (question.type !== request.body.type) {
+      throw apiInstance.httpErrors.badRequest('Variant type does not match question type');
+    }
+    if (!question.variants.some(
+      (variant) => variant.shortId === request.params.variantShortId,
+    )) throw apiInstance.httpErrors.notFound('Variant not found');
+
+    const updateVariant = (
+      update: UpdateFilter<DbQuestion> | Partial<DbQuestion>,
+    ) => dbManager.questionsCollection.updateOne({
+      _id: question._id,
+      variants: {
+        shortId: request.params.variantShortId,
+      },
+    }, update);
+
+    switch (request.body.type) {
+      case 'open': {
+        await updateVariant({
+          $set: {
+            'variants.$.content': request.body.content,
+          },
+        });
+        break;
+      }
+      case 'quiz': {
+        await updateVariant({
+          $set: {
+            'variants.$.content': request.body.content,
+            'variants.$.correctAnswer': request.body.correctAnswer,
+            'variants.$.incorrectAnswers': request.body.incorrectAnswers,
+          },
+        });
+        break;
+      }
+    }
+    return {};
   });
 }
