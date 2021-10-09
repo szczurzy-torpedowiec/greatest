@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <dataset-question
+    <question-set-question
       :question="{question: 'a', correctAnswer: 'tak', incorrectAnswers: ['nie']}"
     />
   </q-page>
@@ -10,12 +10,12 @@
 import {
   defineComponent,
 } from 'vue';
-import DatasetQuestion from 'components/datasets/DatasetQuestion.vue';
+import QuestionSetQuestion from 'components/questionSets/QuestionSetQuestion.vue';
 
 export default defineComponent({
-  name: 'PageDatasetEditor',
+  name: 'PageQuestionSetEditor',
   components: {
-    DatasetQuestion,
+    QuestionSetQuestion,
   },
 });
 </script>

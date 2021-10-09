@@ -6,19 +6,20 @@
           {{ title }}
         </div>
         <div class="text-subtitle1">
-          {{ $tc('datasets.question', 2) }}
+          {{ $tc('questionSets.question', 2) }}
         </div>
       </q-card-section>
       <q-card-actions>
         <q-btn
           outline
           color="primary"
-          :label="$t('datasets.edit')"
+          :label="$t('questionSets.edit')"
           icon="edit"
+          @click="editRedirect"
         />
         <q-btn
           color="primary"
-          :label="$t('datasets.use')"
+          :label="$t('questionSets.use')"
         />
       </q-card-actions>
     </q-card-section>
@@ -30,9 +31,15 @@ import {
   defineComponent,
 } from 'vue';
 
+import { useRouter } from 'vue-router';
+
 export default defineComponent({
-  name: 'DatasetListElement',
+  name: 'QuestionSetListElement',
   props: {
+    id: {
+      type: String,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -41,6 +48,15 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+  },
+  setup(props) {
+    const router = useRouter();
+
+    async function editRedirect() {
+      await router.push(`/question-sets/${props.id}/edit`);
+    }
+
+    return { editRedirect };
   },
 });
 </script>

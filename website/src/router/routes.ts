@@ -10,12 +10,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/Index.vue'),
       },
       {
-        path: 'datasets',
-        component: () => import('pages/datasets/Datasets.vue'),
+        path: 'question-sets',
+        component: () => import('pages/questionSets/QuestionSets.vue'),
       },
       {
-        path: 'datasets/edit',
-        component: () => import('pages/datasets/Editor.vue'),
+        path: 'question-sets/:id/edit',
+        component: () => import('pages/questionSets/Editor.vue'),
       },
     ],
   },

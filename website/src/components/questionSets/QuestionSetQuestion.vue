@@ -101,7 +101,7 @@ interface Question {
 }
 
 export default defineComponent({
-  name: 'DatasetQuestion',
+  name: 'QuestionSetQuestion',
   props: {
     question: {
       type: Object as PropType<Question>,
