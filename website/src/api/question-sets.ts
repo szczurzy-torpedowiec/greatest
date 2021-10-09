@@ -21,3 +21,7 @@ export function patchQuestionSet(setShortId: string, body: PatchQuestionSetBody)
 export function createQuestion(setShortId: string, body: CreateQuestionBody) {
   return ky.post(`/api/question-sets/${setShortId}/questions/create`, { json: body }).json<CreateQuestionReply>();
 }
+
+export function listQuestions(setShortId: string) {
+  return ky.get(`/api/question-sets/${setShortId}/questions/list`).json<CreateQuestionReply>();
+}

@@ -108,7 +108,7 @@ module.exports = {
     "no-redeclare": 'off',
     '@typescript-eslint/no-redeclare': ['error'],
     'default-case': 'off',
-    '@typescript-eslint/switch-exhaustiveness-check': 'error',
+    '@typescript-eslint/switch-exhaustiveness-check': 'error'
   },
   settings: {
     'vue-i18n': {
