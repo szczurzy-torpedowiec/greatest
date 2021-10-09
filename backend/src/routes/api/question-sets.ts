@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import {
+  CreateQuestionBody, createQuestionBodySchema, CreateQuestionReply, createQuestionReplySchema,
   CreateQuestionSetBody,
   createQuestionSetBodySchema,
   CreateQuestionSetReply,
@@ -14,6 +15,7 @@ import {
 import { nanoid } from 'nanoid';
 import { DbManager } from '../../database/database';
 import { requireAuthentication } from '../../guards';
+import { DbUser } from '../../database/types';
 
 export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: DbManager) {
   apiInstance.post<{
@@ -50,17 +52,29 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
     return {
-      questionSets: await dbManager.questionSetsCollection
+      questionSets: await Promise.all(await dbManager.questionSetsCollection
         .find({
           ownerId: user._id,
         })
-        .map((set) => ({
+        .map(async (set) => ({
           shortId: set.shortId,
           name: set.name,
+          questionCount: await dbManager.questionsCollection.countDocuments({
+            questionSetId: set._id,
+          }),
         }))
-        .toArray(),
+        .toArray()),
     };
   });
+
+  const requireQuestionSet = async (shortId: string, user: DbUser) => {
+    const questionSet = await dbManager.questionSetsCollection.findOne({
+      shortId,
+    });
+    if (questionSet === null) return apiInstance.httpErrors.notFound('Question set not found');
+    if (!questionSet.ownerId.equals(user._id)) throw apiInstance.httpErrors.forbidden();
+    return questionSet;
+  };
 
   apiInstance.patch<{
     Params: QuestionSetParams,
@@ -76,11 +90,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
-    const questionSet = await dbManager.questionSetsCollection.findOne({
-      shortId: request.params.setShortId,
-    });
-    if (questionSet === null) return apiInstance.httpErrors.notFound('Question set not found');
-    if (!questionSet.ownerId.equals(user._id)) throw apiInstance.httpErrors.forbidden();
+    const questionSet = await requireQuestionSet(request.params.setShortId, user);
     await dbManager.questionSetsCollection.updateOne({
       _id: questionSet._id,
     }, {
@@ -89,5 +99,53 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       },
     });
     return {};
+  });
+
+  apiInstance.post<{
+    Params: QuestionSetParams,
+    Body: CreateQuestionBody,
+    Reply: CreateQuestionReply,
+  }>('/question-sets/:setShortId/questions/create', {
+    schema: {
+      params: questionSetParamsSchema,
+      body: createQuestionBodySchema,
+      response: {
+        200: createQuestionReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const questionSet = await requireQuestionSet(request.params.setShortId, user);
+    const shortId = nanoid(10);
+    const base = {
+      shortId,
+      questionSetId: questionSet._id,
+      maxPoints: request.body.maxPoints,
+    };
+    switch (request.body.type) {
+      case 'quiz':
+        await dbManager.questionsCollection.insertOne({
+          ...base,
+          type: 'quiz',
+          variants: request.body.variants.map((variant) => ({
+            shortId: nanoid(10),
+            ...variant,
+          })),
+        });
+        break;
+      case 'open':
+        await dbManager.questionsCollection.insertOne({
+          ...base,
+          type: 'open',
+          variants: request.body.variants.map((variant) => ({
+            shortId: nanoid(10),
+            ...variant,
+          })),
+        });
+        break;
+    }
+    return {
+      shortId,
+    };
   });
 }

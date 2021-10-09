@@ -25,9 +25,11 @@ export interface DbQuestionSet {
 
 export interface DbQuestionBase {
   _id: ObjectId;
+  shortId: string;
   questionSetId: ObjectId;
   maxPoints: number;
   type: string;
+  variants: unknown[],
 }
 
 export interface DbQuestionQuiz extends DbQuestionBase {
@@ -36,7 +38,7 @@ export interface DbQuestionQuiz extends DbQuestionBase {
 }
 
 export interface DbQuestionVariantQuiz {
-  _id: ObjectId;
+  shortId: string;
   content: string;
   correctAnswer: string;
   incorrectAnswers: string[];
@@ -48,7 +50,7 @@ export interface DbQuestionOpen extends DbQuestionBase {
 }
 
 export interface DbQuestionVariantOpen {
-  _id: ObjectId;
+  shortId: string;
   content: string;
 }
 
