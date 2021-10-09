@@ -2,8 +2,6 @@ import { FastifyInstance } from 'fastify';
 import { nanoid } from 'nanoid';
 import bcrypt from 'bcrypt';
 import {
-  EmptyReply,
-  emptyReplySchema,
   GenerateTokenBody,
   generateTokenBodySchema,
   GenerateTokenReply,
@@ -12,6 +10,7 @@ import {
   listTokensReplySchema,
   RevokeTokenBody,
   revokeTokenBodySchema,
+  RevokeTokenReply, revokeTokenReplySchema,
 } from 'greatest-api-schemas';
 import { DbManager } from '../../database/database';
 import { requireAuthentication } from '../../guards';
@@ -90,12 +89,12 @@ export function registerAPITokens(apiInstance: FastifyInstance, dbManager: DbMan
 
   apiInstance.post<{
     Body: RevokeTokenBody,
-    Reply: EmptyReply,
+    Reply: RevokeTokenReply,
   }>('/api-tokens/revoke', {
     schema: {
       body: revokeTokenBodySchema,
       response: {
-        200: emptyReplySchema,
+        200: revokeTokenReplySchema,
       },
       security: [
         { sessionCookie: [] },

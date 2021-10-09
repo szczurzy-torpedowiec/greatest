@@ -12,9 +12,9 @@ export default function registerSwagger(server: FastifyInstance) {
         version: process.env.npm_package_version ?? 'unknown',
         license: {
           name: 'MIT',
-          url: 'https://github.com/dominik-korsa/board-camera/blob/main/LICENSE',
+          url: 'https://github.com/dominik-korsa/greatest/blob/main/LICENSE',
         },
-        title: 'Board Camera',
+        title: 'Greatest',
         contact: {
           name: 'Dominik Korsa',
           url: 'https://github.com/dominik-korsa',

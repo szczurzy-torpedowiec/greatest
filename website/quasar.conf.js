@@ -147,8 +147,8 @@ module.exports = configure((ctx) => ({
     },
 
     manifest: {
-      name: 'Board Camera',
-      short_name: 'Board Camera',
+      name: 'Greatest',
+      short_name: 'Greatest',
       description: 'A Quasar Framework app',
       display: 'standalone',
       orientation: 'portrait',
@@ -214,7 +214,7 @@ module.exports = configure((ctx) => ({
     builder: {
       // https://www.electron.build/configuration/configuration
 
-      appId: 'board-camera-website',
+      appId: 'greatest-website',
     },
 
     // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain

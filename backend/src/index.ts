@@ -52,7 +52,6 @@ async function main() {
   });
 
   server.log.info('DB connected');
-  await dbManager.updateAllFolderCaches();
   server.register(AuthPlugin, {
     prefix: '/auth',
     dbManager,
