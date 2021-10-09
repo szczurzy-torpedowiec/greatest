@@ -1,0 +1,16 @@
+services:
+  docker-host:
+    image: qoomon/docker-host
+    cap_add: [ 'NET_ADMIN', 'NET_RAW' ]
+    environment:
+      PORTS: 80:5002
+    restart: on-failure
+    mem_limit: 8M
+  backend:
+    build:
+      target: development
+    depends_on:
+      - docker-host
+  mongodb:
+    ports:
+      - "5001:27017"

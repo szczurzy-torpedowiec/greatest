@@ -1,0 +1,49 @@
+{
+  "dependencies": {
+    "@sinclair/typebox": "^0.20.5",
+    "bcrypt": "^5.0.1",
+    "greatest-api-schemas": "file:../api-schemas",
+    "busboy": "^0.3.1",
+    "fastify": "^3.21.0",
+    "fastify-secure-session": "^2.3.1",
+    "fastify-sensible": "^3.1.1",
+    "fastify-static": "^4.2.3",
+    "fastify-swagger": "^4.12.0",
+    "form-data": "^4.0.0",
+    "fs-extra": "^10.0.0",
+    "google-auth-library": "^7.9.1",
+    "got": "^11.8.2",
+    "mongodb": "^4.1.1",
+    "nanoid": "^3.1.25",
+    "sharp": "^0.29.1"
+  },
+  "name": "greatest-backend",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint -c .eslintrc.yml --ext .ts src/**",
+    "lint:fix": "eslint -c .eslintrc.yml --ext .ts src/** --fix",
+    "build": "tsc",
+    "start": "node ."
+  },
+  "author": "Dominik Korsa <dominik.korsa@gmail.com>",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/busboy": "^0.2.4",
+    "@types/fs-extra": "^9.0.12",
+    "@types/json-schema": "^7.0.9",
+    "@types/node": "^16.7.10",
+    "@types/sharp": "^0.29.2",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-airbnb-typescript": "^14.0.0",
+    "find-my-way": "^4.3.3",
+    "typescript": "^4.4.2"
+  }
+}

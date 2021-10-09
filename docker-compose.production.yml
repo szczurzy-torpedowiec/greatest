@@ -1,0 +1,7 @@
+services:
+  backend:
+    build:
+      target: production
+    depends_on:
+      - website
+    restart: on-failure

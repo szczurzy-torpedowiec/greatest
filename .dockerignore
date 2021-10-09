@@ -1,0 +1,14 @@
+backend/node_modules
+backend/package-lock.json
+backend/dist
+website/node_modules
+website/package-lock.json
+website/dist
+api-schemas/node_modules
+api-schemas/package-lock.json
+api-schemas/dist
+transformer
+.gitignore
+.env
+google-keys.json
+session-key

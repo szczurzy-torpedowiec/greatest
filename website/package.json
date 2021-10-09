@@ -1,0 +1,53 @@
+{
+  "name": "greatest-website",
+  "version": "1.0.0",
+  "description": "A Quasar Framework app",
+  "productName": "Greatest",
+  "private": true,
+  "scripts": {
+    "lint": "eslint --ext .js,.ts,.vue ./",
+    "lint:fix": "eslint --fix --ext .js,.ts,.vue ./",
+    "dev": "quasar dev",
+    "build": "quasar build"
+  },
+  "dependencies": {
+    "@intlify/eslint-plugin-vue-i18n": "^0.15.0",
+    "@quasar/extras": "^1.0.0",
+    "core-js": "^3.6.5",
+    "fastify-http-proxy": "^6.2.1",
+    "greatest-api-schemas": "file:../api-schemas",
+    "ky": "^0.28.5",
+    "ky-universal": "^0.9.1",
+    "quasar": "^2.0.0",
+    "vue-i18n": "^9.0.0",
+    "vue-router": "^4.0.11"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.13.14",
+    "@quasar/app": "^3.0.0",
+    "@quasar/cli": "^1.2.1",
+    "@types/node": "^12.20.21",
+    "@typescript-eslint/eslint-plugin": "^4.16.1",
+    "@typescript-eslint/parser": "^4.16.1",
+    "eslint": "^7.14.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-vue": "^7.0.0"
+  },
+  "browserslist": [
+    "last 10 Chrome versions",
+    "last 10 Firefox versions",
+    "last 4 Edge versions",
+    "last 7 Safari versions",
+    "last 8 Android versions",
+    "last 8 ChromeAndroid versions",
+    "last 8 FirefoxAndroid versions",
+    "last 10 iOS versions",
+    "last 5 Opera versions"
+  ],
+  "engines": {
+    "node": ">= 12.22.1",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
+  }
+}
