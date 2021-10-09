@@ -1,3 +1,9 @@
 {
-  "appName": "Greatest"
+  "appName": "Greatest",
+  "datasets": {
+    "question": "No questions | 1 question | {count} questions",
+    "edit": "Edit",
+    "use": "Use",
+    "new": "New dataset"
+  }
 }

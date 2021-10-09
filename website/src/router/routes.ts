@@ -9,6 +9,14 @@ const routes: RouteRecordRaw[] = [
         path: '',
         component: () => import('pages/Index.vue'),
       },
+      {
+        path: 'datasets',
+        component: () => import('pages/datasets/Datasets.vue'),
+      },
+      {
+        path: 'datasets/edit',
+        component: () => import('pages/datasets/Editor.vue'),
+      },
     ],
   },
   {
