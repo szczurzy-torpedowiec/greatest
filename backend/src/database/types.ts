@@ -20,6 +20,7 @@ export interface DbQuestionSet {
   _id: ObjectId;
   shortId: string;
   ownerId: ObjectId;
+  name: string;
 }
 
 export interface DbQuestionBase {
