@@ -7,7 +7,6 @@ website/dist
 api-schemas/node_modules
 api-schemas/package-lock.json
 api-schemas/dist
-transformer
 .gitignore
 .env
 google-keys.json

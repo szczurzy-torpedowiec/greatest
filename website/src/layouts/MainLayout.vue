@@ -1,20 +1,5 @@
 <template>
-  <div
-    v-if="signedInUser === null"
-    class="fullscreen bg-primary text-white text-center q-pa-md flex flex-center column"
-  >
-    <h4>{{ $t('appName') }}</h4>
-    <q-btn
-      color="white"
-      text-color="black"
-      type="a"
-      href="/auth/sign-in/google"
-    >
-      {{ $t('signIn.google') }}
-    </q-btn>
-  </div>
   <q-layout
-    v-else
     view="lHh Lpr lFf"
   >
     <q-header elevated>
@@ -31,20 +16,6 @@
         <q-toolbar-title>
           {{ $t('appName') }}
         </q-toolbar-title>
-
-        <q-btn round>
-          <q-avatar size="40px">
-            <img
-              :src="signedInUser.avatarUrl"
-              referrerpolicy="no-referrer"
-              :alt="signedInUser.name"
-            >
-          </q-avatar>
-          <account-menu />
-          <q-tooltip>
-            {{ $t('account') }}
-          </q-tooltip>
-        </q-btn>
       </q-toolbar>
     </q-header>
 
@@ -76,7 +47,6 @@
 
 <script lang="ts">
 import EssentialLink from 'components/EssentialLink.vue';
-import AccountMenu from 'components/AccountMenu.vue';
 
 const linksList = [
   {
@@ -124,14 +94,12 @@ const linksList = [
 ];
 
 import { defineComponent, ref } from 'vue';
-import state from 'src/state';
 
 export default defineComponent({
   name: 'MainLayout',
 
   components: {
     EssentialLink,
-    AccountMenu,
   },
 
   setup() {
@@ -143,7 +111,6 @@ export default defineComponent({
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
-      signedInUser: state.signedInUser,
     };
   },
 });

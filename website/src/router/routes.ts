@@ -9,19 +9,6 @@ const routes: RouteRecordRaw[] = [
         path: '',
         component: () => import('pages/Index.vue'),
       },
-      {
-        path: '/folders/:folderId',
-        component: () => import('pages/Folder.vue'),
-      },
-      {
-        path: '/folders/:folderId/images/:imageId',
-        name: 'folderImage',
-        component: () => import('pages/Folder.vue'),
-      },
-      {
-        path: '/api-tokens',
-        component: () => import('pages/ApiTokens.vue'),
-      },
     ],
   },
   {
