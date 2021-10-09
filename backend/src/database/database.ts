@@ -37,6 +37,7 @@ export class DbManager {
     await this.questionSetsCollection.createIndex({ ownerId: 1 });
     await this.questionSetsCollection.createIndex({ shortId: 1 }, { unique: true });
 
+    await this.questionsCollection.createIndex({ questionSetId: 1 });
     await this.questionsCollection.createIndex({ questionSetId: 1, shortId: 1 }, { unique: true });
   }
 }

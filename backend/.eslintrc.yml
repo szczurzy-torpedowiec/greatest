@@ -13,3 +13,4 @@ rules:
   import/prefer-default-export: off
   default-case: off
   "@typescript-eslint/switch-exhaustiveness-check": error
+  consistent-return: off

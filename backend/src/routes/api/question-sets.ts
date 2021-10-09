@@ -6,11 +6,11 @@ import {
   CreateQuestionSetReply,
   createQuestionSetReplySchema,
   ListQuestionSetsReply,
-  listQuestionSetsReplySchema,
+  listQuestionSetsReplySchema, ListQuestionsReply, listQuestionsReplySchema,
   PatchQuestionSetBody, patchQuestionSetBodySchema,
   PatchQuestionSetReply, patchQuestionSetReplySchema,
   QuestionSetParams,
-  questionSetParamsSchema,
+  questionSetParamsSchema, QuestionWithIds,
 } from 'greatest-api-schemas';
 import { nanoid } from 'nanoid';
 import { DbManager } from '../../database/database';
@@ -146,6 +146,57 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
     }
     return {
       shortId,
+    };
+  });
+
+  apiInstance.get<{
+    Params: QuestionSetParams,
+    Reply: ListQuestionsReply,
+  }>('/question-sets/:setShortId/questions/list', {
+    schema: {
+      params: questionSetParamsSchema,
+      response: {
+        200: listQuestionsReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const questionSet = await requireQuestionSet(request.params.setShortId, user);
+    return {
+      questions: await dbManager.questionsCollection.find({
+        questionSetId: questionSet._id,
+      }).map((question) => {
+        const common = {
+          shortId: question.shortId,
+          maxPoints: question.maxPoints,
+        };
+        let mappedQuestion: QuestionWithIds;
+        switch (question.type) {
+          case 'quiz':
+            mappedQuestion = {
+              ...common,
+              type: 'quiz',
+              variants: question.variants.map((variant) => ({
+                shortId: variant.shortId,
+                content: variant.content,
+                correctAnswer: variant.correctAnswer,
+                incorrectAnswers: variant.incorrectAnswers,
+              })),
+            };
+            break;
+          case 'open':
+            mappedQuestion = {
+              ...common,
+              type: 'open',
+              variants: question.variants.map((variant) => ({
+                shortId: variant.shortId,
+                content: variant.content,
+              })),
+            };
+            break;
+        }
+        return mappedQuestion;
+      }).toArray(),
     };
   });
 }
