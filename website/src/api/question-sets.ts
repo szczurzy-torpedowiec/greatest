@@ -4,7 +4,7 @@ import {
   CreateQuestionSetBody,
   CreateQuestionSetReply,
   CreateQuestionVariantBody,
-  CreateQuestionVariantReply,
+  CreateQuestionVariantReply, DeleteQuestionReply, DeleteQuestionVariantReply,
   GetQuestionSetReply,
   ListQuestionSetsReply,
   PatchQuestionBody,
@@ -46,6 +46,13 @@ export function patchQuestion(
   }).json<PatchQuestionReply>();
 }
 
+export function deleteQuestion(
+  setShortId: string,
+  questionShortId: string,
+) {
+  return ky.patch(`/api/question-sets/${setShortId}/questions/${questionShortId}`).json<DeleteQuestionReply>();
+}
+
 export function createQuestionVariant(
   setShortId: string,
   questionShortId: string,
@@ -65,4 +72,12 @@ export function patchQuestionVariant(
   return ky.patch(`/api/question-sets/${setShortId}/questions/${questionShortId}/variants/${variantShortId}`, {
     json: body,
   }).json<PatchQuestionVariantReply>();
+}
+
+export function deleteQuestionVariant(
+  setShortId: string,
+  questionShortId: string,
+  variantShortId: string,
+) {
+  return ky.delete(`/api/question-sets/${setShortId}/questions/${questionShortId}/variants/${variantShortId}`).json<DeleteQuestionVariantReply>();
 }
