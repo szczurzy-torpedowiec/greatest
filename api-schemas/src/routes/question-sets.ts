@@ -120,6 +120,9 @@ export type PatchQuestionBody = Static<typeof patchQuestionBodySchema>;
 export const patchQuestionReplySchema = emptyReplySchema;
 export type PatchQuestionReply = Static<typeof patchQuestionSetReplySchema>;
 
+export const deleteQuestionReplySchema = emptyReplySchema;
+export type DeleteQuestionReply = Static<typeof deleteQuestionReplySchema>;
+
 export const createQuestionVariantBodySchema = Type.Union([
   Type.Object({
     type: Type.Literal('quiz'),
@@ -153,3 +156,6 @@ export const patchQuestionVariantBodySchema = Type.Union([
 export type PatchQuestionVariantBody = Static<typeof patchQuestionVariantBodySchema>;
 export const patchQuestionVariantReplySchema = emptyReplySchema;
 export type PatchQuestionVariantReply = Static<typeof patchQuestionVariantReplySchema>;
+
+export const deleteQuestionVariantReplySchema = emptyReplySchema;
+export type DeleteQuestionVariantReply = Static<typeof deleteQuestionVariantReplySchema>;

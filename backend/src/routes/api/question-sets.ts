@@ -12,8 +12,13 @@ import {
   createQuestionVariantBodySchema,
   CreateQuestionVariantReply,
   createQuestionVariantReplySchema,
+  DeleteQuestionReply,
+  DeleteQuestionVariantReply,
+  deleteQuestionVariantReplySchema,
   GetQuestionReply,
-  getQuestionReplySchema, GetQuestionSetReply, getQuestionSetReplySchema,
+  getQuestionReplySchema,
+  GetQuestionSetReply,
+  getQuestionSetReplySchema,
   ListQuestionSetsReply,
   listQuestionSetsReplySchema,
   PatchQuestionBody,
@@ -24,7 +29,8 @@ import {
   patchQuestionSetReplySchema,
   PatchQuestionVariantBody,
   patchQuestionVariantBodySchema,
-  PatchQuestionVariantReply, patchQuestionVariantReplySchema,
+  PatchQuestionVariantReply,
+  patchQuestionVariantReplySchema,
   QuestionParams,
   questionParamsSchema,
   QuestionSetParams,
@@ -289,6 +295,29 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
     return {};
   });
 
+  apiInstance.delete<{
+    Params: QuestionParams,
+    Reply: DeleteQuestionReply,
+  }>('/question-sets/:setShortId/questions/:questionShortId', {
+    schema: {
+      params: questionParamsSchema,
+      response: {
+        200: getQuestionReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const { question } = await requireQuestion(
+      request.params.setShortId,
+      request.params.questionShortId,
+      user,
+    );
+    await dbManager.questionsCollection.deleteOne({
+      _id: question._id,
+    });
+    return {};
+  });
+
   apiInstance.post<{
     Params: QuestionParams,
     Body: CreateQuestionVariantBody,
@@ -399,6 +428,39 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
         break;
       }
     }
+    return {};
+  });
+
+  apiInstance.delete<{
+    Params: QuestionVariantParams,
+    Reply: DeleteQuestionVariantReply,
+  }>('/question-sets/:setShortId/questions/:questionShortId/variants/:variantShortId', {
+    schema: {
+      params: questionVariantParamsSchema,
+      response: {
+        200: deleteQuestionVariantReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const { question } = await requireQuestion(
+      request.params.setShortId,
+      request.params.questionShortId,
+      user,
+    );
+    if (!question.variants.some(
+      (variant) => variant.shortId === request.params.variantShortId,
+    )) throw apiInstance.httpErrors.notFound('Variant not found');
+
+    await dbManager.questionsCollection.updateOne({
+      _id: question._id,
+    }, {
+      $pull: {
+        variants: {
+          shortId: request.params.variantShortId,
+        },
+      },
+    });
     return {};
   });
 }
