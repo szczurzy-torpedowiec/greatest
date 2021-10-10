@@ -63,3 +63,15 @@ export function parseMultipart(
     payload.pipe(busboy);
   });
 }
+
+export function promiseCache<K, T>(handler: (key: K) => Promise<T>) {
+  const map = new Map<K, Promise<T>>();
+  return (key: K) => {
+    let promise = map.get(key);
+    if (promise === undefined) {
+      promise = handler(key);
+      map.set(key, promise);
+    }
+    return promise;
+  };
+}

@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb';
+import { ObjectId, WithoutId } from 'mongodb';
 
 export interface DbUser {
   _id: ObjectId;
@@ -23,35 +23,52 @@ export interface DbQuestionSet {
   name: string;
 }
 
-export interface DbQuestionBase {
+export type Conditional<Switch extends boolean, T extends {}> =
+  Switch extends true ? T : {};
+
+export type DbQuestionBase<WithId extends boolean> = Conditional<WithId, {
   _id: ObjectId;
   shortId: string;
   questionSetId: ObjectId;
+}> & {
   maxPoints: number;
   type: string;
-  variants: unknown[],
-}
+};
 
-export interface DbQuestionQuiz extends DbQuestionBase {
-  type: 'quiz';
-  variants: DbQuestionVariantQuiz[]
-}
-
-export interface DbQuestionVariantQuiz {
+export type DbQuestionVariantBase<WithId extends boolean> = Conditional<WithId, {
   shortId: string;
+}>;
+
+export type DbQuestionQuiz<WithId extends boolean> = DbQuestionBase<WithId> & {
+  type: 'quiz';
+  variants: DbQuestionVariantQuiz<WithId>[];
+};
+
+export type DbQuestionVariantQuiz<WithId extends boolean> = DbQuestionVariantBase<WithId> & {
   content: string;
   correctAnswer: string;
   incorrectAnswers: string[];
-}
+};
 
-export interface DbQuestionOpen extends DbQuestionBase {
+export type DbQuestionOpen<WithId extends boolean> = DbQuestionBase<WithId> & {
   type: 'open';
-  variants: DbQuestionVariantOpen[]
-}
+  variants: DbQuestionVariantOpen<WithId>[];
+};
 
-export interface DbQuestionVariantOpen {
-  shortId: string;
+export type DbQuestionVariantOpen<WithId extends boolean> = DbQuestionVariantBase<WithId> & {
   content: string;
-}
+};
 
-export type DbQuestion = DbQuestionQuiz | DbQuestionOpen;
+export type DbQuestion<WithId extends boolean> = DbQuestionOpen<WithId> | DbQuestionQuiz<WithId>;
+
+export type DbQuestionWithoutMongodbId =
+  WithoutId<DbQuestionOpen<true>> | WithoutId<DbQuestionQuiz<true>>;
+
+export interface DbTest {
+  _id: ObjectId;
+  shortId: string;
+  name: string;
+  ownerId: ObjectId;
+  createdOn: Date,
+  questions: DbQuestion<false>[];
+}

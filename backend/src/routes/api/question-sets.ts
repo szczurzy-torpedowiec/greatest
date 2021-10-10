@@ -48,7 +48,7 @@ import { requireAuthentication } from '../../guards';
 import {
   DbQuestion,
   DbQuestionVariantOpen,
-  DbQuestionVariantQuiz,
+  DbQuestionVariantQuiz, DbQuestionWithoutMongodbId,
   DbUser,
 } from '../../database/types';
 
@@ -121,7 +121,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
     };
   });
 
-  const mapQuestion = (question: DbQuestion) => {
+  const mapQuestion = (question: DbQuestionWithoutMongodbId) => {
     const common = {
       shortId: question.shortId,
       maxPoints: question.maxPoints,
@@ -211,18 +211,16 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       },
     },
   }, async (request) => {
-    await dbManager.withSession(
-      (session) => session.withTransaction(async () => {
-        const user = await requireAuthentication(request, dbManager, true);
-        const questionSet = await requireQuestionSet(request.params.setShortId, user);
-        await dbManager.questionSetsCollection.deleteOne({
-          _id: questionSet._id,
-        });
-        await dbManager.questionsCollection.deleteMany({
-          questionSetId: questionSet._id,
-        });
-      }),
-    );
+    await dbManager.withTransaction(async () => {
+      const user = await requireAuthentication(request, dbManager, true);
+      const questionSet = await requireQuestionSet(request.params.setShortId, user);
+      await dbManager.questionSetsCollection.deleteOne({
+        _id: questionSet._id,
+      });
+      await dbManager.questionsCollection.deleteMany({
+        questionSetId: questionSet._id,
+      });
+    });
     return {};
   });
 
@@ -241,37 +239,36 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
     const questionSet = await requireQuestionSet(request.params.setShortId, user);
-    const shortId = nanoid(10);
     const base = {
-      shortId,
+      shortId: nanoid(10),
       questionSetId: questionSet._id,
       maxPoints: request.body.maxPoints,
     };
+    let question: DbQuestionWithoutMongodbId;
     switch (request.body.type) {
       case 'quiz':
-        await dbManager.questionsCollection.insertOne({
+        question = {
           ...base,
           type: 'quiz',
           variants: request.body.variants.map((variant) => ({
             shortId: nanoid(10),
             ...variant,
           })),
-        });
+        };
         break;
       case 'open':
-        await dbManager.questionsCollection.insertOne({
+        question = {
           ...base,
           type: 'open',
           variants: request.body.variants.map((variant) => ({
             shortId: nanoid(10),
             ...variant,
           })),
-        });
+        };
         break;
     }
-    return {
-      shortId,
-    };
+    await dbManager.questionsCollection.insertOne(question);
+    return mapQuestion(question);
   });
 
   apiInstance.get<{
@@ -369,7 +366,9 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       throw apiInstance.httpErrors.badRequest('Variant type does not match question type');
     }
     const shortId = nanoid(10);
-    const update = (variant: DbQuestionVariantQuiz | DbQuestionVariantOpen) => dbManager
+    const update = (
+      variant: (DbQuestionVariantQuiz<true> | DbQuestionVariantOpen<true>),
+    ) => dbManager
       .questionsCollection.updateOne({
         _id: question._id,
       }, {
@@ -428,7 +427,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
     )) throw apiInstance.httpErrors.notFound('Variant not found');
 
     const updateVariant = (
-      update: UpdateFilter<DbQuestion> | Partial<DbQuestion>,
+      update: UpdateFilter<DbQuestion<true>> | Partial<DbQuestion<true>>,
     ) => dbManager.questionsCollection.updateOne({
       _id: question._id,
       variants: {

@@ -3,4 +3,5 @@ export * from './utility';
 
 export * from './routes/api-tokens';
 export * from './routes/question-sets';
+export * from './routes/tests';
 export * from './routes/user-info';
