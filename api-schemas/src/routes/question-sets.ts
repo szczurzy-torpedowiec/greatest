@@ -108,9 +108,7 @@ export type GetQuestionSetReply = Static<typeof getQuestionSetReplySchema>;
 
 export const createQuestionBodySchema = questionSchema;
 export type CreateQuestionBody = Static<typeof createQuestionBodySchema>;
-export const createQuestionReplySchema = Type.Object({
-  shortId: Type.String(),
-});
+export const createQuestionReplySchema = questionWithIdsSchema;
 export type CreateQuestionReply = Static<typeof createQuestionSetReplySchema>;
 
 export const getQuestionReplySchema = questionWithIdsSchema;

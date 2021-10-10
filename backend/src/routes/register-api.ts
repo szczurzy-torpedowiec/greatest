@@ -4,6 +4,7 @@ import { DbManager } from '../database/database';
 import registerSwagger from './register-swagger';
 import { registerUserInfo } from './api/user-info';
 import { registerQuestionSets } from './api/question-sets';
+import { registerTests } from './api/tests';
 
 export interface ApiPluginOptions {
   dbManager: DbManager;
@@ -13,6 +14,7 @@ export async function ApiPlugin(apiInstance: FastifyInstance, { dbManager }: Api
   registerAPITokens(apiInstance, dbManager);
   registerUserInfo(apiInstance, dbManager);
   registerQuestionSets(apiInstance, dbManager);
+  registerTests(apiInstance, dbManager);
 
   apiInstance.ready()
     .then(

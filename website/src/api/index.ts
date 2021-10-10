@@ -6,3 +6,4 @@ export function getViewer() {
 }
 
 export * from './question-sets';
+export * from './tests';
