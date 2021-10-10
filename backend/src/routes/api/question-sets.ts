@@ -301,7 +301,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
   }>('/question-sets/:setShortId/questions/:questionShortId', {
     schema: {
       params: questionParamsSchema,
-      body: patchQuestionSetBodySchema,
+      body: patchQuestionBodySchema,
       response: {
         200: getQuestionReplySchema,
       },
