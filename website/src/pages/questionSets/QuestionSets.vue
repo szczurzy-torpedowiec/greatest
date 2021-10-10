@@ -7,6 +7,7 @@
       :title="questionSet.name"
       size="35"
       class="q-mb-md"
+      @update-question-sets="getQuestionSets"
     />
     <q-page-sticky
       position="bottom-right"
@@ -77,7 +78,12 @@ export default defineComponent({
       await router.push(`/question-sets/${response.shortId}/edit`);
     }
 
-    return { questionSets, newQuestionSetName, submitQuestionSet };
+    return {
+      questionSets,
+      newQuestionSetName,
+      submitQuestionSet,
+      getQuestionSets,
+    };
   },
 });
 </script>

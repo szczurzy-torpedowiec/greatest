@@ -6,10 +6,21 @@
     :style="edited ? 'border-color: orange': 'border-color: rgba(0, 0, 0, 0.12)'"
   >
     <q-card-section>
-      <q-input
-        v-model="values.content"
-        label="Pytanie"
-      />
+      <div class="row">
+        <q-input
+          class="col"
+          v-model="values.content"
+          label="Pytanie"
+        />
+        <q-btn
+          flat
+          color="red"
+          icon="delete"
+        >
+          <DeleteConfirmMenu @confirm="deleteVariant" />
+        </q-btn>
+      </div>
+
       <div
         v-if="values.type==='quiz'"
         class="row justify-evenly"
@@ -72,7 +83,8 @@ import {
   PatchQuestionVariantBody,
 } from 'greatest-api-schemas';
 
-import { patchQuestionVariant } from 'src/api';
+import { patchQuestionVariant, deleteQuestionVariant } from 'src/api';
+import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
 
 export interface QuestionVariantOpenProp extends QuestionVariantOpen {
   type: 'open';
@@ -84,6 +96,9 @@ export type QuestionVariantProp = QuestionVariantOpenProp | QuestionVariantQuizP
 
 export default defineComponent({
   name: 'QuestionSetQuestionVariant',
+  components: {
+    DeleteConfirmMenu,
+  },
   props: {
     questionId: {
       type: String,
@@ -94,7 +109,8 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  emits: ['updateQuestions'],
+  setup(props, { emit }) {
     const values = ref<QuestionVariantProp>({ ...props.variant });
     const edited = ref<boolean>(false);
     const route = useRoute();
@@ -139,11 +155,21 @@ export default defineComponent({
       } else edited.value = props.variant !== values.value;
     }, { deep: true });
 
+    async function deleteVariant() {
+      await deleteQuestionVariant(
+        route.params.id as string,
+        props.questionId,
+        props.variant.shortId,
+      );
+      emit('updateQuestions');
+    }
+
     return {
       values,
       edited,
       saveVariant,
       refreshIncorrect,
+      deleteVariant,
     };
   },
 });

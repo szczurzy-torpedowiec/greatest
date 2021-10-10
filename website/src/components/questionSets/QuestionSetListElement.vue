@@ -40,6 +40,13 @@
       </q-card-section>
       <q-card-actions>
         <q-btn
+          flat
+          color="red"
+          icon="delete"
+        >
+          <DeleteConfirmMenu @confirm="deleteSet" />
+        </q-btn>
+        <q-btn
           outline
           color="primary"
           :label="$t('questionSets.edit')"
@@ -62,10 +69,14 @@ import {
 } from 'vue';
 
 import { useRouter } from 'vue-router';
-import { patchQuestionSet } from 'src/api';
+import { patchQuestionSet, deleteQuestionSet } from 'src/api';
+import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
 
 export default defineComponent({
   name: 'QuestionSetListElement',
+  components: {
+    DeleteConfirmMenu,
+  },
   props: {
     id: {
       type: String,
@@ -80,7 +91,8 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  emits: ['updateQuestionSets'],
+  setup(props, { emit }) {
     const router = useRouter();
     const newName = ref<string>(props.title);
     const submittedName = ref<string>(props.title);
@@ -99,12 +111,18 @@ export default defineComponent({
       menuOpen.value = false;
     }
 
+    async function deleteSet() {
+      await deleteQuestionSet(props.id);
+      emit('updateQuestionSets');
+    }
+
     return {
       editRedirect,
       newName,
       submitName,
       menuOpen,
       submittedName,
+      deleteSet,
     };
   },
 });

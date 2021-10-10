@@ -57,7 +57,7 @@ export function deleteQuestion(
   setShortId: string,
   questionShortId: string,
 ) {
-  return ky.patch(`/api/question-sets/${setShortId}/questions/${questionShortId}`).json<DeleteQuestionReply>();
+  return ky.delete(`/api/question-sets/${setShortId}/questions/${questionShortId}`).json<DeleteQuestionReply>();
 }
 
 export function createQuestionVariant(

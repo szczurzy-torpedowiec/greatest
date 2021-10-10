@@ -34,7 +34,9 @@
           flat
           color="red"
           icon="delete"
-        />
+        >
+          <DeleteConfirmMenu @confirm="removeQuestion" />
+        </q-btn>
       </q-card-actions>
     </q-card-section>
     <q-card-section
@@ -45,6 +47,7 @@
         :key="variant.shortId"
         :variant="variant"
         :question-id="question.shortId"
+        @update-questions="$emit('updateQuestions')"
       />
       <q-btn
         color="primary"
@@ -66,9 +69,10 @@ import {
   computed,
 } from 'vue';
 import { QuestionWithIds } from 'greatest-api-schemas';
-import { patchQuestion, createQuestionVariant } from 'src/api';
+import { patchQuestion, createQuestionVariant, deleteQuestion } from 'src/api';
 import { useRoute } from 'vue-router';
 import QuestionSetQuestionVariant, { QuestionVariantProp } from 'components/questionSets/QuestionSetQuestionVariant.vue';
+import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
 
 interface VariantEditQuiz {
   content: string,
@@ -84,6 +88,7 @@ export default defineComponent({
   name: 'QuestionSetQuestion',
   components: {
     QuestionSetQuestionVariant,
+    DeleteConfirmMenu,
   },
   props: {
     question: {
@@ -98,7 +103,7 @@ export default defineComponent({
     const variantsValue = [...props.question.variants];
     const variantsEdit = ref<(VariantEditQuiz|VariantEditOpen)[]>(variantsValue);
 
-    const router = useRoute();
+    const route = useRoute();
     const maxPoints = ref<number>(props.question.maxPoints);
 
     const questionVariantsWithTypes = computed<QuestionVariantProp[]>(() => {
@@ -116,7 +121,7 @@ export default defineComponent({
 
     async function addVariant() {
       await createQuestionVariant(
-        router.params.id as string,
+        route.params.id as string,
         props.question.shortId,
         props.question.type === 'quiz'
           ? {
@@ -131,10 +136,15 @@ export default defineComponent({
     }
 
     watch(maxPoints, async () => {
-      await patchQuestion(router.params.id as string, props.question.shortId, {
+      await patchQuestion(route.params.id as string, props.question.shortId, {
         maxPoints: maxPoints.value,
       });
     });
+
+    async function removeQuestion() {
+      await deleteQuestion(route.params.id as string, props.question.shortId);
+      emit('updateQuestions');
+    }
 
     return {
       variantsVisible,
@@ -143,6 +153,7 @@ export default defineComponent({
       addVariant,
       variantCreatorVisible,
       questionVariantsWithTypes,
+      removeQuestion,
     };
   },
 });
