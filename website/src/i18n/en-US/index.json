@@ -1,3 +1,24 @@
 {
-  "appName": "Greatest"
+  "appName": "Greatest",
+  "questionSets": {
+    "questionCount": "No questions | 1 question | {count} questions",
+    "edit": "Edit",
+    "use": "Use",
+    "newQuestionSet": "New question set",
+    "questionSetName": "Question set name",
+    "newQuestion":"New question",
+    "addVariant": "Add variant",
+    "addOpenQuestion": "Add open question",
+    "addQuizQuestion": "Add quiz question"
+  },
+  "common": {
+    "variants": "Variants",
+    "points": "Points",
+    "question": "Question",
+    "correctAnswer": "Correct answer",
+    "incorrectAnswer": "Incorrect answer",
+    "save": "save",
+    "delete": "Delete",
+    "deleteConfirmation": "Do you really want to delete this element?"
+  }
 }

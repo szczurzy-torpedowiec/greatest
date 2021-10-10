@@ -1,6 +1,6 @@
 <template>
   <q-page class="row items-center justify-evenly column">
-    Witaj
+    {{ $t('appName') }}
   </q-page>
 </template>
 
