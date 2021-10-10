@@ -3,13 +3,14 @@ import {
   CreateTestBody,
   createTestBodySchema,
   CreateTestReply,
-  createTestReplySchema,
+  createTestReplySchema, GetTestReply, getTestReplySchema,
   ListTestsReply,
   listTestsReplySchema,
   PatchTestBody,
   patchTestBodySchema,
   PatchTestReply,
-  patchTestReplySchema, TestParams,
+  patchTestReplySchema,
+  TestParams,
   testParamsSchema,
 } from 'greatest-api-schemas';
 import { nanoid } from 'nanoid';
@@ -23,7 +24,7 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
     const test = await dbManager.testsCollection.findOne({
       shortId,
     });
-    if (test === null) return apiInstance.httpErrors.notFound('Test not found');
+    if (test === null) throw apiInstance.httpErrors.notFound('Test not found');
     if (!test.ownerId.equals(user._id)) throw apiInstance.httpErrors.forbidden();
     return test;
   };
@@ -143,6 +144,25 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
     return {
       shortId,
       createdOn: createdOn.toISOString(),
+    };
+  });
+
+  apiInstance.get<{
+    Params: TestParams,
+    Reply: GetTestReply,
+  }>('/tests/:testShortId', {
+    schema: {
+      params: testParamsSchema,
+      response: {
+        200: getTestReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const test = await requireTest(request.params.testShortId, user);
+    return {
+      name: test.name,
+      questions: test.questions,
     };
   });
 

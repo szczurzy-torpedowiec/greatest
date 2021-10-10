@@ -1,6 +1,6 @@
 import {
   CreateTestBody,
-  CreateTestReply, ListTestsReply, PatchTestBody, PatchTestReply,
+  CreateTestReply, GetTestReply, ListTestsReply, PatchTestBody, PatchTestReply,
 } from 'greatest-api-schemas';
 import ky from 'ky';
 
@@ -10,6 +10,10 @@ export function listTests() {
 
 export function createTest(body: CreateTestBody) {
   return ky.post('/api/tests/create', { json: body }).json<CreateTestReply>();
+}
+
+export function getTest(shortId: string) {
+  return ky.get(`/api/tests/${shortId}`).json<GetTestReply>();
 }
 
 export function patchTest(shortId: string, body: PatchTestBody) {
