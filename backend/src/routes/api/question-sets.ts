@@ -12,8 +12,13 @@ import {
   createQuestionVariantBodySchema,
   CreateQuestionVariantReply,
   createQuestionVariantReplySchema,
+  DeleteQuestionReply, DeleteQuestionSetReply,
+  DeleteQuestionVariantReply,
+  deleteQuestionVariantReplySchema,
   GetQuestionReply,
-  getQuestionReplySchema, GetQuestionSetReply, getQuestionSetReplySchema,
+  getQuestionReplySchema,
+  GetQuestionSetReply,
+  getQuestionSetReplySchema,
   ListQuestionSetsReply,
   listQuestionSetsReplySchema,
   PatchQuestionBody,
@@ -24,7 +29,8 @@ import {
   patchQuestionSetReplySchema,
   PatchQuestionVariantBody,
   patchQuestionVariantBodySchema,
-  PatchQuestionVariantReply, patchQuestionVariantReplySchema,
+  PatchQuestionVariantReply,
+  patchQuestionVariantReplySchema,
   QuestionParams,
   questionParamsSchema,
   QuestionSetParams,
@@ -194,6 +200,32 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
     return {};
   });
 
+  apiInstance.delete<{
+    Params: QuestionSetParams,
+    Reply: DeleteQuestionSetReply,
+  }>('/question-sets/:setShortId', {
+    schema: {
+      params: questionSetParamsSchema,
+      response: {
+        200: patchQuestionSetReplySchema,
+      },
+    },
+  }, async (request) => {
+    await dbManager.withSession(
+      (session) => session.withTransaction(async () => {
+        const user = await requireAuthentication(request, dbManager, true);
+        const questionSet = await requireQuestionSet(request.params.setShortId, user);
+        await dbManager.questionSetsCollection.deleteOne({
+          _id: questionSet._id,
+        });
+        await dbManager.questionsCollection.deleteMany({
+          questionSetId: questionSet._id,
+        });
+      }),
+    );
+    return {};
+  });
+
   apiInstance.post<{
     Params: QuestionSetParams,
     Body: CreateQuestionBody,
@@ -269,7 +301,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
   }>('/question-sets/:setShortId/questions/:questionShortId', {
     schema: {
       params: questionParamsSchema,
-      body: patchQuestionSetBodySchema,
+      body: patchQuestionBodySchema,
       response: {
         200: getQuestionReplySchema,
       },
@@ -285,6 +317,29 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       _id: question._id,
     }, {
       maxPoints: request.body.maxPoints,
+    });
+    return {};
+  });
+
+  apiInstance.delete<{
+    Params: QuestionParams,
+    Reply: DeleteQuestionReply,
+  }>('/question-sets/:setShortId/questions/:questionShortId', {
+    schema: {
+      params: questionParamsSchema,
+      response: {
+        200: getQuestionReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const { question } = await requireQuestion(
+      request.params.setShortId,
+      request.params.questionShortId,
+      user,
+    );
+    await dbManager.questionsCollection.deleteOne({
+      _id: question._id,
     });
     return {};
   });
@@ -399,6 +454,39 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
         break;
       }
     }
+    return {};
+  });
+
+  apiInstance.delete<{
+    Params: QuestionVariantParams,
+    Reply: DeleteQuestionVariantReply,
+  }>('/question-sets/:setShortId/questions/:questionShortId/variants/:variantShortId', {
+    schema: {
+      params: questionVariantParamsSchema,
+      response: {
+        200: deleteQuestionVariantReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const { question } = await requireQuestion(
+      request.params.setShortId,
+      request.params.questionShortId,
+      user,
+    );
+    if (!question.variants.some(
+      (variant) => variant.shortId === request.params.variantShortId,
+    )) throw apiInstance.httpErrors.notFound('Variant not found');
+
+    await dbManager.questionsCollection.updateOne({
+      _id: question._id,
+    }, {
+      $pull: {
+        variants: {
+          shortId: request.params.variantShortId,
+        },
+      },
+    });
     return {};
   });
 }

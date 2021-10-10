@@ -1,5 +1,5 @@
 import {
-  Collection, Db, MongoClient,
+  Collection, Db, MongoClient, WithSessionCallback,
 } from 'mongodb';
 import {
   DbApiToken, DbQuestion, DbQuestionSet, DbUser,
@@ -39,6 +39,10 @@ export class DbManager {
 
     await this.questionsCollection.createIndex({ questionSetId: 1 });
     await this.questionsCollection.createIndex({ questionSetId: 1, shortId: 1 }, { unique: true });
+  }
+
+  withSession(callback: WithSessionCallback) {
+    return this.client.withSession(callback);
   }
 }
 
