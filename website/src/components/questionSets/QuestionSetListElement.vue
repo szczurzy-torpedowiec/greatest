@@ -3,7 +3,36 @@
     <q-card-section horizontal>
       <q-card-section class="col">
         <div class="text-h6">
-          {{ title }}
+          {{ submittedName }}
+          <q-btn
+            icon="edit"
+            flat
+          >
+            <q-menu
+              v-model="menuOpen"
+              no-refocus
+            >
+              <div class="q-pa-md">
+                <q-input
+                  v-model="newName"
+                  outlined
+                  label="Question set name"
+                  @keydown.enter="submitName"
+                >
+                  <template #after>
+                    <q-btn
+                      v-close-popup
+                      round
+                      dense
+                      flat
+                      icon="save"
+                      @click="submitName"
+                    />
+                  </template>
+                </q-input>
+              </div>
+            </q-menu>
+          </q-btn>
         </div>
         <div class="text-subtitle1">
           {{ $tc('questionSets.question', 2) }}
@@ -29,9 +58,11 @@
 <script lang="ts">
 import {
   defineComponent,
+  ref,
 } from 'vue';
 
 import { useRouter } from 'vue-router';
+import { patchQuestionSet } from 'src/api';
 
 export default defineComponent({
   name: 'QuestionSetListElement',
@@ -51,12 +82,30 @@ export default defineComponent({
   },
   setup(props) {
     const router = useRouter();
+    const newName = ref<string>(props.title);
+    const submittedName = ref<string>(props.title);
+    const menuOpen = ref<boolean>(false);
 
     async function editRedirect() {
       await router.push(`/question-sets/${props.id}/edit`);
     }
 
-    return { editRedirect };
+    async function submitName() {
+      await patchQuestionSet(props.id, {
+        name: newName.value.trim(),
+      });
+
+      submittedName.value = newName.value;
+      menuOpen.value = false;
+    }
+
+    return {
+      editRedirect,
+      newName,
+      submitName,
+      menuOpen,
+      submittedName,
+    };
   },
 });
 </script>
