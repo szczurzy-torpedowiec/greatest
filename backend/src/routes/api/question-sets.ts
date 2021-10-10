@@ -21,7 +21,7 @@ import {
   getQuestionSetReplySchema,
   ListQuestionSetsReply,
   listQuestionSetsReplySchema,
-  PatchQuestionBody,
+  PatchQuestionBody, patchQuestionBodySchema,
   PatchQuestionReply,
   PatchQuestionSetBody,
   patchQuestionSetBodySchema,

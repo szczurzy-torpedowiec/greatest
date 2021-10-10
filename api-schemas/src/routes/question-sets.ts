@@ -128,13 +128,17 @@ export type DeleteQuestionReply = Static<typeof deleteQuestionReplySchema>;
 
 export const createQuestionVariantBodySchema = Type.Union([
   Type.Object({
-    type: Type.Literal('quiz'),
+    type: Type.Literal('quiz', {
+      description: 'The API cannot change the type',
+    }),
     content: Type.String(),
     correctAnswer: Type.String(),
     incorrectAnswers: Type.Array(Type.String()),
   }),
   Type.Object({
-    type: Type.Literal('open'),
+    type: Type.Literal('open', {
+      description: 'The API cannot change the type',
+    }),
     content: Type.String(),
   }),
 ]);
@@ -146,13 +150,17 @@ export type CreateQuestionVariantReply = Static<typeof createQuestionVariantRepl
 
 export const patchQuestionVariantBodySchema = Type.Union([
   Type.Object({
-    type: Type.Literal('quiz'),
+    type: Type.Literal('quiz', {
+      description: 'The API cannot change the type',
+    }),
     content: Type.Optional(Type.String()),
     correctAnswer: Type.Optional(Type.String()),
     incorrectAnswers: Type.Optional(Type.Array(Type.String())),
   }),
   Type.Object({
-    type: Type.Literal('open'),
+    type: Type.Literal('open', {
+      description: 'The API cannot change the type',
+    }),
     content: Type.Optional(Type.String()),
   }),
 ]);
