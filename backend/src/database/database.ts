@@ -2,7 +2,7 @@ import {
   Collection, Db, MongoClient, WithSessionCallback, WithTransactionCallback,
 } from 'mongodb';
 import {
-  DbApiToken, DbQuestion, DbQuestionSet, DbTest, DbUser,
+  DbApiToken, DbQuestion, DbQuestionSet, DbSheet, DbTest, DbUser,
 } from './types';
 import { config } from '../config';
 
@@ -21,6 +21,8 @@ export class DbManager {
 
   public testsCollection: Collection<DbTest>;
 
+  public sheetsCollection: Collection<DbSheet>;
+
   constructor(client: MongoClient) {
     this.client = client;
     this.db = this.client.db();
@@ -29,6 +31,7 @@ export class DbManager {
     this.questionSetsCollection = this.db.collection<DbQuestionSet>('question-sets');
     this.questionsCollection = this.db.collection<DbQuestion<true>>('questions');
     this.testsCollection = this.db.collection<DbTest>('tests');
+    this.sheetsCollection = this.db.collection<DbSheet>('sheets');
   }
 
   async init() {
@@ -44,6 +47,10 @@ export class DbManager {
     await this.questionsCollection.createIndex({ questionSetId: 1, shortId: 1 }, { unique: true });
 
     await this.testsCollection.createIndex({ ownerId: 1 });
+    await this.testsCollection.createIndex({ shortId: 1 }, { unique: true });
+
+    await this.sheetsCollection.createIndex({ testId: 1 });
+    await this.sheetsCollection.createIndex({ testId: 1, shortId: 1 }, { unique: true });
   }
 
   withSession(callback: WithSessionCallback) {

@@ -75,3 +75,16 @@ export function promiseCache<K, T>(handler: (key: K) => Promise<T>) {
     return promise;
   };
 }
+
+export function mapTimes<T>(fn: (index: number) => T, count: number): T[] {
+  const result: T[] = [];
+  for (let i = 0; i < count; i += 1) result.push(fn(i));
+  return result;
+}
+
+export function randomInt(to: number): number;
+export function randomInt(from: number, to: number): number;
+export function randomInt(from: number, to?: number): number {
+  if (to === undefined) return randomInt(0, from);
+  return Math.floor(Math.random() * (to - from)) + from;
+}

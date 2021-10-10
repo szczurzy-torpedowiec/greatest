@@ -72,3 +72,13 @@ export interface DbTest {
   createdOn: Date,
   questions: DbQuestion<false>[];
 }
+
+export interface DbSheet {
+  _id: ObjectId;
+  shortId: string;
+  testId: ObjectId;
+  questions: {
+    variant: number;
+    points: number | null;
+  }[];
+}

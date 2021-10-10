@@ -1,4 +1,5 @@
-import { StringOptions, Type } from '@sinclair/typebox';
+import { Static, StringOptions, Type } from '@sinclair/typebox';
+import { nullable } from './utility';
 
 export const emptyReplySchema = Type.Object({});
 
@@ -13,3 +14,12 @@ export function trimmedStringSchema<TFormat extends string>(
     ...options,
   });
 }
+
+export const sheetSchema = Type.Object({
+  shortId: Type.String(),
+  questions: Type.Array(Type.Object({
+    variant: Type.Integer(),
+    points: nullable(Type.Integer()),
+  })),
+});
+export type Sheet = Static<typeof sheetSchema>;

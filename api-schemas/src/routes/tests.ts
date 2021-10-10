@@ -26,6 +26,7 @@ export const createTestBodySchema = Type.Object({
       title: 'Question variant short id',
     }), {
       minItems: 1,
+      maxItems: 26,
       uniqueItems: true,
     }),
   }), {

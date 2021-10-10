@@ -15,20 +15,11 @@ import {
 } from 'greatest-api-schemas';
 import { nanoid } from 'nanoid';
 import { DbManager } from '../../database/database';
-import { requireAuthentication } from '../../guards';
-import { DbQuestion, DbQuestionVariantBase, DbUser } from '../../database/types';
+import { requireAuthentication, requireTest } from '../../guards';
+import { DbQuestion, DbQuestionVariantBase } from '../../database/types';
 import { promiseCache } from '../../utils';
 
 export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager) {
-  const requireTest = async (shortId: string, user: DbUser) => {
-    const test = await dbManager.testsCollection.findOne({
-      shortId,
-    });
-    if (test === null) throw apiInstance.httpErrors.notFound('Test not found');
-    if (!test.ownerId.equals(user._id)) throw apiInstance.httpErrors.forbidden();
-    return test;
-  };
-
   apiInstance.get<{
     Reply: ListTestsReply
   }>('/tests/list', {
@@ -159,7 +150,7 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
-    const test = await requireTest(request.params.testShortId, user);
+    const test = await requireTest(request, dbManager, user, request.params.testShortId);
     return {
       name: test.name,
       questions: test.questions,
@@ -180,7 +171,7 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
-    const test = await requireTest(request.params.testShortId, user);
+    const test = await requireTest(request, dbManager, user, request.params.testShortId);
     await dbManager.testsCollection.updateOne({
       _id: test._id,
     }, {

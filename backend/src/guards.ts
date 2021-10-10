@@ -71,3 +71,17 @@ export async function requireAuthentication(
   if (authenticatedUser === null) throw request.server.httpErrors.unauthorized();
   return authenticatedUser.user;
 }
+
+export async function requireTest(
+  request: FastifyRequest,
+  dbManager: DbManager,
+  user: DbUser,
+  shortId: string,
+) {
+  const test = await dbManager.testsCollection.findOne({
+    shortId,
+  });
+  if (test === null) throw request.server.httpErrors.notFound('Test not found');
+  if (!test.ownerId.equals(user._id)) throw request.server.httpErrors.forbidden();
+  return test;
+}
