@@ -1,5 +1,10 @@
 import { Static, Type } from '@sinclair/typebox';
-import { trimmedStringSchema } from '../common';
+import { emptyReplySchema, trimmedStringSchema } from '../common';
+
+export const testParamsSchema = Type.Object({
+  testShortId: Type.String(),
+});
+export type TestParams = Static<typeof testParamsSchema>;
 
 export const listTestsReplySchema = Type.Object({
   tests: Type.Array(Type.Object({
@@ -35,3 +40,10 @@ export const createTestReplySchema = Type.Object({
   }),
 });
 export type CreateTestReply = Static<typeof createTestReplySchema>;
+
+export const patchTestBodySchema = Type.Object({
+  name: Type.Optional(trimmedStringSchema()),
+});
+export type PatchTestBody = Static<typeof patchTestBodySchema>;
+export const patchTestReplySchema = emptyReplySchema;
+export type PatchTestReply = Static<typeof patchTestReplySchema>;

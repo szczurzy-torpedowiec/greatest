@@ -1,17 +1,33 @@
 import { FastifyInstance } from 'fastify';
 import {
-  CreateTestBody, createTestBodySchema,
-  CreateTestReply, createTestReplySchema,
+  CreateTestBody,
+  createTestBodySchema,
+  CreateTestReply,
+  createTestReplySchema,
   ListTestsReply,
   listTestsReplySchema,
+  PatchTestBody,
+  patchTestBodySchema,
+  PatchTestReply,
+  patchTestReplySchema, TestParams,
+  testParamsSchema,
 } from 'greatest-api-schemas';
 import { nanoid } from 'nanoid';
 import { DbManager } from '../../database/database';
 import { requireAuthentication } from '../../guards';
-import { DbQuestion, DbQuestionVariantBase } from '../../database/types';
+import { DbQuestion, DbQuestionVariantBase, DbUser } from '../../database/types';
 import { promiseCache } from '../../utils';
 
 export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager) {
+  const requireTest = async (shortId: string, user: DbUser) => {
+    const test = await dbManager.testsCollection.findOne({
+      shortId,
+    });
+    if (test === null) return apiInstance.httpErrors.notFound('Test not found');
+    if (!test.ownerId.equals(user._id)) throw apiInstance.httpErrors.forbidden();
+    return test;
+  };
+
   apiInstance.get<{
     Reply: ListTestsReply
   }>('/tests/list', {
@@ -128,5 +144,30 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
       shortId,
       createdOn: createdOn.toISOString(),
     };
+  });
+
+  apiInstance.patch<{
+    Params: TestParams,
+    Body: PatchTestBody,
+    Reply: PatchTestReply,
+  }>('/tests/:testShortId', {
+    schema: {
+      params: testParamsSchema,
+      body: patchTestBodySchema,
+      response: {
+        200: patchTestReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const test = await requireTest(request.params.testShortId, user);
+    await dbManager.testsCollection.updateOne({
+      _id: test._id,
+    }, {
+      $set: {
+        name: request.body.name,
+      },
+    });
+    return {};
   });
 }
