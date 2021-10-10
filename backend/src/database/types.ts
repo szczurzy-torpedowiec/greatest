@@ -81,4 +81,6 @@ export interface DbSheet {
     variant: number;
     points: number | null;
   }[];
+  phrase: string;
+  pages: number | null;
 }

@@ -24,12 +24,15 @@ import { DbManager } from '../../database/database';
 import { requireAuthentication, requireTest } from '../../guards';
 import { DbSheet, DbTest } from '../../database/types';
 import { mapTimes, randomInt } from '../../utils';
+import { getRandomString } from '../../string-generator';
 
 export function registerSheets(apiInstance: FastifyInstance, dbManager: DbManager) {
   const mapSheet = (sheet: WithoutId<DbSheet>): Sheet => ({
     shortId: sheet.shortId,
     questions: sheet.questions,
   });
+
+  const generatePhrase = () => mapTimes(getRandomString, 2).join(' ');
 
   apiInstance.get<{
     Params: TestParams,
@@ -74,6 +77,8 @@ export function registerSheets(apiInstance: FastifyInstance, dbManager: DbManage
     const newSheet: WithoutId<DbSheet> = {
       testId: test._id,
       shortId: nanoid(10),
+      pages: null,
+      phrase: generatePhrase(),
       questions: request.body.questionVariants.map((variant, questionIndex) => {
         if (variant >= test.questions[questionIndex].variants.length) {
           throw apiInstance.httpErrors.badRequest(
@@ -108,6 +113,8 @@ export function registerSheets(apiInstance: FastifyInstance, dbManager: DbManage
     const sheets = mapTimes<WithoutId<DbSheet>>(() => ({
       shortId: nanoid(10),
       testId: test._id,
+      pages: null,
+      phrase: generatePhrase(),
       questions: test.questions.map((question) => ({
         variant: randomInt(question.variants.length),
         points: null,

@@ -8,8 +8,10 @@ import { AuthPlugin } from './routes/auth';
 import { config } from './config';
 import { ApiPlugin } from './routes/register-api';
 import { getProxyConstraint, WebsitePlugin } from './routes/register-website';
+import { loadDictionary } from './string-generator';
 
 async function main() {
+  await loadDictionary();
   const dbManager = await connectDb();
   const server = fastify({
     logger: true,

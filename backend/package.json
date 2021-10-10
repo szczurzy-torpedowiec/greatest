@@ -3,6 +3,7 @@
     "@sinclair/typebox": "^0.20.5",
     "bcrypt": "^5.0.1",
     "busboy": "^0.3.1",
+    "eol": "^0.9.1",
     "fastify": "^3.21.0",
     "fastify-http-proxy": "^6.2.1",
     "fastify-secure-session": "^2.3.1",
