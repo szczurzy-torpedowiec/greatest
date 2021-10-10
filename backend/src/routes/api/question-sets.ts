@@ -316,7 +316,9 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
     await dbManager.questionsCollection.updateOne({
       _id: question._id,
     }, {
-      maxPoints: request.body.maxPoints,
+      $set: {
+        maxPoints: request.body.maxPoints,
+      },
     });
     return {};
   });
