@@ -11,13 +11,13 @@
       <q-btn
         class="col-5"
         color="primary"
-        label="Dodaj nowe pytanie otwarte"
+        :label="$t('questionSets.addOpenQuestion')"
         @click="addQuestion('open')"
       />
       <q-btn
         class="col-5"
         color="primary"
-        label="Dodaj nowe pytanie zamknięte"
+        :label="$t('questionSets.addQuizQuestion')"
         @click="addQuestion('quiz')"
       />
     </div>

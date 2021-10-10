@@ -17,14 +17,14 @@
         fab
         icon="add"
         color="primary"
-        :label="$t('questionSets.new')"
+        :label="$t('questionSets.newQuestionSet')"
       >
         <q-menu>
           <div class="q-pa-md">
             <q-input
               v-model="newQuestionSetName"
               outlined
-              label="Question set name"
+              :label="$t('questionSets.questionSetName')"
               @keydown.enter.prevent="submitQuestionSet"
             >
               <template #after>

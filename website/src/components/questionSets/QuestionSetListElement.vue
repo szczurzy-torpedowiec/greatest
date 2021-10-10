@@ -16,7 +16,7 @@
                 <q-input
                   v-model="newName"
                   outlined
-                  label="Question set name"
+                  :label="$t('questionSets.questionSetName')"
                   @keydown.enter="submitName"
                 >
                   <template #after>
@@ -35,7 +35,7 @@
           </q-btn>
         </div>
         <div class="text-subtitle1">
-          {{ $tc('questionSets.question', 2) }}
+          {{ $tc('questionSets.questionCount', size) }}
         </div>
       </q-card-section>
       <q-card-actions>

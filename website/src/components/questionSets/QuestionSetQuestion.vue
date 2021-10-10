@@ -7,13 +7,13 @@
         <div class="text-h6">
           {{
             !question.variants[0] || question.variants[0].content === ''
-              ? 'Nowe pytanie'
+              ? $t('questionSets.newQuestion')
               : question.variants[0].content
           }}
         </div>
         <q-btn
           flat
-          label="Warianty"
+          :label="$t('common.variants')"
           :icon="variantsVisible ? 'expand_less' : 'expand_more'"
           @click="variantsVisible = !variantsVisible"
         />
@@ -23,7 +23,7 @@
           v-model.number="maxPoints"
           debounce="1000"
           type="number"
-          label="Punkty"
+          :label="$t('common.points')"
           dense
           outlined
           class="q-mx-sm"
@@ -51,7 +51,7 @@
       />
       <q-btn
         color="primary"
-        label="Dodaj wariant"
+        :label="$t('questionSets.addVariant')"
         icon="edit"
         class="full-width q-ma-md"
         @click="addVariant"

@@ -8,9 +8,9 @@
     <q-card-section>
       <div class="row">
         <q-input
-          class="col"
           v-model="values.content"
-          label="Pytanie"
+          class="col"
+          :label="$t('common.question')"
         />
         <q-btn
           flat
@@ -30,7 +30,7 @@
           outlined
           color="green"
           class="q-mt-md q-mx-sm col-5"
-          label="Poprawna odpowiedź"
+          :label="$t('common.correctAnswer')"
         >
           <template #prepend>
             <q-icon
@@ -46,7 +46,7 @@
           outlined
           color="red"
           class="q-mt-md q-mx-sm col-5"
-          label="Niepoprawna odpowiedź"
+          :label="$t('common.incorrectAnswer')"
           @blur="refreshIncorrect"
           @keydown.enter="refreshIncorrect"
         >
@@ -63,7 +63,7 @@
       <q-space />
       <q-btn
         color="orange"
-        label="Zapisz"
+        :label="$t('common.save')"
         @click="saveVariant"
       />
     </q-card-actions>
