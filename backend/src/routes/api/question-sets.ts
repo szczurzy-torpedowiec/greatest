@@ -430,9 +430,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       update: UpdateFilter<DbQuestion<true>> | Partial<DbQuestion<true>>,
     ) => dbManager.questionsCollection.updateOne({
       _id: question._id,
-      variants: {
-        shortId: request.params.variantShortId,
-      },
+      'variants.shortId': request.params.variantShortId,
     }, update);
 
     switch (request.body.type) {
