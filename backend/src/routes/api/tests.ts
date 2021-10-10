@@ -48,7 +48,7 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
   apiInstance.post<{
     Body: CreateTestBody,
     Reply: CreateTestReply,
-  }>('tests/create', {
+  }>('/tests/create', {
     schema: {
       body: createTestBodySchema,
       response: {
