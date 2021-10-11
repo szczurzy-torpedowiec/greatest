@@ -12,7 +12,6 @@ import {
   getSheetReplySchema,
   ListSheetsReply,
   listSheetsReplySchema,
-  Sheet,
   SheetParams,
   sheetParamsSchema,
   TestParams,
@@ -25,13 +24,14 @@ import { requireAuthentication, requireTest } from '../../guards';
 import { DbSheet, DbTest } from '../../database/types';
 import { mapTimes, randomInt } from '../../utils';
 import { getRandomString } from '../../string-generator';
+import { mapSheet } from '../../mappers';
+import { WebsocketBus } from '../../websocket-bus';
 
-export function registerSheets(apiInstance: FastifyInstance, dbManager: DbManager) {
-  const mapSheet = (sheet: WithoutId<DbSheet>): Sheet => ({
-    shortId: sheet.shortId,
-    questions: sheet.questions,
-  });
-
+export function registerSheets(
+  apiInstance: FastifyInstance,
+  dbManager: DbManager,
+  websocketBus: WebsocketBus,
+) {
   const generatePhrase = () => mapTimes(getRandomString, 2).join(' ');
 
   apiInstance.get<{
@@ -92,6 +92,7 @@ export function registerSheets(apiInstance: FastifyInstance, dbManager: DbManage
       }),
     };
     await dbManager.sheetsCollection.insertOne(newSheet);
+    websocketBus.sheetCreate.emit(newSheet);
     return mapSheet(newSheet);
   });
 
@@ -121,6 +122,7 @@ export function registerSheets(apiInstance: FastifyInstance, dbManager: DbManage
       })),
     }), request.body.count);
     await dbManager.sheetsCollection.insertMany(sheets);
+    sheets.forEach((sheet) => websocketBus.sheetCreate.emit(sheet));
     return {
       newSheets: sheets.map(mapSheet),
     };
