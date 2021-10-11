@@ -79,6 +79,7 @@ export function registerSheets(
       shortId: nanoid(10),
       pages: null,
       phrase: generatePhrase(),
+      student: request.body.student ?? '',
       questions: request.body.questionVariants.map((variant, questionIndex) => {
         if (variant >= test.questions[questionIndex].variants.length) {
           throw apiInstance.httpErrors.badRequest(
@@ -116,6 +117,7 @@ export function registerSheets(
       testId: test._id,
       pages: null,
       phrase: generatePhrase(),
+      student: '',
       questions: test.questions.map((question) => ({
         variant: randomInt(question.variants.length),
         points: null,

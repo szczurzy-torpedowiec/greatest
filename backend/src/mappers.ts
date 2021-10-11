@@ -6,5 +6,6 @@ export function mapSheet(sheet: WithoutId<DbSheet>): Sheet {
   return {
     shortId: sheet.shortId,
     questions: sheet.questions,
+    student: sheet.student,
   };
 }

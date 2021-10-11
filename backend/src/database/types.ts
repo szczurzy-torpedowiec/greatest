@@ -83,4 +83,5 @@ export interface DbSheet {
   }[];
   phrase: string;
   pages: number | null;
+  student: string;
 }

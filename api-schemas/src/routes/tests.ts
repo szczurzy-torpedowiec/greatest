@@ -18,7 +18,7 @@ export const listTestsReplySchema = Type.Object({
 export type ListTestsReply = Static<typeof listTestsReplySchema>;
 
 export const createTestBodySchema = Type.Object({
-  name: trimmedStringSchema(),
+  name: trimmedStringSchema(false),
   questions: Type.Array(Type.Object({
     questionSetShortId: Type.String(),
     questionShortId: Type.String(),
@@ -43,7 +43,7 @@ export const createTestReplySchema = Type.Object({
 export type CreateTestReply = Static<typeof createTestReplySchema>;
 
 export const patchTestBodySchema = Type.Object({
-  name: Type.Optional(trimmedStringSchema()),
+  name: Type.Optional(trimmedStringSchema(false)),
 });
 export type PatchTestBody = Static<typeof patchTestBodySchema>;
 export const patchTestReplySchema = emptyReplySchema;

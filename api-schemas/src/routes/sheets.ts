@@ -1,10 +1,11 @@
 import { Static, Type } from '@sinclair/typebox';
-import { sheetSchema } from '../common';
+import { sheetSchema, trimmedStringSchema } from '../common';
 
 export const createSheetBodySchema = Type.Object({
   questionVariants: Type.Array(Type.Integer({ minimum: 0 }), {
     minItems: 1,
   }),
+  student: Type.Optional(trimmedStringSchema(true)),
 });
 export type CreateSheetBody = Static<typeof createSheetBodySchema>;
 export const createSheetReplySchema = sheetSchema;

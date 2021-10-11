@@ -1,7 +1,7 @@
 import { Static, Type } from '@sinclair/typebox';
 import { emptyReplySchema, trimmedStringSchema } from '../common';
 
-const tokenNameSchema = trimmedStringSchema({
+const tokenNameSchema = trimmedStringSchema(false, {
   maxLength: 64,
 });
 
