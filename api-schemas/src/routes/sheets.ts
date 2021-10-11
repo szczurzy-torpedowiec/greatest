@@ -1,5 +1,5 @@
 import { Static, Type } from '@sinclair/typebox';
-import { sheetSchema, trimmedStringSchema } from '../common';
+import { emptyReplySchema, sheetSchema, trimmedStringSchema } from '../common';
 
 export const createSheetBodySchema = Type.Object({
   questionVariants: Type.Array(Type.Integer({ minimum: 0 }), {
@@ -37,3 +37,11 @@ export type ListSheetsReply = Static<typeof listSheetsReplySchema>;
 
 export const getSheetReplySchema = sheetSchema;
 export type GetSheetReply = Static<typeof getSheetReplySchema>;
+
+export const patchSheetBodySchema = Type.Object({
+  student: Type.Optional(trimmedStringSchema(true)),
+  requestId: Type.String(),
+});
+export type PatchSheetBody = Static<typeof patchSheetBodySchema>;
+export const patchSheetReplySchema = emptyReplySchema;
+export type PatchSheetReply = Static<typeof patchSheetReplySchema>;

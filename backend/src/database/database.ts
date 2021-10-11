@@ -65,7 +65,9 @@ export class DbManager {
 }
 
 export async function connectDb() {
-  const client = new MongoClient(config.mongodbUrl);
+  const client = new MongoClient(config.mongodbUrl, {
+    ignoreUndefined: true,
+  });
   await client.connect();
   const manager = new DbManager(client);
   await manager.init();

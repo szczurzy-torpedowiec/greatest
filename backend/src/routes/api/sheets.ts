@@ -12,12 +12,16 @@ import {
   getSheetReplySchema,
   ListSheetsReply,
   listSheetsReplySchema,
+  PatchSheetBody,
+  patchSheetBodySchema,
+  PatchSheetReply,
+  patchSheetReplySchema,
   SheetParams,
   sheetParamsSchema,
   TestParams,
   testParamsSchema,
 } from 'greatest-api-schemas';
-import { WithoutId } from 'mongodb';
+import { UpdateFilter, WithoutId } from 'mongodb';
 import { nanoid } from 'nanoid';
 import { DbManager } from '../../database/database';
 import { requireAuthentication, requireTest } from '../../guards';
@@ -139,6 +143,17 @@ export function registerSheets(
     return sheet;
   };
 
+  const updateSheet = async (test: DbTest, sheetShortId: string, update: UpdateFilter<DbSheet>) => {
+    const { value } = await dbManager.sheetsCollection.findOneAndUpdate({
+      testId: test._id,
+      shortId: sheetShortId,
+    }, update, {
+      returnDocument: 'after',
+    });
+    if (value === null) throw apiInstance.httpErrors.notFound('Sheet not found');
+    return value;
+  };
+
   apiInstance.get<{
     Params: SheetParams,
     Reply: GetSheetReply,
@@ -153,5 +168,29 @@ export function registerSheets(
     const user = await requireAuthentication(request, dbManager, true);
     const test = await requireTest(request, dbManager, user, request.params.testShortId);
     return mapSheet(await getSheet(test, request.params.sheetShortId));
+  });
+
+  apiInstance.patch<{
+    Params: SheetParams,
+    Body: PatchSheetBody,
+    Reply: PatchSheetReply,
+  }>('/tests/:testShortId/sheets/:sheetShortId', {
+    schema: {
+      params: sheetParamsSchema,
+      body: patchSheetBodySchema,
+      response: {
+        200: patchSheetReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const test = await requireTest(request, dbManager, user, request.params.testShortId);
+    const changedSheet = await updateSheet(test, request.params.sheetShortId, {
+      $set: {
+        student: request.body.student,
+      },
+    });
+    websocketBus.sheetChange.emit(changedSheet, request.body.requestId);
+    return {};
   });
 }
