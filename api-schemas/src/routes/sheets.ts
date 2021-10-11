@@ -6,6 +6,7 @@ export const createSheetBodySchema = Type.Object({
     minItems: 1,
   }),
   student: Type.Optional(trimmedStringSchema(true)),
+  requestId: Type.String(),
 });
 export type CreateSheetBody = Static<typeof createSheetBodySchema>;
 export const createSheetReplySchema = sheetSchema;
@@ -21,6 +22,7 @@ export const createRandomSheetsBodySchema = Type.Object({
   count: Type.Integer({
     minimum: 0,
   }),
+  requestId: Type.String(),
 });
 export type CreateRandomSheetsBody = Static<typeof createRandomSheetsBodySchema>;
 export const createRandomSheetsReplySchema = Type.Object({

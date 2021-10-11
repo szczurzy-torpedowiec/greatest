@@ -75,18 +75,20 @@ export async function WebsocketPlugin(
       connection.socket.send(JSON.stringify(message));
     };
     const { test } = req.greatest;
-    const onSheetChange = (sheet: WithoutId<DbSheet>) => {
+    const onSheetChange = (sheet: WithoutId<DbSheet>, causingRequestId: string) => {
       if (!sheet.testId.equals(test._id)) return;
       sendMessage({
         type: 'change',
         sheet: mapSheet(sheet),
+        causingRequestId,
       });
     };
-    const onSheetCreate = (sheet: WithoutId<DbSheet>) => {
+    const onSheetCreate = (sheet: WithoutId<DbSheet>, causingRequestId: string) => {
       if (!sheet.testId.equals(test._id)) return;
       sendMessage({
         type: 'create',
         sheet: mapSheet(sheet),
+        causingRequestId,
       });
     };
     websocketBus.sheetChange.on(onSheetChange);

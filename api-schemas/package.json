@@ -9,7 +9,8 @@
   "scripts": {
     "lint": "eslint -c .eslintrc.yml --ext .ts src/**",
     "lint:fix": "eslint -c .eslintrc.yml --ext .ts src/** --fix",
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "tsc --watch"
   },
   "dependencies": {
     "@sinclair/typebox": "^0.20.5"

@@ -93,7 +93,7 @@ export function registerSheets(
       }),
     };
     await dbManager.sheetsCollection.insertOne(newSheet);
-    websocketBus.sheetCreate.emit(newSheet);
+    websocketBus.sheetCreate.emit(newSheet, request.body.requestId);
     return mapSheet(newSheet);
   });
 
@@ -124,7 +124,7 @@ export function registerSheets(
       })),
     }), request.body.count);
     await dbManager.sheetsCollection.insertMany(sheets);
-    sheets.forEach((sheet) => websocketBus.sheetCreate.emit(sheet));
+    sheets.forEach((sheet) => websocketBus.sheetCreate.emit(sheet, request.body.requestId));
     return {
       newSheets: sheets.map(mapSheet),
     };

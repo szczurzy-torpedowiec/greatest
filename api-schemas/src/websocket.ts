@@ -1,11 +1,16 @@
 import { Sheet } from './common';
 
-export interface SheetCreateMessage {
+export interface BaseWebhookMessage {
+  type: string;
+  causingRequestId: string;
+}
+
+export interface SheetCreateMessage extends BaseWebhookMessage {
   type: 'create';
   sheet: Sheet,
 }
 
-export interface SheetChangeMessage {
+export interface SheetChangeMessage extends BaseWebhookMessage {
   type: 'change';
   sheet: Sheet,
 }
