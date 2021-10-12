@@ -2,7 +2,7 @@ import {
   Collection, Db, MongoClient, WithSessionCallback, WithTransactionCallback,
 } from 'mongodb';
 import {
-  DbApiToken, DbQuestion, DbQuestionSet, DbSheet, DbTest, DbUser,
+  DbApiToken, DbQuestion, DbQuestionSet, DbScan, DbSheet, DbTest, DbUser,
 } from './types';
 import { config } from '../config';
 
@@ -23,6 +23,8 @@ export class DbManager {
 
   public sheetsCollection: Collection<DbSheet>;
 
+  public scansCollection: Collection<DbScan>;
+
   constructor(client: MongoClient) {
     this.client = client;
     this.db = this.client.db();
@@ -32,6 +34,7 @@ export class DbManager {
     this.questionsCollection = this.db.collection<DbQuestion<true>>('questions');
     this.testsCollection = this.db.collection<DbTest>('tests');
     this.sheetsCollection = this.db.collection<DbSheet>('sheets');
+    this.scansCollection = this.db.collection<DbScan>('scans');
   }
 
   async init() {
@@ -51,6 +54,9 @@ export class DbManager {
 
     await this.sheetsCollection.createIndex({ testId: 1 });
     await this.sheetsCollection.createIndex({ testId: 1, shortId: 1 }, { unique: true });
+    await this.sheetsCollection.createIndex({ qrCodeId: 1 }, { unique: true });
+
+    await this.scansCollection.createIndex({ userId: 1 });
   }
 
   withSession(callback: WithSessionCallback) {

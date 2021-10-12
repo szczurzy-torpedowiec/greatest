@@ -14,3 +14,8 @@ rules:
   default-case: off
   "@typescript-eslint/switch-exhaustiveness-check": error
   consistent-return: off
+overrides:
+  - files:
+    - src/utils/**.*
+    rules:
+     no-console: off

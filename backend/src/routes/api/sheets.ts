@@ -58,6 +58,14 @@ export function registerSheets(
     };
   });
 
+  const generateQrCodeId = async (): Promise<string> => {
+    const qrCodeId = nanoid(6);
+    if ((await dbManager.sheetsCollection.countDocuments({
+      qrCodeId,
+    })) > 0) return generateQrCodeId();
+    return qrCodeId;
+  };
+
   apiInstance.post<{
     Params: TestParams,
     Body: CreateSheetBody,
@@ -81,6 +89,7 @@ export function registerSheets(
     const newSheet: WithoutId<DbSheet> = {
       testId: test._id,
       shortId: nanoid(10),
+      qrCodeId: await generateQrCodeId(),
       pages: null,
       phrase: generatePhrase(),
       student: request.body.student ?? '',
@@ -97,7 +106,7 @@ export function registerSheets(
       }),
     };
     await dbManager.sheetsCollection.insertOne(newSheet);
-    websocketBus.sheetCreate.emit(newSheet, request.body.requestId);
+    websocketBus.getTest(test._id).sheetCreate.emit(newSheet, request.body.requestId);
     return mapSheet(newSheet);
   });
 
@@ -116,9 +125,10 @@ export function registerSheets(
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
     const test = await requireTest(request, dbManager, user, request.params.testShortId);
-    const sheets = mapTimes<WithoutId<DbSheet>>(() => ({
+    const sheets = await Promise.all(mapTimes<Promise<WithoutId<DbSheet>>>(async () => ({
       shortId: nanoid(10),
       testId: test._id,
+      qrCodeId: await generateQrCodeId(),
       pages: null,
       phrase: generatePhrase(),
       student: '',
@@ -126,9 +136,11 @@ export function registerSheets(
         variant: randomInt(question.variants.length),
         points: null,
       })),
-    }), request.body.count);
+    }), request.body.count));
     await dbManager.sheetsCollection.insertMany(sheets);
-    sheets.forEach((sheet) => websocketBus.sheetCreate.emit(sheet, request.body.requestId));
+    sheets.forEach(
+      (sheet) => websocketBus.getTest(test._id).sheetCreate.emit(sheet, request.body.requestId),
+    );
     return {
       newSheets: sheets.map(mapSheet),
     };
@@ -190,7 +202,7 @@ export function registerSheets(
         student: request.body.student,
       },
     });
-    websocketBus.sheetChange.emit(changedSheet, request.body.requestId);
+    websocketBus.getTest(test._id).sheetChange.emit(changedSheet, request.body.requestId);
     return {};
   });
 }

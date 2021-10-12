@@ -91,12 +91,12 @@ export async function WebsocketPlugin(
         causingRequestId,
       });
     };
-    websocketBus.sheetChange.on(onSheetChange);
-    websocketBus.sheetCreate.on(onSheetCreate);
+    websocketBus.getTest(test._id).sheetChange.on(onSheetChange);
+    websocketBus.getTest(test._id).sheetCreate.on(onSheetCreate);
 
     connection.socket.on('close', () => {
-      websocketBus.sheetChange.off(onSheetChange);
-      websocketBus.sheetCreate.off(onSheetCreate);
+      websocketBus.getTest(test._id).sheetChange.off(onSheetChange);
+      websocketBus.getTest(test._id).sheetCreate.off(onSheetCreate);
     });
   });
 }

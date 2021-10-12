@@ -77,6 +77,7 @@ export interface DbSheet {
   _id: ObjectId;
   shortId: string;
   testId: ObjectId;
+  qrCodeId: string;
   questions: {
     variant: number;
     points: number | null;
@@ -84,4 +85,15 @@ export interface DbSheet {
   phrase: string;
   pages: number | null;
   student: string;
+}
+
+export interface DbScanDetection {
+  qrCodeId: string;
+  page: number;
+}
+
+export interface DbScan {
+  _id: ObjectId;
+  userId: ObjectId;
+  detections: DbScanDetection[];
 }
