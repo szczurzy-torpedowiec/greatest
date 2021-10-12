@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import {
+  Scan,
   TestParams,
   testParamsSchema,
   UploadScanBody,
@@ -9,15 +10,20 @@ import {
   uploadScanReplySchema, uploadScanSupportedTypes,
 } from 'greatest-api-schemas';
 import { nanoid } from 'nanoid';
-import { ObjectId } from 'mongodb';
 import { DbManager } from '../../database/database';
 import { requireAuthentication, requireTest } from '../../guards';
 import { scanImage } from '../../scanner';
-import { DbScanDetection } from '../../database/types';
+import { DbTest } from '../../database/types';
 import { config } from '../../config';
 import { filterNotNull, getOnly } from '../../utils';
+import { WebsocketBus } from '../../websocket-bus';
+import { mapScanOtherTest } from '../../mappers';
 
-export function registerScans(apiInstance: FastifyInstance, dbManager: DbManager) {
+export function registerScans(
+  apiInstance: FastifyInstance,
+  dbManager: DbManager,
+  websocketBus: WebsocketBus,
+) {
   apiInstance.post<{
     Body: UploadScanBody,
     Params: TestParams,
@@ -53,9 +59,9 @@ export function registerScans(apiInstance: FastifyInstance, dbManager: DbManager
     const scanResult = await scanImage(file);
 
     const qrRegex = /^\/s\/([A-z0-9\-_]{6})\/(\d)+$/;
-    const otherTests: ObjectId[] = [];
+    const otherTests: DbTest[] = [];
     const detections = filterNotNull(await Promise.all(scanResult.codes.map(
-      async (code): Promise<DbScanDetection | null> => {
+      async (code) => {
         try {
           const url = new URL(code);
           if (url.origin !== config.qrOrigin) apiInstance.log.warn(`Invalid QR code origin: "${url.origin}", expected ${config.qrOrigin}`);
@@ -73,12 +79,12 @@ export function registerScans(apiInstance: FastifyInstance, dbManager: DbManager
             return null;
           }
           if (!sheet.testId.equals(test._id)) {
-            otherTests.push(test._id);
+            otherTests.push(test);
             apiInstance.log.warn('Sheet belongs to another test');
             return null;
           }
           return {
-            sheetId: sheet._id,
+            sheet,
             page: parseInt(result[2], 10),
           };
         } catch (error) {
@@ -89,16 +95,31 @@ export function registerScans(apiInstance: FastifyInstance, dbManager: DbManager
       },
     )));
     const shortId = nanoid(10);
+    const uploadedOn = new Date();
+    const pickedDetection = getOnly(detections);
     await dbManager.scansCollection.insertOne({
       testId: test._id,
-      detections,
+      detections: detections.map((detection) => ({
+        page: detection.page,
+        sheetId: detection.sheet._id,
+      })),
       shortId,
-      otherTests,
-      uploadedOn: new Date(),
-      sheetId: getOnly(detections)?.sheetId ?? null,
+      otherTests: otherTests.map((otherTest) => otherTest._id),
+      uploadedOn,
+      sheetId: pickedDetection?.sheet._id ?? null,
     });
-    return {
+
+    const scan: Scan = {
       shortId,
+      sheetShortId: pickedDetection?.sheet?.shortId ?? null,
+      uploadedOn: uploadedOn.toISOString(),
+      otherTests: otherTests.map((otherTest) => mapScanOtherTest(otherTest, user)),
+      detections: detections.map((detection) => ({
+        sheetShortId: detection.sheet.shortId,
+        page: detection.page,
+      })),
     };
+    await websocketBus.getTest(test._id).scanCreateBody.emit(scan, request.body.requestId);
+    return scan;
   });
 }

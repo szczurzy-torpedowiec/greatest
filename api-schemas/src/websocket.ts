@@ -1,4 +1,4 @@
-import { Sheet } from './common';
+import { Scan, Sheet } from './common';
 
 export interface BaseWebhookMessage {
   type: string;
@@ -6,13 +6,27 @@ export interface BaseWebhookMessage {
 }
 
 export interface SheetCreateMessage extends BaseWebhookMessage {
-  type: 'create';
+  type: 'sheet-create';
   sheet: Sheet,
 }
 
 export interface SheetChangeMessage extends BaseWebhookMessage {
-  type: 'change';
+  type: 'sheet-change';
   sheet: Sheet,
 }
 
-export type TestWebsocketMessage = SheetCreateMessage | SheetChangeMessage;
+export interface ScanCreateMessage extends BaseWebhookMessage {
+  type: 'scan-create';
+  scan: Scan,
+}
+
+export interface ScanChangeMessage extends BaseWebhookMessage {
+  type: 'scan-change';
+  scan: Scan,
+}
+
+export type TestWebsocketMessage =
+  SheetCreateMessage
+  | SheetChangeMessage
+  | ScanCreateMessage
+  | ScanChangeMessage;

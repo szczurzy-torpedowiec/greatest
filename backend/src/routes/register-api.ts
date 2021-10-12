@@ -21,7 +21,7 @@ export async function ApiPlugin(apiInstance: FastifyInstance, { dbManager }: Api
   registerQuestionSets(apiInstance, dbManager);
   registerTests(apiInstance, dbManager);
   registerSheets(apiInstance, dbManager, websocketBus);
-  registerScans(apiInstance, dbManager);
+  registerScans(apiInstance, dbManager, websocketBus);
   apiInstance.register(WebsocketPlugin, { dbManager, websocketBus, prefix: '/ws' });
 
   apiInstance.ready()

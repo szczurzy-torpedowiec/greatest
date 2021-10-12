@@ -1,13 +1,18 @@
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import FastifyWebsocket, { SocketStream } from 'fastify-websocket';
 import { IncomingMessage } from 'http';
-import { TestParams, testParamsSchema, TestWebsocketMessage } from 'greatest-api-schemas';
+import {
+  Scan, TestParams, testParamsSchema, TestWebsocketMessage,
+} from 'greatest-api-schemas';
 import { WithoutId } from 'mongodb';
 import { DbManager } from '../../database/database';
 import { requireAuthentication } from '../../guards';
-import { DbSheet, DbTest, DbUser } from '../../database/types';
+import {
+  DbScan, DbSheet, DbTest, DbUser,
+} from '../../database/types';
 import { WebsocketBus } from '../../websocket-bus';
-import { mapSheet } from '../../mappers';
+import { mapScanOtherTest, mapSheet } from '../../mappers';
+import { filterNotNull, OffFunction } from '../../utils';
 
 interface MyIncomingMessage extends IncomingMessage {
   greatest?: {
@@ -71,32 +76,77 @@ export async function WebsocketPlugin(
       connection.socket.close();
       return;
     }
+    const { user } = req.greatest;
     const sendMessage = (message: TestWebsocketMessage) => {
       connection.socket.send(JSON.stringify(message));
     };
+    const mapScan = async (scan: WithoutId<DbScan>): Promise<Scan> => ({
+      shortId: scan.shortId,
+      uploadedOn: scan.uploadedOn.toISOString(),
+      sheetShortId: scan.sheetId ? (await dbManager.sheetsCollection.findOne({
+        _id: scan.sheetId,
+      }))?.shortId ?? null : null,
+      detections: filterNotNull(await Promise.all(scan.detections.map(async (detection) => {
+        const sheet = await dbManager.sheetsCollection.findOne({
+          _id: detection.sheetId,
+        });
+        if (sheet === null) return null;
+        return {
+          sheetShortId: sheet.shortId,
+          page: detection.page,
+        };
+      }))),
+      otherTests: filterNotNull(await Promise.all(scan.otherTests.map(async (otherTestId) => {
+        const test = await dbManager.testsCollection.findOne({
+          _id: otherTestId,
+        });
+        if (test === null) return null;
+        return mapScanOtherTest(test, user);
+      }))),
+    });
     const { test } = req.greatest;
-    const onSheetChange = (sheet: WithoutId<DbSheet>, causingRequestId: string) => {
-      if (!sheet.testId.equals(test._id)) return;
-      sendMessage({
-        type: 'change',
-        sheet: mapSheet(sheet),
-        causingRequestId,
-      });
-    };
-    const onSheetCreate = (sheet: WithoutId<DbSheet>, causingRequestId: string) => {
-      if (!sheet.testId.equals(test._id)) return;
-      sendMessage({
-        type: 'create',
-        sheet: mapSheet(sheet),
-        causingRequestId,
-      });
-    };
-    websocketBus.getTest(test._id).sheetChange.on(onSheetChange);
-    websocketBus.getTest(test._id).sheetCreate.on(onSheetCreate);
+    const offList: OffFunction[] = [];
+    offList.push(
+      websocketBus.getTest(test._id).sheetChange.on(
+        (sheet: WithoutId<DbSheet>, causingRequestId: string) => {
+          sendMessage({
+            type: 'sheet-change',
+            sheet: mapSheet(sheet),
+            causingRequestId,
+          });
+        },
+      ),
+      websocketBus.getTest(test._id).sheetCreate.on(
+        (sheet: WithoutId<DbSheet>, causingRequestId: string) => {
+          sendMessage({
+            type: 'sheet-create',
+            sheet: mapSheet(sheet),
+            causingRequestId,
+          });
+        },
+      ),
+      websocketBus.getTest(test._id).scanChange.on(
+        async (scan: WithoutId<DbScan>, causingRequestId: string) => {
+          sendMessage({
+            type: 'scan-change',
+            scan: await mapScan(scan),
+            causingRequestId,
+          });
+        },
+      ),
+      websocketBus.getTest(test._id).scanCreateBody.on(
+        async (scan: Scan, causingRequestId: string) => {
+          sendMessage({
+            type: 'scan-create',
+            scan,
+            causingRequestId,
+          });
+        },
+      ),
+    );
 
     connection.socket.on('close', () => {
-      websocketBus.getTest(test._id).sheetChange.off(onSheetChange);
-      websocketBus.getTest(test._id).sheetCreate.off(onSheetCreate);
+      offList.forEach((off) => off());
     });
   });
 }

@@ -27,3 +27,20 @@ export const sheetSchema = Type.Object({
   })),
 });
 export type Sheet = Static<typeof sheetSchema>;
+
+export const scanSchema = Type.Object({
+  shortId: Type.String(),
+  sheetShortId: nullable(Type.String()),
+  uploadedOn: Type.String({
+    format: 'date-time',
+  }),
+  otherTests: Type.Array(Type.Object({
+    name: nullable(Type.String()),
+    shortId: Type.String(),
+  })),
+  detections: Type.Array(Type.Object({
+    sheetShortId: Type.String(),
+    page: Type.Integer(),
+  })),
+});
+export type Scan = Static<typeof scanSchema>;
