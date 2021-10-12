@@ -134,6 +134,7 @@ export default defineComponent({
       );
 
       edited.value = false;
+      emit('updateQuestions');
     }
 
     function refreshIncorrect() {
