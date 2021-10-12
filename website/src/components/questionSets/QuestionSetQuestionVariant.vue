@@ -121,7 +121,7 @@ export default defineComponent({
           type: 'quiz',
           content: values.value.content,
           correctAnswer: values.value.correctAnswer,
-          incorrectAnswers: values.value.incorrectAnswers,
+          incorrectAnswers: values.value.incorrectAnswers.filter(Boolean),
         } : {
           type: 'open',
           content: values.value.content,

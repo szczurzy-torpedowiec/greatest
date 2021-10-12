@@ -38,6 +38,7 @@ import {
 
 import { QuestionSet, QuestionVariantOpen, QuestionVariantQuiz } from 'greatest-api-schemas';
 import { listQuestionSets, getQuestionSet, createTest } from 'src/api';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   name: 'TestCreator',
@@ -51,6 +52,7 @@ export default defineComponent({
     }
 
     onMounted(getQuestionSets);
+    const $q = useQuasar();
 
     async function submitNewTest() {
       const questionSet = (
@@ -61,12 +63,30 @@ export default defineComponent({
         variants: question.variants.map(
           (variant: QuestionVariantOpen | QuestionVariantQuiz) => variant.shortId,
         ),
-      }));
+      })).filter((question) => question.variants.length > 0);
 
-      await createTest({
-        name: newTestName.value,
-        questions: questionSet,
-      });
+      if (questionSet.length >= 1) {
+        const response = await createTest({
+          name: newTestName.value,
+          questions: questionSet,
+        });
+
+        if (!response.shortId) {
+          $q.notify({
+            message: 'Unknown error while creating test',
+            color: 'red',
+            position: 'bottom',
+          });
+        } else {
+          // Redirect to test
+        }
+      } else {
+        $q.notify({
+          message: 'Error while creating test: No questions',
+          color: 'red',
+          position: 'bottom',
+        });
+      }
     }
 
     return {

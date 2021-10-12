@@ -1,5 +1,27 @@
 <template>
   <q-page padding>
+    <h2>Tests</h2>
+    <q-card
+      v-for="test in tests"
+      :key="test.shortId"
+      class="q-mb-md"
+    >
+      <span class="q-focus-helper" />
+      <q-card-section horizontal>
+        <q-card-section class="text-h6 col q-hoverable cursor-pointer" v-ripple>
+          {{ test.name }}
+        </q-card-section>
+        <q-card-actions>
+          <q-btn
+            flat
+            icon="delete"
+            color="red"
+          >
+            <delete-confirm-menu />
+          </q-btn>
+        </q-card-actions>
+      </q-card-section>
+    </q-card>
     <q-page-sticky
       position="bottom-right"
       :offset="[18, 18]"
@@ -9,7 +31,6 @@
         icon="add"
         color="primary"
         label="New test"
-        @click="testCreator"
       >
         <test-settings />
       </q-btn>
@@ -18,29 +39,43 @@
 </template>
 
 <script lang="ts">
-import { useQuasar } from 'quasar';
 import {
   defineComponent,
+  onMounted,
   ref,
 } from 'vue';
 
+import { listTests } from 'src/api';
+
 import TestSettings from 'components/tests/TestSettings.vue';
+import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
+
+interface ListTest {
+  shortId: string,
+  name: string,
+  createdOn: string,
+}
 
 export default defineComponent({
   name: 'Tests',
   components: {
     TestSettings,
+    DeleteConfirmMenu,
   },
   setup() {
-    const $q = useQuasar();
+    const tests = ref<ListTest[]>();
 
-    function testCreator() {
-      $q.dialog({
-        component: TestSettings,
-      });
+    async function loadTests() {
+      tests.value = (await listTests()).tests;
     }
 
-    return { testCreator };
+    async function deleteTest() {
+      // TODO: Add test deletion
+    }
+
+    onMounted(loadTests);
+
+    return { tests };
   },
 });
 </script>

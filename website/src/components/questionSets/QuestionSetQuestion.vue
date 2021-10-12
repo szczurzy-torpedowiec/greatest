@@ -4,10 +4,14 @@
       horizontal
     >
       <q-card-section class="col">
-        <div class="text-h6">
+        <div
+          :class="!question.variants[0] || question.variants[0].content === ''
+            ? 'text-h6 text-orange'
+            : 'text-h6'"
+        >
           {{
             !question.variants[0] || question.variants[0].content === ''
-              ? $t('questionSets.newQuestion')
+              ? $t('questionSets.noVariants')
               : question.variants[0].content
           }}
         </div>

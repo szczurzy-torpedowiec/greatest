@@ -6,7 +6,7 @@
     "use": "Use",
     "newQuestionSet": "New question set",
     "questionSetName": "Question set name",
-    "newQuestion":"New question",
+    "noVariants": "No variants",
     "addVariant": "Add variant",
     "addOpenQuestion": "Add open question",
     "addQuizQuestion": "Add quiz question"

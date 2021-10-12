@@ -1,5 +1,6 @@
 <template>
   <q-page padding>
+    <h2>Question sets</h2>
     <question-set-list-element
       v-for="questionSet in questionSets"
       :id="questionSet.shortId"
