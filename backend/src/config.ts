@@ -6,6 +6,7 @@ export const config = {
   mongodbUrl: 'mongodb://mongodb:27017/greatest',
   baseUrl: requireEnv('BASE_URL'),
   development: requireEnv('SERVER_MODE') === 'development',
+  qrOrigin: requireEnv('QR_ORIGIN'),
 };
 
 export interface GoogleKeys {

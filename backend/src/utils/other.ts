@@ -10,6 +10,12 @@ export function mapTimes<T>(fn: (index: number) => T, count: number): T[] {
   return result;
 }
 
+export function filterNotNull<T>(
+  array: readonly (T)[],
+): Exclude<T, null>[] {
+  return array.filter((x) => x !== null) as Exclude<T, null>[];
+}
+
 export function randomInt(to: number): number;
 export function randomInt(from: number, to: number): number;
 export function randomInt(from: number, to?: number): number {
@@ -22,3 +28,8 @@ export const bindEquals = <T>(val: T) => (other: T) => val === other;
 export const bindNot = <T extends unknown[]>(
   fn: (...args: T) => boolean,
 ) => (...args: T) => !fn(...args);
+
+export function getOnly<T>(array: T[]): T | undefined {
+  if (array.length === 1) return array[0];
+  return undefined;
+}

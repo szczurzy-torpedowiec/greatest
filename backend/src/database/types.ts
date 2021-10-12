@@ -88,12 +88,16 @@ export interface DbSheet {
 }
 
 export interface DbScanDetection {
-  qrCodeId: string;
+  sheetId: ObjectId,
   page: number;
 }
 
 export interface DbScan {
   _id: ObjectId;
-  userId: ObjectId;
+  shortId: string;
+  testId: ObjectId;
+  sheetId: ObjectId | null;
+  otherTests: ObjectId[],
   detections: DbScanDetection[];
+  uploadedOn: Date;
 }

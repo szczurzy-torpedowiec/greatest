@@ -8,6 +8,7 @@ You can specify env variables in a `.env` file placed in the repo root
 BACKEND_PORT=5000
 BASE_URL=http://localhost:5000 # used for Google login redirect
 TRAEFIK_HOST=example.com
+QR_ORIGIN=https://example.com:1234
 ```
 #### Additional files
 ##### `google-keys.json` - Google OAuth2.0 Client ID

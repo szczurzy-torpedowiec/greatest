@@ -56,7 +56,8 @@ export class DbManager {
     await this.sheetsCollection.createIndex({ testId: 1, shortId: 1 }, { unique: true });
     await this.sheetsCollection.createIndex({ qrCodeId: 1 }, { unique: true });
 
-    await this.scansCollection.createIndex({ userId: 1 });
+    await this.scansCollection.createIndex({ testId: 1 });
+    await this.scansCollection.createIndex({ testId: 1, shortId: 1 }, { unique: true });
   }
 
   withSession(callback: WithSessionCallback) {
