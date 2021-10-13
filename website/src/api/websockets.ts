@@ -15,15 +15,23 @@ export function useWebsocket<T>(url: DeepReadonly<Ref<string | null>>) {
   let websocket: WebSocket | null;
   let connectTimeoutId: number | null = null;
 
-  const connect = (connectUrl: string, isReconnect: boolean) => {
+  let destroyed = false;
+
+  const resetTimeout = () => {
     if (connectTimeoutId !== null) clearTimeout(connectTimeoutId);
     connectTimeoutId = null;
+  };
+
+  const connect = (connectUrl: string, isReconnect: boolean) => {
+    resetTimeout();
     websocket?.close();
     websocket = new WebSocket(connectUrl);
     websocket.onclose = () => {
       websocket = null;
       isOpen.value = false;
-      if (url.value !== null) connectTimeoutId = setTimeout(connect, 2500, url.value, true);
+      if (url.value !== null && !destroyed) {
+        connectTimeoutId = setTimeout(connect, 2500, url.value, true);
+      }
     };
     websocket.onopen = () => {
       connectListeners.forEach((listener) => listener(isReconnect));
@@ -42,6 +50,8 @@ export function useWebsocket<T>(url: DeepReadonly<Ref<string | null>>) {
   });
 
   onBeforeUnmount(() => {
+    destroyed = true;
+    resetTimeout();
     websocket?.close();
     messageListeners.clear();
     connectListeners.clear();
