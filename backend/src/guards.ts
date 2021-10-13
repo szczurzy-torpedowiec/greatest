@@ -85,3 +85,11 @@ export async function requireTest(
   if (!test.ownerId.equals(user._id)) throw request.server.httpErrors.forbidden();
   return test;
 }
+
+// TODO: Add security schema field in all endpoints
+export const getSecurity = (): {
+  [key: string]: string[]
+}[] => [
+  { apiTokenHeader: [] },
+  { sessionCookie: [] },
+];

@@ -1,5 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import {
+  ListScansReply,
+  listScansReplySchema,
   PatchScanBody, patchScanBodySchema, PatchScanReply, patchScanReplySchema,
   Scan, ScanParams, scanParamsSchema,
   TestParams,
@@ -14,6 +16,7 @@ import { nanoid } from 'nanoid';
 import { ObjectId } from 'mongodb';
 import { DbManager } from '../../database/database';
 import {
+  getSecurity,
   requireAuthentication, requireTest,
 } from '../../guards';
 import { scanImage } from '../../scanner';
@@ -21,13 +24,40 @@ import { DbTest } from '../../database/types';
 import { config } from '../../config';
 import { filterNotNull, getOnly } from '../../utils';
 import { WebsocketBus } from '../../websocket-bus';
-import { mapScanOtherTest } from '../../mappers';
+import { mapScan, mapScanOtherTest } from '../../mappers';
 
 export function registerScans(
   apiInstance: FastifyInstance,
   dbManager: DbManager,
   websocketBus: WebsocketBus,
 ) {
+  apiInstance.get<{
+    Params: TestParams,
+    Reply: ListScansReply,
+  }>('/tests/:testShortId/scans', {
+    schema: {
+      params: testParamsSchema,
+      response: {
+        200: listScansReplySchema,
+      },
+      security: getSecurity(),
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const test = await requireTest(request, dbManager, user, request.params.testShortId);
+
+    const scans = await Promise.all(
+      await dbManager.scansCollection.find({
+        testId: test._id,
+      })
+        .map((scan) => mapScan(scan, user, dbManager))
+        .toArray(),
+    );
+    return {
+      scans,
+    };
+  });
+
   apiInstance.post<{
     Body: UploadScanBody,
     Params: TestParams,
@@ -42,11 +72,7 @@ export function registerScans(
       response: {
         200: uploadScanReplySchema,
       },
-      // TODO: Add security schema field in all endpoints
-      security: [
-        { apiTokenHeader: [] },
-        { sessionCookie: [] },
-      ],
+      security: getSecurity(),
     },
   }, async (request) => {
     const { file } = request.files;
@@ -138,10 +164,7 @@ export function registerScans(
       response: {
         200: patchScanReplySchema,
       },
-      security: [
-        { apiTokenHeader: [] },
-        { sessionCookie: [] },
-      ],
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);

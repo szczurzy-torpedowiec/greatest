@@ -8,6 +8,11 @@ export const scanParamsSchema = Type.Object({
 });
 export type ScanParams = Static<typeof scanParamsSchema>;
 
+export const listScansReplySchema = Type.Object({
+  scans: Type.Array(scanSchema),
+});
+export type ListScansReply = Static<typeof listScansReplySchema>;
+
 export const uploadScanBodySchema = Type.Object({
   requestId: Type.String(),
 });

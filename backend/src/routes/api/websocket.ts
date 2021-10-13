@@ -11,8 +11,8 @@ import {
   DbScan, DbSheet, DbTest, DbUser,
 } from '../../database/types';
 import { WebsocketBus } from '../../websocket-bus';
-import { mapScanOtherTest, mapSheet } from '../../mappers';
-import { filterNotNull, OffFunction } from '../../utils';
+import { mapScan, mapSheet } from '../../mappers';
+import { OffFunction } from '../../utils';
 
 interface MyIncomingMessage extends IncomingMessage {
   greatest?: {
@@ -76,35 +76,10 @@ export async function WebsocketPlugin(
       connection.socket.close();
       return;
     }
-    const { user } = req.greatest;
+    const { user, test } = req.greatest;
     const sendMessage = (message: TestWebsocketMessage) => {
       connection.socket.send(JSON.stringify(message, null, 2));
     };
-    const mapScan = async (scan: WithoutId<DbScan>): Promise<Scan> => ({
-      shortId: scan.shortId,
-      uploadedOn: scan.uploadedOn.toISOString(),
-      sheetShortId: scan.sheetId ? (await dbManager.sheetsCollection.findOne({
-        _id: scan.sheetId,
-      }))?.shortId ?? null : null,
-      detections: filterNotNull(await Promise.all(scan.detections.map(async (detection) => {
-        const sheet = await dbManager.sheetsCollection.findOne({
-          _id: detection.sheetId,
-        });
-        if (sheet === null) return null;
-        return {
-          sheetShortId: sheet.shortId,
-          page: detection.page,
-        };
-      }))),
-      otherTests: filterNotNull(await Promise.all(scan.otherTests.map(async (otherTestId) => {
-        const test = await dbManager.testsCollection.findOne({
-          _id: otherTestId,
-        });
-        if (test === null) return null;
-        return mapScanOtherTest(test, user);
-      }))),
-    });
-    const { test } = req.greatest;
     const offList: OffFunction[] = [];
     offList.push(
       websocketBus.getTest(test._id).sheetChange.on(
@@ -129,7 +104,7 @@ export async function WebsocketPlugin(
         async (scan: WithoutId<DbScan>, causingRequestId: string) => {
           sendMessage({
             type: 'scan-change',
-            scan: await mapScan(scan),
+            scan: await mapScan(scan, user, dbManager),
             causingRequestId,
           });
         },
