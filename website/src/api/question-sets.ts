@@ -32,7 +32,7 @@ export function getQuestionSet(setShortId: string) {
 }
 
 export function patchQuestionSet(setShortId: string, body: PatchQuestionSetBody) {
-  return ky.post(`/api/question-sets/${setShortId}`, { json: body }).json<PatchQuestionSetReply>();
+  return ky.patch(`/api/question-sets/${setShortId}`, { json: body }).json<PatchQuestionSetReply>();
 }
 
 export function deleteQuestionSet(setShortId: string) {
