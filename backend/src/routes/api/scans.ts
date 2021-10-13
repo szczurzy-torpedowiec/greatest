@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import {
-  Scan,
+  PatchScanBody, patchScanBodySchema, PatchScanReply, patchScanReplySchema,
+  Scan, ScanParams, scanParamsSchema,
   TestParams,
   testParamsSchema,
   UploadScanBody,
@@ -10,8 +11,11 @@ import {
   uploadScanReplySchema, uploadScanSupportedTypes,
 } from 'greatest-api-schemas';
 import { nanoid } from 'nanoid';
+import { ObjectId } from 'mongodb';
 import { DbManager } from '../../database/database';
-import { requireAuthentication, requireTest } from '../../guards';
+import {
+  requireAuthentication, requireTest,
+} from '../../guards';
 import { scanImage } from '../../scanner';
 import { DbTest } from '../../database/types';
 import { config } from '../../config';
@@ -121,5 +125,52 @@ export function registerScans(
     };
     await websocketBus.getTest(test._id).scanCreateBody.emit(scan, request.body.requestId);
     return scan;
+  });
+
+  apiInstance.patch<{
+    Body: PatchScanBody,
+    Params: ScanParams,
+    Reply: PatchScanReply,
+  }>('/tests/:testShortId/scans/:scanShortId', {
+    schema: {
+      body: patchScanBodySchema,
+      params: scanParamsSchema,
+      response: {
+        200: patchScanReplySchema,
+      },
+      security: [
+        { apiTokenHeader: [] },
+        { sessionCookie: [] },
+      ],
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const test = await requireTest(request, dbManager, user, request.params.testShortId);
+
+    let sheetId: ObjectId | null | undefined;
+    if (request.body.sheetShortId === null) sheetId = null;
+    else if (request.body.sheetShortId !== undefined) {
+      const sheet = await dbManager.sheetsCollection.findOne({
+        testId: test._id,
+        shortId: request.body.sheetShortId,
+      });
+      if (sheet === null) throw apiInstance.httpErrors.notFound('Sheet not found');
+      sheetId = sheet._id;
+    }
+
+    const newScan = await dbManager.scansCollection.findOneAndUpdate({
+      testId: test._id,
+      shortId: request.params.scanShortId,
+    }, {
+      $set: {
+        sheetId,
+      },
+    }, {
+      returnDocument: 'after',
+    });
+    if (newScan.value === null) return apiInstance.httpErrors.notFound('Scan not found');
+
+    await websocketBus.getTest(test._id).scanChange.emit(newScan.value, request.body.requestId);
+    return {};
   });
 }

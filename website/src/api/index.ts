@@ -6,5 +6,6 @@ export function getViewer() {
 }
 
 export * from './question-sets';
+export * from './scans';
 export * from './tests';
 export * from './sheets';
