@@ -1,5 +1,9 @@
 import ky from 'ky';
-import { PatchScanBody, PatchScanReply } from 'greatest-api-schemas';
+import { ListScansReply, PatchScanBody, PatchScanReply } from 'greatest-api-schemas';
+
+export function listScans(testShortId: string) {
+  return ky.get(`/api/tests/${testShortId}/scans/`).json<ListScansReply>();
+}
 
 export function patchScan(
   testShortId: string,
