@@ -44,7 +44,7 @@ import {
 import { nanoid } from 'nanoid';
 import { UpdateFilter } from 'mongodb';
 import { DbManager } from '../../database/database';
-import { requireAuthentication } from '../../guards';
+import { getSecurity, requireAuthentication } from '../../guards';
 import {
   DbQuestion,
   DbQuestionVariantOpen,
@@ -79,6 +79,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       response: {
         200: listQuestionSetsReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -107,6 +108,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       response: {
         200: createQuestionSetReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -163,6 +165,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       response: {
         200: getQuestionSetReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -186,6 +189,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       response: {
         200: patchQuestionSetReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -209,6 +213,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       response: {
         200: patchQuestionSetReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     await dbManager.withTransaction(async () => {
@@ -235,6 +240,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       response: {
         200: createQuestionReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -280,6 +286,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       response: {
         200: getQuestionReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -302,6 +309,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       response: {
         200: getQuestionReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -329,6 +337,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       response: {
         200: getQuestionReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -354,6 +363,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       response: {
         200: createQuestionVariantReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -411,6 +421,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       response: {
         200: patchQuestionVariantReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -465,6 +476,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       response: {
         200: deleteQuestionVariantReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);

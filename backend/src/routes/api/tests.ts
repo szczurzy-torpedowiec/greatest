@@ -15,7 +15,7 @@ import {
 } from 'greatest-api-schemas';
 import { nanoid } from 'nanoid';
 import { DbManager } from '../../database/database';
-import { requireAuthentication, requireTest } from '../../guards';
+import { getSecurity, requireAuthentication, requireTest } from '../../guards';
 import { DbQuestion, DbQuestionVariantBase } from '../../database/types';
 import { DefaultsMap } from '../../utils';
 
@@ -27,6 +27,7 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
       response: {
         200: listTestsReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -62,6 +63,7 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
       response: {
         200: createTestReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -147,6 +149,7 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
       response: {
         200: getTestReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -168,6 +171,7 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
       response: {
         200: patchTestReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);

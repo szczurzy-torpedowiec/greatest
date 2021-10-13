@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { GetViewerReply, getViewerReplySchema } from 'greatest-api-schemas';
 import { DbManager } from '../../database/database';
-import { getAuthenticatedUser } from '../../guards';
+import { getAuthenticatedUser, getSecurity } from '../../guards';
 import { getUserInfo } from '../../auth-utils';
 
 export function registerUserInfo(apiInstance: FastifyInstance, dbManager: DbManager) {
@@ -12,6 +12,7 @@ export function registerUserInfo(apiInstance: FastifyInstance, dbManager: DbMana
       response: {
         200: getViewerReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const authenticatedUser = await getAuthenticatedUser(request, dbManager, true);

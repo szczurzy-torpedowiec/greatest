@@ -6,7 +6,7 @@ import {
 } from 'greatest-api-schemas';
 import { WithoutId } from 'mongodb';
 import { DbManager } from '../../database/database';
-import { requireAuthentication } from '../../guards';
+import { getSecurity, requireAuthentication } from '../../guards';
 import {
   DbScan, DbSheet, DbTest, DbUser,
 } from '../../database/types';
@@ -56,6 +56,7 @@ export async function WebsocketPlugin(
     schema: {
       params: testParamsSchema,
       tags: ['websocket'],
+      security: getSecurity(),
     },
     websocket: true,
     async preHandler(request) {

@@ -86,7 +86,6 @@ export async function requireTest(
   return test;
 }
 
-// TODO: Add security schema field in all endpoints
 export const getSecurity = (): {
   [key: string]: string[]
 }[] => [

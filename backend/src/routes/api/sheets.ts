@@ -24,7 +24,7 @@ import {
 import { UpdateFilter, WithoutId } from 'mongodb';
 import { nanoid } from 'nanoid';
 import { DbManager } from '../../database/database';
-import { requireAuthentication, requireTest } from '../../guards';
+import { getSecurity, requireAuthentication, requireTest } from '../../guards';
 import { DbSheet, DbTest } from '../../database/types';
 import { mapTimes, randomInt } from '../../utils';
 import { getRandomString } from '../../string-generator';
@@ -47,6 +47,7 @@ export function registerSheets(
       response: {
         200: listSheetsReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -77,6 +78,7 @@ export function registerSheets(
       response: {
         200: createSheetReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -121,6 +123,7 @@ export function registerSheets(
       response: {
         200: createRandomSheetsReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -175,6 +178,7 @@ export function registerSheets(
       response: {
         200: getSheetReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -193,6 +197,7 @@ export function registerSheets(
       response: {
         200: patchSheetReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
