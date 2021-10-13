@@ -17,4 +17,8 @@ export class EventChannel<T extends unknown[]> {
   public emit(...args: T) {
     this.listeners.forEach((listener) => listener(...args));
   }
+
+  public clear() {
+    this.listeners.clear();
+  }
 }

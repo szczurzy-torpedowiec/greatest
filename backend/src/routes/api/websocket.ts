@@ -44,7 +44,7 @@ export async function WebsocketPlugin(
       verifyClient(info, next) {
         const req = info.req as MyIncomingMessage;
         if (req?.greatest?.error) {
-          next(false, 1, req.greatest.error);
+          next(false, 1008, req.greatest.error);
         } else next(true);
       },
     },
@@ -144,6 +144,10 @@ export async function WebsocketPlugin(
         },
       ),
     );
+
+    setTimeout(() => {
+      connection.socket.close();
+    }, 10000);
 
     connection.socket.on('close', () => {
       offList.forEach((off) => off());
