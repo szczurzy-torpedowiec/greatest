@@ -78,7 +78,7 @@ export async function WebsocketPlugin(
     }
     const { user } = req.greatest;
     const sendMessage = (message: TestWebsocketMessage) => {
-      connection.socket.send(JSON.stringify(message));
+      connection.socket.send(JSON.stringify(message, null, 2));
     };
     const mapScan = async (scan: WithoutId<DbScan>): Promise<Scan> => ({
       shortId: scan.shortId,
@@ -144,10 +144,6 @@ export async function WebsocketPlugin(
         },
       ),
     );
-
-    setTimeout(() => {
-      connection.socket.close();
-    }, 10000);
 
     connection.socket.on('close', () => {
       offList.forEach((off) => off());
