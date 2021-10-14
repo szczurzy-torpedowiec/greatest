@@ -8,6 +8,10 @@ import {
   createSheetBodySchema,
   CreateSheetReply,
   createSheetReplySchema,
+  DeleteSheetBody,
+  deleteSheetBodySchema,
+  DeleteSheetReply,
+  deleteSheetReplySchema,
   GetSheetReply,
   getSheetReplySchema,
   ListSheetsReply,
@@ -208,6 +212,38 @@ export function registerSheets(
       },
     });
     websocketBus.getTest(test._id).sheetChange.emit(changedSheet, request.body.requestId);
+    return {};
+  });
+
+  apiInstance.delete<{
+    Params: SheetParams,
+    Body: DeleteSheetBody,
+    Reply: DeleteSheetReply,
+  }>('/tests/:testShortId/sheets/:sheetShortId', {
+    schema: {
+      params: sheetParamsSchema,
+      body: deleteSheetBodySchema,
+      response: {
+        200: deleteSheetReplySchema,
+      },
+      security: getSecurity(),
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const test = await requireTest(request, dbManager, user, request.params.testShortId);
+    const sheet = await getSheet(test, request.params.sheetShortId);
+    if (sheet.generated !== null) {
+      // TODO: Implement
+      throw apiInstance.httpErrors.notImplemented();
+    }
+    const scanCount = await dbManager.scansCollection.countDocuments({
+      'sheet.id': sheet._id,
+    });
+    if (scanCount > 0) throw apiInstance.httpErrors.badRequest('Sheet has assigned scans');
+    await dbManager.sheetsCollection.deleteOne({
+      _id: sheet._id,
+    });
+    websocketBus.getTest(test._id).sheetDelete.emit(sheet, request.body.requestId);
     return {};
   });
 }

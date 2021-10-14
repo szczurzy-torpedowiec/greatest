@@ -100,6 +100,14 @@ export default defineComponent({
         if (scans.value === null) return;
         const index = scans.value.findIndex((scan) => scan.shortId === message.scan.shortId);
         scans.value[index] = message.scan;
+      } else if (message.type === 'sheet-delete') {
+        sheets.value = sheets.value?.filter(
+          (sheet) => sheet.shortId !== message.sheetShortId,
+        ) ?? null;
+      } else if (message.type === 'scan-delete') {
+        scans.value = scans.value?.filter(
+          (scan) => scan.shortId !== message.scanShortId,
+        ) ?? null;
       }
     });
     watch(testShortId, async (value) => {

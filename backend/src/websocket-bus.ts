@@ -10,8 +10,10 @@ function getTestBus() {
   return {
     sheetCreate: new EventChannel<SheetListenerParams>(),
     sheetChange: new EventChannel<SheetListenerParams>(),
+    sheetDelete: new EventChannel<SheetListenerParams>(),
     scanCreateBody: new EventChannel<[scanBody: Scan, causingRequestId: string]>(),
     scanChange: new EventChannel<[scan: WithoutId<DbScan>, causingRequestId: string]>(),
+    scanDelete: new EventChannel<[scan: WithoutId<DbScan>, causingRequestId: string]>(),
   };
 }
 export type TestBus = ReturnType<typeof getTestBus>;

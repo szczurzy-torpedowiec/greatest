@@ -101,6 +101,15 @@ export async function WebsocketPlugin(
           });
         },
       ),
+      websocketBus.getTest(test._id).sheetDelete.on(
+        (sheet: WithoutId<DbSheet>, causingRequestId: string) => {
+          sendMessage({
+            type: 'sheet-delete',
+            sheetShortId: sheet.shortId,
+            causingRequestId,
+          });
+        },
+      ),
       websocketBus.getTest(test._id).scanChange.on(
         async (scan: WithoutId<DbScan>, causingRequestId: string) => {
           sendMessage({
@@ -115,6 +124,15 @@ export async function WebsocketPlugin(
           sendMessage({
             type: 'scan-create',
             scan,
+            causingRequestId,
+          });
+        },
+      ),
+      websocketBus.getTest(test._id).scanDelete.on(
+        async (scan: WithoutId<DbScan>, causingRequestId: string) => {
+          sendMessage({
+            type: 'scan-delete',
+            scanShortId: scan.shortId,
             causingRequestId,
           });
         },

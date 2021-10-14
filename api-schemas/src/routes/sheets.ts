@@ -45,3 +45,10 @@ export const patchSheetBodySchema = Type.Object({
 export type PatchSheetBody = Static<typeof patchSheetBodySchema>;
 export const patchSheetReplySchema = emptyReplySchema;
 export type PatchSheetReply = Static<typeof patchSheetReplySchema>;
+
+export const deleteSheetBodySchema = Type.Object({
+  requestId: Type.String(),
+});
+export type DeleteSheetBody = Static<typeof deleteSheetBodySchema>;
+export const deleteSheetReplySchema = emptyReplySchema;
+export type DeleteSheetReply = Static<typeof deleteSheetReplySchema>;
