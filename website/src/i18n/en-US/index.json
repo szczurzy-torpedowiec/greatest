@@ -46,7 +46,16 @@
       "pageTooltip": "Page {page} has not been scanned | Page {page} has been scanned once | Page {page} has been scanned {times} times",
       "scansWithoutPage": "+{count}",
       "scansWithoutPageTooltip": "1 scan without page number | {count} scans without page numbers",
-      "notGenerated": "Not generated"
+      "notGenerated": "Not generated",
+      "copyWarning": {
+        "title": "Do not copy your sheets",
+        "body": " Each student should have a separate sheet. Because each sheet has a unique ID, this app will not work if you print a sheet more than once or copy it."
+      },
+      "createSheetsButton": "New sheets",
+      "createSheets": {
+        "inputLabel": "Number of sheets",
+        "error": "Failed to create sheets"
+      }
     }
   }
 }

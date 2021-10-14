@@ -13,6 +13,7 @@
         :test-short-id="testShortId"
         @add-ignored-request-id="onAddIgnoredRequestId"
         @sheet-student-changed="onSheetStudentChanged"
+        @sheets-created="onSheetsCreated"
       />
     </q-tab-panel>
     <q-tab-panel name="scans">
@@ -131,6 +132,9 @@ export default defineComponent({
       onSheetStudentChanged: (sheetShortId: string, student: string) => {
         const sheet = sheets.value?.find((item) => item.shortId === sheetShortId);
         if (sheet !== undefined) sheet.student = student;
+      },
+      onSheetsCreated: (newSheets: Sheet[]) => {
+        sheets.value?.push(...newSheets);
       },
     };
   },

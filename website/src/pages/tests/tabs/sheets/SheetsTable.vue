@@ -10,6 +10,22 @@
     bordered
     selection="multiple"
   >
+    <template #top>
+      <div class="row items-center full-width">
+        <q-btn color="primary">
+          Generate and print
+        </q-btn>
+        <q-space />
+        <q-btn
+          color="primary"
+          outline
+          icon="mdi-plus"
+          :label="$t('test.sheets.createSheetsButton')"
+        >
+          <create-sheets-popup :submit="createSheetsSubmit" />
+        </q-btn>
+      </div>
+    </template>
     <template
       #body-cell-student="cell"
     >
@@ -116,9 +132,10 @@ import {
 import { Scan, Sheet } from 'greatest-api-schemas';
 import SetStudentPopup from 'pages/tests/tabs/sheets/SetStudentPopup.vue';
 import { uid } from 'quasar';
-import { patchSheet } from 'src/api';
+import { createRandomSheets, patchSheet } from 'src/api';
 import { getTypeValidator, DefaultsMap } from 'src/utils';
 import { useI18n } from 'vue-i18n';
+import CreateSheetsPopup from 'pages/tests/tabs/sheets/CreateSheetsPopup.vue';
 
 interface ScanWithSheet extends Scan {
   sheet: NonNullable<Scan['sheet']>;
@@ -151,7 +168,7 @@ function mapPages(sheet: Sheet, sheetScans: ScanWithSheet[] | undefined): {
 }
 
 export default defineComponent({
-  components: { SetStudentPopup },
+  components: { CreateSheetsPopup, SetStudentPopup },
   props: {
     testShortId: {
       type: String,
@@ -169,6 +186,7 @@ export default defineComponent({
   emits: {
     addIgnoredRequestId: getTypeValidator<[requestId: string]>(),
     sheetStudentChanged: getTypeValidator<[sheetShortId: string, name: string]>(),
+    sheetsCreated: getTypeValidator<[sheets: Sheet[]]>(),
   },
   setup(props, { emit }) {
     const i18n = useI18n();
@@ -186,8 +204,19 @@ export default defineComponent({
       });
       return map;
     });
+    const selected = ref<Sheet[]>([]);
     return {
-      selected: ref<Sheet[]>([]),
+      selected,
+      createSheetsSubmit: async (count: number) => {
+        const requestId = uid();
+        emit('addIgnoredRequestId', requestId);
+        const { newSheets } = await createRandomSheets(props.testShortId, {
+          count,
+          requestId,
+        });
+        // TODO: Select new sheets
+        emit('sheetsCreated', newSheets);
+      },
       columns: computed(() => [
         {
           name: 'student',

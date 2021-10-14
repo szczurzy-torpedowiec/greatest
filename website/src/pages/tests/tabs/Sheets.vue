@@ -1,5 +1,18 @@
 <template>
   <q-page padding>
+    <q-card
+      bordered
+      flat
+      class="q-mb-md sheets-copy-warning"
+    >
+      <q-card-section class="text-h4 q-pb-none">
+        {{ $t('test.sheets.copyWarning.title') }}
+      </q-card-section>
+      <q-card-section>
+        {{ $t('test.sheets.copyWarning.body') }}
+      </q-card-section>
+    </q-card>
+
     <sheets-table
       v-if="sheets !== null"
       :sheets="sheets"
@@ -7,6 +20,7 @@
       :test-short-id="testShortId"
       @add-ignored-request-id="onAddIgnoredRequestId"
       @sheet-student-changed="onSheetStudentChanged"
+      @sheets-created="onSheetsCreated"
     />
   </q-page>
 </template>
@@ -36,6 +50,7 @@ export default defineComponent({
   emits: {
     addIgnoredRequestId: getTypeValidator<[requestId: string]>(),
     sheetStudentChanged: getTypeValidator<[sheetShortId: string, name: string]>(),
+    sheetsCreated: getTypeValidator<[sheets: Sheet[]]>(),
   },
   setup(props, { emit }) {
     return {
@@ -45,7 +60,16 @@ export default defineComponent({
       onSheetStudentChanged: (sheetShortId: string, student: string) => {
         emit('sheetStudentChanged', sheetShortId, student);
       },
+      onSheetsCreated: (sheets: Sheet[]) => {
+        emit('sheetsCreated', sheets);
+      },
     };
   },
 });
 </script>
+
+<style lang="scss">
+.sheets-copy-warning {
+ border-color: $warning;
+}
+</style>
