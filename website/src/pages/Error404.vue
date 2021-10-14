@@ -1,8 +1,8 @@
 <template>
   <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
     <div>
-      <div class="error404-title">
-        {{ $t('404.title') }}
+      <div class="error404-header">
+        {{ $t('404.header') }}
       </div>
 
       <div
@@ -29,15 +29,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
+import { useTitleState } from 'src/state/title';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'Error404',
+  setup() {
+    const i18n = useI18n();
+
+    useTitleState(computed(() => i18n.t('404.title')));
+  },
 });
 </script>
 
 <style lang="scss" scoped>
-.error404-title {
+.error404-header {
   font-size: 30vh
 }
 

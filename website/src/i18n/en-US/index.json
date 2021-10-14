@@ -62,7 +62,8 @@
     }
   },
   "404": {
-    "title": "404",
+    "title": "Page not found",
+    "header": "404",
     "subtitle": "Page not found",
     "notFunny": "Please pretend you didn't see that",
     "goHome": "Go home"
