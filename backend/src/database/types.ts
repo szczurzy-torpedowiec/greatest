@@ -83,7 +83,9 @@ export interface DbSheet {
     points: number | null;
   }[];
   phrase: string;
-  pages: number | null;
+  generated: {
+    pages: number;
+  } | null;
   student: string;
 }
 

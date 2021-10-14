@@ -187,6 +187,10 @@ export function registerScans(
         shortId: request.body.sheet.shortId,
       });
       if (dbSheet === null) throw apiInstance.httpErrors.notFound('Sheet not found');
+      if (request.body.sheet.page !== null) {
+        if (dbSheet.generated === null) throw apiInstance.httpErrors.badRequest('Sheet has not been generated');
+        if (request.body.sheet.page > dbSheet.generated.pages) throw apiInstance.httpErrors.badRequest('Selected page does not exist');
+      }
       sheet = {
         id: dbSheet._id,
         page: request.body.sheet.page,
