@@ -29,6 +29,7 @@ import { getTest, listScans, listSheets } from 'src/api';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { firstNotUndefined } from 'src/utils';
+import { TestToolbarState, useToolbarState } from 'src/state/test-toolbar';
 
 export default defineComponent({
   setup() {
@@ -92,9 +93,15 @@ export default defineComponent({
         });
       }
     }, { immediate: true });
+    useToolbarState(computed<TestToolbarState>(() => ({
+      unassignedScanCount: scans.value?.reduce(
+        (count, scan) => count + (scan.sheetShortId === null ? 1 : 0), 0,
+      ) ?? null,
+    })));
     return {
       test,
       tab,
+      scans,
     };
   },
 });
