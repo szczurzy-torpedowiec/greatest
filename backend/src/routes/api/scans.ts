@@ -136,12 +136,18 @@ export function registerScans(
       shortId,
       otherTests: otherTests.map((otherTest) => otherTest._id),
       uploadedOn,
-      sheetId: pickedDetection?.sheet._id ?? null,
+      sheet: pickedDetection === undefined ? null : {
+        id: pickedDetection.sheet._id,
+        page: pickedDetection.page,
+      },
     });
 
     const scan: Scan = {
       shortId,
-      sheetShortId: pickedDetection?.sheet?.shortId ?? null,
+      sheet: pickedDetection === undefined ? null : {
+        shortId: pickedDetection.sheet.shortId,
+        page: pickedDetection.page,
+      },
       uploadedOn: uploadedOn.toISOString(),
       otherTests: otherTests.map((otherTest) => mapScanOtherTest(otherTest, user)),
       detections: detections.map((detection) => ({
@@ -170,15 +176,21 @@ export function registerScans(
     const user = await requireAuthentication(request, dbManager, true);
     const test = await requireTest(request, dbManager, user, request.params.testShortId);
 
-    let sheetId: ObjectId | null | undefined;
-    if (request.body.sheetShortId === null) sheetId = null;
-    else if (request.body.sheetShortId !== undefined) {
-      const sheet = await dbManager.sheetsCollection.findOne({
+    let sheet: {
+      id: ObjectId,
+      page: number | null,
+    } | null | undefined;
+    if (request.body.sheet === null) sheet = null;
+    else if (request.body.sheet !== undefined) {
+      const dbSheet = await dbManager.sheetsCollection.findOne({
         testId: test._id,
-        shortId: request.body.sheetShortId,
+        shortId: request.body.sheet.shortId,
       });
-      if (sheet === null) throw apiInstance.httpErrors.notFound('Sheet not found');
-      sheetId = sheet._id;
+      if (dbSheet === null) throw apiInstance.httpErrors.notFound('Sheet not found');
+      sheet = {
+        id: dbSheet._id,
+        page: request.body.sheet.page,
+      };
     }
 
     const newScan = await dbManager.scansCollection.findOneAndUpdate({
@@ -186,7 +198,7 @@ export function registerScans(
       shortId: request.params.scanShortId,
     }, {
       $set: {
-        sheetId,
+        sheet,
       },
     }, {
       returnDocument: 'after',

@@ -24,7 +24,10 @@ export type UploadScanFiles = typeof uploadScanFiles;
 export const uploadScanSupportedTypes = ['image/bmp', 'image/jpeg', 'image/png', 'image/webp', 'image/tiff'];
 
 export const patchScanBodySchema = Type.Object({
-  sheetShortId: Type.Optional(nullable(Type.String())),
+  sheet: Type.Optional(nullable(Type.Object({
+    shortId: Type.String(),
+    page: nullable(Type.Integer({ minimum: 0 })),
+  }))),
   requestId: Type.String(),
 });
 export type PatchScanBody = Static<typeof patchScanBodySchema>;
