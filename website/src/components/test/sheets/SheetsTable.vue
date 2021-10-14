@@ -39,7 +39,7 @@
           :label="$t('test.sheets.addStudent')"
           size="sm"
           color="primary"
-          class="full-width"
+          class="full-width btn-no-wrap"
         >
           <set-student-popup
             name=""
