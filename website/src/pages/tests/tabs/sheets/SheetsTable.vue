@@ -1,5 +1,6 @@
 <template>
   <q-table
+    v-model:selected="selected"
     :columns="columns"
     :rows="rows"
     row-key="shortId"
@@ -7,6 +8,7 @@
     hide-pagination
     flat
     bordered
+    selection="multiple"
   >
     <template
       #body-cell-student="cell"
@@ -109,7 +111,7 @@
 
 <script lang="ts">
 import {
-  computed, defineComponent, PropType,
+  computed, defineComponent, PropType, ref,
 } from 'vue';
 import { Scan, Sheet } from 'greatest-api-schemas';
 import SetStudentPopup from 'pages/tests/tabs/sheets/SetStudentPopup.vue';
@@ -185,6 +187,7 @@ export default defineComponent({
       return map;
     });
     return {
+      selected: ref<Sheet[]>([]),
       columns: computed(() => [
         {
           name: 'student',
