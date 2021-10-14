@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <q-page padding>
     Scans
-  </div>
+  </q-page>
 </template>
 
 <script lang="ts">

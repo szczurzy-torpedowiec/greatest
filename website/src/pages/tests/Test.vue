@@ -1,20 +1,18 @@
 <template>
-  <q-page padding>
-    <q-tab-panels
-      :model-value="tab"
-      animated
-    >
-      <q-tab-panel name="questions">
-        <router-view />
-      </q-tab-panel>
-      <q-tab-panel name="sheets">
-        <router-view />
-      </q-tab-panel>
-      <q-tab-panel name="scans">
-        <router-view />
-      </q-tab-panel>
-    </q-tab-panels>
-  </q-page>
+  <q-tab-panels
+    :model-value="tab"
+    animated
+  >
+    <q-tab-panel name="questions">
+      <router-view />
+    </q-tab-panel>
+    <q-tab-panel name="sheets">
+      <router-view />
+    </q-tab-panel>
+    <q-tab-panel name="scans">
+      <router-view />
+    </q-tab-panel>
+  </q-tab-panels>
 </template>
 
 <script lang="ts">
