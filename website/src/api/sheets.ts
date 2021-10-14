@@ -7,7 +7,7 @@ import {
 } from 'greatest-api-schemas';
 
 export function listSheets(testShortId: string) {
-  return ky.get(`/api/tests/${testShortId}/`).json<ListSheetsReply>();
+  return ky.get(`/api/tests/${testShortId}/sheets`).json<ListSheetsReply>();
 }
 
 export function createSheet(testShortId: string, body: CreateSheetBody) {

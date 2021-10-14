@@ -20,5 +20,15 @@
     "save": "save",
     "delete": "Delete",
     "deleteConfirmation": "Do you really want to delete this element?"
+  },
+  "test": {
+    "loadTestError": "Failed to load test info",
+    "listSheetsError": "Failed to load sheets list",
+    "listScansError": "Failed to load scans list",
+    "tabs": {
+      "questions": "Questions",
+      "sheets": "Sheets",
+      "scans": "Scans"
+    }
   }
 }

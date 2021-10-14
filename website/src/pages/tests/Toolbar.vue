@@ -1,0 +1,22 @@
+<template>
+  <q-tabs>
+    <q-route-tab
+      to="questions"
+      exact
+      replace
+      :label="$t('test.tabs.questions')"
+    />
+    <q-route-tab
+      to="sheets"
+      exact
+      replace
+      :label="$t('test.tabs.sheets')"
+    />
+    <q-route-tab
+      to="scans"
+      exact
+      replace
+      :label="$t('test.tabs.scans')"
+    />
+  </q-tabs>
+</template>

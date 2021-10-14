@@ -17,6 +17,7 @@
           {{ $t('appName') }}
         </q-toolbar-title>
       </q-toolbar>
+      <router-view name="toolbarContent" />
     </q-header>
 
     <q-drawer
