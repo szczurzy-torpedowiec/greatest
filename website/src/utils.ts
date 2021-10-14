@@ -1,6 +1,6 @@
-export function getTypeValidator<T>() {
+export function getTypeValidator<T extends unknown[]>() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return (x: T) => true;
+  return (...args: T) => true;
 }
 
 export function firstNotUndefined<T, V>(

@@ -7,7 +7,12 @@
       <router-view />
     </q-tab-panel>
     <q-tab-panel name="sheets">
-      <router-view />
+      <router-view
+        :sheets="sheets"
+        :test-short-id="testShortId"
+        @add-ignored-request-id="onAddIgnoredRequestId"
+        @sheet-student-changed="onSheetStudentChanged"
+      />
     </q-tab-panel>
     <q-tab-panel name="scans">
       <router-view />
@@ -53,6 +58,7 @@ export default defineComponent({
     const sheets = ref<Sheet[] | null>(null);
     const scans = ref<Scan[] | null>(null);
     const websocket = useTestWebsocket(testShortId);
+    const ignoredRequestIds = ref(new Set<string>());
     const loadSheets = () => {
       listSheets(testShortId.value)
         .then((reply) => { sheets.value = reply.sheets; })
@@ -102,6 +108,15 @@ export default defineComponent({
       test,
       tab,
       scans,
+      sheets,
+      testShortId,
+      onAddIgnoredRequestId: (requestId: string) => {
+        ignoredRequestIds.value.add(requestId);
+      },
+      onSheetStudentChanged: (sheetShortId: string, student: string) => {
+        const sheet = sheets.value?.find((item) => item.shortId === sheetShortId);
+        if (sheet !== undefined) sheet.student = student;
+      },
     };
   },
 });

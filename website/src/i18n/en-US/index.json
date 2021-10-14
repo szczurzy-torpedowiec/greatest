@@ -29,6 +29,13 @@
       "questions": "Questions",
       "sheets": "Sheets",
       "scans": "Scans"
+    },
+    "scans": {
+      "setStudent": {
+        "inputLabel": "Student",
+        "error": "Failed to set student",
+        "hint": "Set empty to remove"
+      }
     }
   }
 }
