@@ -31,7 +31,10 @@ export type Sheet = Static<typeof sheetSchema>;
 
 export const scanSchema = Type.Object({
   shortId: Type.String(),
-  sheetShortId: nullable(Type.String()),
+  sheet: nullable(Type.Object({
+    shortId: Type.String(),
+    page: nullable(Type.Integer()),
+  })),
   uploadedOn: Type.String({
     format: 'date-time',
   }),

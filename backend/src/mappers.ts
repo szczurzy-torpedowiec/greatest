@@ -27,19 +27,34 @@ export async function mapScan(
   user: DbUser,
   dbManager: DbManager,
 ): Promise<Scan> {
+  let sheet: null | {
+    shortId: string,
+    page: number | null
+  };
+  if (scan.sheet === null) sheet = null;
+  else {
+    const dbSheet = await dbManager.sheetsCollection.findOne({
+      _id: scan.sheet.id,
+    });
+    if (dbSheet === null) sheet = null;
+    else {
+      sheet = {
+        shortId: dbSheet.shortId,
+        page: scan.sheet.page,
+      };
+    }
+  }
   return {
     shortId: scan.shortId,
     uploadedOn: scan.uploadedOn.toISOString(),
-    sheetShortId: scan.sheetId ? (await dbManager.sheetsCollection.findOne({
-      _id: scan.sheetId,
-    }))?.shortId ?? null : null,
+    sheet,
     detections: filterNotNull(await Promise.all(scan.detections.map(async (detection) => {
-      const sheet = await dbManager.sheetsCollection.findOne({
+      const dbSheet = await dbManager.sheetsCollection.findOne({
         _id: detection.sheetId,
       });
-      if (sheet === null) return null;
+      if (dbSheet === null) return null;
       return {
-        sheetShortId: sheet.shortId,
+        sheetShortId: dbSheet.shortId,
         page: detection.page,
       };
     }))),

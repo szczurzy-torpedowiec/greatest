@@ -96,7 +96,10 @@ export interface DbScan {
   _id: ObjectId;
   shortId: string;
   testId: ObjectId;
-  sheetId: ObjectId | null;
+  sheet: {
+    id: ObjectId,
+    page: number | null,
+  } | null;
   otherTests: ObjectId[],
   detections: DbScanDetection[];
   uploadedOn: Date;
