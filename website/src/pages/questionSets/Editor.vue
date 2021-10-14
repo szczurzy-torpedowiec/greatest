@@ -2,7 +2,7 @@
   <q-page padding>
     <q-card v-if="questionSet === null">
       <q-skeleton
-        class="q-my-md"
+        class="q-mb-md"
         height="100px"
       />
     </q-card>

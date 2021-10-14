@@ -10,8 +10,10 @@
     "addVariant": "Add variant",
     "addOpenQuestion": "Add open question",
     "addQuizQuestion": "Add quiz question",
+    "listTitle": "Question sets",
     "editTitle": "{name} question set",
-    "updateQuestionsError": "Failed to get questions list"
+    "updateQuestionsError": "Failed to get questions list",
+    "createQuestionSetError": "Failed to create question set"
   },
   "common": {
     "variants": "Variants",
@@ -19,6 +21,7 @@
     "question": "Question",
     "correctAnswer": "Correct answer",
     "incorrectAnswer": "Incorrect answer",
+    "create": "Create",
     "save": "save",
     "delete": "Delete",
     "deleteConfirmation": "Do you really want to delete this element?"

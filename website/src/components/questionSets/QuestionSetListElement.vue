@@ -35,7 +35,7 @@
           </q-btn>
         </div>
         <div class="text-subtitle1">
-          {{ $tc('questionSets.questionCount', size) }}
+          {{ $tc('questionSets.questionCount', questionCount) }}
         </div>
       </q-card-section>
       <q-card-actions>
@@ -86,7 +86,7 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    size: {
+    questionCount: {
       type: Number,
       required: true,
     },

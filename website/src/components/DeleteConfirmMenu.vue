@@ -1,5 +1,5 @@
 <template>
-  <q-menu>
+  <q-popup-proxy>
     <div class="q-pa-md">
       {{ $t('common.deleteConfirmation') }}
       <div class="row justify-end q-mt-sm">
@@ -11,7 +11,7 @@
         />
       </div>
     </div>
-  </q-menu>
+  </q-popup-proxy>
 </template>
 
 <script lang="ts">

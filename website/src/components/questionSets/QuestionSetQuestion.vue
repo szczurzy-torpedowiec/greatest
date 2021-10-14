@@ -1,5 +1,5 @@
 <template>
-  <q-card class="q-my-md">
+  <q-card class="q-mb-md">
     <q-card-section
       horizontal
     >
@@ -35,7 +35,7 @@
           color="red"
           icon="delete"
         >
-          <DeleteConfirmMenu @confirm="removeQuestion" />
+          <delete-confirm-menu @confirm="removeQuestion" />
         </q-btn>
       </q-card-actions>
     </q-card-section>
