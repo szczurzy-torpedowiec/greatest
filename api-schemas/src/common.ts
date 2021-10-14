@@ -21,6 +21,10 @@ export const sheetSchema = Type.Object({
   student: Type.String({
     description: 'Might be empty',
   }),
+  phrase: Type.String(),
+  generated: nullable(Type.Object({
+    pages: Type.Integer(),
+  })),
   questions: Type.Array(Type.Object({
     variant: Type.Integer(),
     points: nullable(Type.Integer()),
