@@ -85,6 +85,20 @@ export default defineComponent({
       loadSheets();
       loadScans();
     });
+    websocket.onMessage((message) => {
+      if (ignoredRequestIds.value.has(message.causingRequestId)) return;
+      if (message.type === 'sheet-create') sheets.value?.push(message.sheet);
+      else if (message.type === 'scan-create') scans.value?.push(message.scan);
+      else if (message.type === 'sheet-change') {
+        if (sheets.value === null) return;
+        const index = sheets.value.findIndex((sheet) => sheet.shortId === message.sheet.shortId);
+        sheets.value[index] = message.sheet;
+      } else if (message.type === 'scan-change') {
+        if (scans.value === null) return;
+        const index = scans.value.findIndex((scan) => scan.shortId === message.scan.shortId);
+        scans.value[index] = message.scan;
+      }
+    });
     watch(testShortId, async (value) => {
       test.value = null;
       sheets.value = null;
