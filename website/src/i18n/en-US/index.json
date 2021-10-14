@@ -20,5 +20,42 @@
     "save": "save",
     "delete": "Delete",
     "deleteConfirmation": "Do you really want to delete this element?"
+  },
+  "test": {
+    "loadTestError": "Failed to load test info",
+    "listSheetsError": "Failed to load sheets list",
+    "listScansError": "Failed to load scans list",
+    "tabs": {
+      "questions": "Questions",
+      "sheets": "Sheets",
+      "scans": "Scans"
+    },
+    "sheets": {
+      "addStudent": "Add student",
+      "setStudent": {
+        "inputLabel": "Student",
+        "error": "Failed to set student",
+        "hint": "Set empty to remove"
+      },
+      "headers": {
+        "student": "Student",
+        "phrase": "Phrase",
+        "pages": "Scanned pages"
+      },
+      "allPagesScanned": "All pages scanned",
+      "pageTooltip": "Page {page} has not been scanned | Page {page} has been scanned once | Page {page} has been scanned {times} times",
+      "scansWithoutPage": "+{count}",
+      "scansWithoutPageTooltip": "1 scan without page number | {count} scans without page numbers",
+      "notGenerated": "Not generated",
+      "copyWarning": {
+        "title": "Do not copy your sheets",
+        "body": " Each student should have a separate sheet. Because each sheet has a unique ID, this app will not work if you print a sheet more than once or copy it."
+      },
+      "createSheetsButton": "New sheets",
+      "createSheets": {
+        "inputLabel": "Number of sheets",
+        "error": "Failed to create sheets"
+      }
+    }
   }
 }

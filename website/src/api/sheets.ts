@@ -1,13 +1,13 @@
 import ky from 'ky';
 import {
-  CreateRandomSheetsBody,
+  CreateRandomSheetsBody, CreateRandomSheetsReply,
   CreateSheetBody,
   CreateSheetReply, GetSheetReply,
   ListSheetsReply, PatchSheetBody, PatchSheetReply,
 } from 'greatest-api-schemas';
 
 export function listSheets(testShortId: string) {
-  return ky.get(`/api/tests/${testShortId}/`).json<ListSheetsReply>();
+  return ky.get(`/api/tests/${testShortId}/sheets`).json<ListSheetsReply>();
 }
 
 export function createSheet(testShortId: string, body: CreateSheetBody) {
@@ -15,7 +15,7 @@ export function createSheet(testShortId: string, body: CreateSheetBody) {
 }
 
 export function createRandomSheets(testShortId: string, body: CreateRandomSheetsBody) {
-  return ky.post(`/api/tests/${testShortId}/sheets/create-random`, { json: body }).json<CreateRandomSheetsBody>();
+  return ky.post(`/api/tests/${testShortId}/sheets/create-random`, { json: body }).json<CreateRandomSheetsReply>();
 }
 
 export function getSheet(testShortId: string, sheetShortId: string) {

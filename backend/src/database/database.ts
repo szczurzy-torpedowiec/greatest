@@ -58,7 +58,7 @@ export class DbManager {
 
     await this.scansCollection.createIndex({ testId: 1 });
     await this.scansCollection.createIndex({ testId: 1, shortId: 1 }, { unique: true });
-    await this.scansCollection.createIndex({ testId: 1, sheetId: 1 });
+    await this.scansCollection.createIndex({ testId: 1, 'sheet.id': 1 });
   }
 
   withSession(callback: WithSessionCallback) {

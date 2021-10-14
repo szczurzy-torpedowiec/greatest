@@ -17,6 +17,30 @@ const routes: RouteRecordRaw[] = [
         path: 'question-sets/:id/edit',
         component: () => import('pages/questionSets/Editor.vue'),
       },
+      {
+        path: 'tests/:testShortId',
+        components: {
+          default: () => import('pages/tests/Test.vue'),
+          toolbarContent: () => import('pages/tests/Toolbar.vue'),
+        },
+        children: [
+          {
+            name: 'test-tab-questions',
+            path: 'questions',
+            component: () => import('pages/tests/tabs/Questions.vue'),
+          },
+          {
+            name: 'test-tab-sheets',
+            path: 'sheets',
+            component: () => import('pages/tests/tabs/Sheets.vue'),
+          },
+          {
+            name: 'test-tab-scans',
+            path: 'scans',
+            component: () => import('pages/tests/tabs/Scans.vue'),
+          },
+        ],
+      },
     ],
   },
   {
