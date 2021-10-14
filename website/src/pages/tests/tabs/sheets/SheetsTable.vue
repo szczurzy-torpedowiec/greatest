@@ -5,6 +5,8 @@
     row-key="shortId"
     :rows-per-page-options="[0]"
     hide-pagination
+    flat
+    bordered
   >
     <template
       #body-cell-student="cell"
@@ -16,7 +18,7 @@
         <q-btn
           icon="mdi-plus"
           outline
-          label="Add student"
+          :label="$t('test.sheets.addStudent')"
           size="sm"
           color="primary"
           class="full-width"
@@ -47,6 +49,61 @@
         </q-btn>
       </q-td>
     </template>
+    <template
+      #body-cell-pages="cell"
+    >
+      <q-td :props="cell">
+        <q-skeleton v-if="cell.value === null" />
+        <template v-else>
+          <div class="row items-center no-wrap">
+            <div
+              v-if="cell.value.pageScans === null"
+              class="text-negative"
+            >
+              {{ $t('test.sheets.notGenerated') }}
+            </div>
+            <div v-else-if="cell.value.allScanned">
+              <q-chip
+                color="positive"
+                text-color="white"
+                icon="mdi-check-all"
+                :label="$t('test.sheets.allPagesScanned')"
+              />
+            </div>
+            <div v-else>
+              <q-chip
+                v-for="(pageScans, pageIndex) in cell.value.pageScans"
+                :key="pageIndex"
+                :icon="pageScans === 0 ? 'mdi-close' : 'mdi-check'"
+                :color="pageScans === 0 ? 'negative' : (pageScans === 1 ? 'positive' : 'secondary')"
+                text-color="white"
+              >
+                {{ pageIndex + 1 }}
+                <q-tooltip>
+                  {{ $tc(
+                    'test.sheets.pageTooltip',
+                    pageScans,
+                    {times: pageScans, page: pageIndex + 1}
+                  ) }}
+                </q-tooltip>
+              </q-chip>
+            </div>
+            <q-space />
+            <div
+              v-if="cell.value.additional > 0"
+              class="sheets-table-additional-page-count q-pa-xs"
+            >
+              {{ $tc('test.sheets.scansWithoutPage', cell.value.additional) }}
+              <q-tooltip>
+                <span class="text-no-wrap">
+                  {{ $tc('test.sheets.scansWithoutPageTooltip', cell.value.additional) }}
+                </span>
+              </q-tooltip>
+            </div>
+          </div>
+        </template>
+      </q-td>
+    </template>
   </q-table>
 </template>
 
@@ -54,11 +111,42 @@
 import {
   computed, defineComponent, PropType,
 } from 'vue';
-import { Sheet } from 'greatest-api-schemas';
+import { Scan, Sheet } from 'greatest-api-schemas';
 import SetStudentPopup from 'pages/tests/tabs/sheets/SetStudentPopup.vue';
 import { uid } from 'quasar';
 import { patchSheet } from 'src/api';
-import { getTypeValidator } from 'src/utils';
+import { getTypeValidator, DefaultsMap } from 'src/utils';
+import { useI18n } from 'vue-i18n';
+
+interface ScanWithSheet extends Scan {
+  sheet: NonNullable<Scan['sheet']>;
+}
+
+function mapPages(sheet: Sheet, sheetScans: ScanWithSheet[] | undefined): {
+  pageScans: number[] | null;
+  allScanned: boolean,
+  additional: number;
+} | null {
+  if (sheetScans === undefined) return null;
+  if (sheet.generated === null) {
+    return {
+      pageScans: null,
+      allScanned: false,
+      additional: sheetScans.length,
+    };
+  }
+  const pageScans = new Array(sheet.generated.pages).fill(0);
+  let additional = 0;
+  sheetScans.forEach((scan) => {
+    if (scan.sheet.page === null) additional += 1;
+    else pageScans[scan.sheet.page] += 1;
+  });
+  return {
+    pageScans,
+    allScanned: pageScans.every((x) => x > 0),
+    additional,
+  };
+}
 
 export default defineComponent({
   components: { SetStudentPopup },
@@ -71,31 +159,56 @@ export default defineComponent({
       type: Array as PropType<Sheet[]>,
       required: true,
     },
+    scans: {
+      type: Array as PropType<Scan[] | null>,
+      default: null,
+    },
   },
   emits: {
     addIgnoredRequestId: getTypeValidator<[requestId: string]>(),
     sheetStudentChanged: getTypeValidator<[sheetShortId: string, name: string]>(),
   },
   setup(props, { emit }) {
+    const i18n = useI18n();
+
+    const scansBySheetId = computed(() => {
+      if (props.scans === null) return null;
+      const map = new DefaultsMap<string, ScanWithSheet[]>(() => []);
+      props.scans.forEach((scan) => {
+        if (scan.sheet !== null) {
+          map.get(scan.sheet.shortId).push({
+            ...scan,
+            sheet: scan.sheet,
+          });
+        }
+      });
+      return map;
+    });
     return {
-      columns: [
+      columns: computed(() => [
         {
           name: 'student',
-          label: 'Student',
+          label: i18n.t('test.sheets.headers.student'),
           field: 'student',
           sortable: true,
         },
         {
           name: 'phrase',
-          label: 'Phrase',
+          label: i18n.t('test.sheets.headers.phrase'),
           field: 'phrase',
           sortable: true,
         },
-      ],
+        {
+          name: 'pages',
+          label: i18n.t('test.sheets.headers.pages'),
+          field: 'pages',
+        },
+      ]),
       rows: computed(() => props.sheets.map((sheet) => ({
         shortId: sheet.shortId,
         student: sheet.student,
         phrase: sheet.phrase,
+        pages: mapPages(sheet, scansBySheetId.value?.get(sheet.shortId)),
         setStudentSubmit: async (student: string) => {
           const requestId = uid();
           emit('addIgnoredRequestId', requestId);
@@ -110,3 +223,14 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss">
+.sheets-table-additional-page-count {
+  border-radius: 2px;
+  transition: background-color 150ms;
+
+  &:hover {
+    background: #0001;
+  }
+}
+</style>

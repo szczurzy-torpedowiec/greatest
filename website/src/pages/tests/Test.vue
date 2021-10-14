@@ -9,6 +9,7 @@
     <q-tab-panel name="sheets">
       <router-view
         :sheets="sheets"
+        :scans="scans"
         :test-short-id="testShortId"
         @add-ignored-request-id="onAddIgnoredRequestId"
         @sheet-student-changed="onSheetStudentChanged"
@@ -115,7 +116,7 @@ export default defineComponent({
     }, { immediate: true });
     useToolbarState(computed<TestToolbarState>(() => ({
       unassignedScanCount: scans.value?.reduce(
-        (count, scan) => count + (scan.sheetShortId === null ? 1 : 0), 0,
+        (count, scan) => count + (scan.sheet === null ? 1 : 0), 0,
       ) ?? null,
     })));
     return {

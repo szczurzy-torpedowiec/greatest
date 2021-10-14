@@ -14,9 +14,9 @@
           <q-input
             v-model="input"
             filled
-            :label="$t('test.scans.setStudent.inputLabel')"
+            :label="$t('test.sheets.setStudent.inputLabel')"
             autofocus
-            :hint="$t('test.scans.setStudent.hint')"
+            :hint="$t('test.sheets.setStudent.hint')"
           />
         </q-card-section>
         <q-card-actions align="right">
@@ -73,7 +73,7 @@ export default defineComponent({
           console.error(error);
           quasar.notify({
             type: 'negative',
-            message: i18n.t('test.scans.setStudent.error'),
+            message: i18n.t('test.sheets.setStudent.error'),
           });
         }
         loading.value = false;

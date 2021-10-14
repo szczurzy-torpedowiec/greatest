@@ -14,3 +14,5 @@ export function firstNotUndefined<T, V>(
   });
   return matched;
 }
+
+export * from './defaults-map';

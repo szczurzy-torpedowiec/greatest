@@ -30,12 +30,23 @@
       "sheets": "Sheets",
       "scans": "Scans"
     },
-    "scans": {
+    "sheets": {
+      "addStudent": "Add student",
       "setStudent": {
         "inputLabel": "Student",
         "error": "Failed to set student",
         "hint": "Set empty to remove"
-      }
+      },
+      "headers": {
+        "student": "Student",
+        "phrase": "Phrase",
+        "pages": "Scanned pages"
+      },
+      "allPagesScanned": "All pages scanned",
+      "pageTooltip": "Page {page} has not been scanned | Page {page} has been scanned once | Page {page} has been scanned {times} times",
+      "scansWithoutPage": "+{count}",
+      "scansWithoutPageTooltip": "1 scan without page number | {count} scans without page numbers",
+      "notGenerated": "Not generated"
     }
   }
 }
