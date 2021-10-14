@@ -9,7 +9,9 @@
     "newQuestion":"New question",
     "addVariant": "Add variant",
     "addOpenQuestion": "Add open question",
-    "addQuizQuestion": "Add quiz question"
+    "addQuizQuestion": "Add quiz question",
+    "editTitle": "{name} question set",
+    "updateQuestionsError": "Failed to get questions list"
   },
   "common": {
     "variants": "Variants",
@@ -25,6 +27,7 @@
     "loadTestError": "Failed to load test info",
     "listSheetsError": "Failed to load sheets list",
     "listScansError": "Failed to load scans list",
+    "title": "{name} test",
     "tabs": {
       "questions": "Questions",
       "sheets": "Sheets",
@@ -57,5 +60,11 @@
         "error": "Failed to create sheets"
       }
     }
+  },
+  "404": {
+    "title": "404",
+    "subtitle": "Page not found",
+    "notFunny": "Please pretend you didn't see that",
+    "goHome": "Go home"
   }
 }

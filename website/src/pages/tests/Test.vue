@@ -37,6 +37,7 @@ import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { firstNotUndefined } from 'src/utils';
 import { TestToolbarState, useToolbarState } from 'src/state/test-toolbar';
+import { TitleLoading, useTitleState } from 'src/state/title';
 
 export default defineComponent({
   setup() {
@@ -120,6 +121,12 @@ export default defineComponent({
         (count, scan) => count + (scan.sheet === null ? 1 : 0), 0,
       ) ?? null,
     })));
+    useTitleState(computed(
+      () => {
+        if (test.value === null) return TitleLoading;
+        return i18n.t('test.title', { name: test.value.name });
+      },
+    ));
     return {
       test,
       tab,
