@@ -92,7 +92,7 @@ export function registerSheets(
       testId: test._id,
       shortId: nanoid(10),
       qrCodeId: await generateQrCodeId(),
-      pages: null,
+      generated: null,
       phrase: generatePhrase(),
       student: request.body.student ?? '',
       questions: request.body.questionVariants.map((variant, questionIndex) => {
@@ -132,7 +132,7 @@ export function registerSheets(
       shortId: nanoid(10),
       testId: test._id,
       qrCodeId: await generateQrCodeId(),
-      pages: null,
+      generated: null,
       phrase: generatePhrase(),
       student: '',
       questions: test.questions.map((question) => ({
