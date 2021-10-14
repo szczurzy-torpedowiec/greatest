@@ -26,10 +26,10 @@
 </template>
 
 <script lang="ts">
-import SheetsTable from 'pages/tests/tabs/sheets/SheetsTable.vue';
 import { defineComponent, PropType } from 'vue';
 import { Scan, Sheet } from 'greatest-api-schemas';
 import { getTypeValidator } from 'src/utils';
+import SheetsTable from 'components/test/sheets/SheetsTable.vue';
 
 export default defineComponent({
   components: { SheetsTable },

@@ -129,13 +129,13 @@
 import {
   computed, defineComponent, PropType, ref,
 } from 'vue';
-import { Scan, Sheet } from 'greatest-api-schemas';
-import SetStudentPopup from 'pages/tests/tabs/sheets/SetStudentPopup.vue';
+import SetStudentPopup from 'components/test/sheets/SetStudentPopup.vue';
 import { uid } from 'quasar';
 import { createRandomSheets, patchSheet } from 'src/api';
 import { getTypeValidator, DefaultsMap } from 'src/utils';
 import { useI18n } from 'vue-i18n';
-import CreateSheetsPopup from 'pages/tests/tabs/sheets/CreateSheetsPopup.vue';
+import CreateSheetsPopup from 'components/test/sheets/CreateSheetsPopup.vue';
+import { Scan, Sheet } from 'greatest-api-schemas';
 
 interface ScanWithSheet extends Scan {
   sheet: NonNullable<Scan['sheet']>;

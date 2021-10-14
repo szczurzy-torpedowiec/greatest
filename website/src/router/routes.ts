@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
         path: 'tests/:testShortId',
         components: {
           default: () => import('pages/tests/Test.vue'),
-          toolbarContent: () => import('pages/tests/Toolbar.vue'),
+          toolbarContent: () => import('components/test/Toolbar.vue'),
         },
         children: [
           {
