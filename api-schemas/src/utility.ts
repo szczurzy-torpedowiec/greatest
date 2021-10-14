@@ -1,5 +1,7 @@
-import { TSchema, Type } from '@sinclair/typebox';
+import {
+  TNull, TSchema, TUnion,
+} from '@sinclair/typebox';
 
-export function nullable<T extends TSchema>(type: T) {
-  return Type.Union([type, Type.Null()]);
+export function nullable<T extends TSchema>(schema: T): TUnion<[T, TNull]> {
+  return { ...schema, nullable: true } as any;
 }

@@ -10,6 +10,7 @@ export function mapSheet(sheet: WithoutId<DbSheet>): Sheet {
   return {
     shortId: sheet.shortId,
     phrase: sheet.phrase,
+    generated: sheet.generated,
     questions: sheet.questions,
     student: sheet.student,
   };
