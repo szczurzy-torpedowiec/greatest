@@ -13,7 +13,12 @@
     "listTitle": "Question sets",
     "editTitle": "{name} question set",
     "updateQuestionsError": "Failed to get questions list",
-    "createQuestionSetError": "Failed to create question set"
+    "deleteQuestionError": "Failed to delete question",
+    "createQuestionVariantError": "Failed to create question variant",
+    "deleteQuestionVariantError": "Failed to delete question variant",
+    "createQuestionSetError": "Failed to create question set",
+    "deleteQuestionSetError": "Failed to delete question set",
+    "renameQuestionSetError": "Failed to rename question set"
   },
   "common": {
     "variants": "Variants",
@@ -61,7 +66,11 @@
       "createSheets": {
         "inputLabel": "Number of sheets",
         "error": "Failed to create sheets"
-      }
+      },
+      "delete": "Delete",
+      "noSheetsSelected": "No sheets selected",
+      "cannotDeleteScannedSheets": "Cannot delete scanned sheets",
+      "deleteSheetError": "Failed to delete sheet"
     }
   },
   "404": {

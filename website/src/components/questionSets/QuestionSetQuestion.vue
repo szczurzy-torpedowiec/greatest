@@ -35,7 +35,7 @@
           color="red"
           icon="delete"
         >
-          <delete-confirm-menu @confirm="removeQuestion" />
+          <delete-confirm-menu :submit="removeQuestion" />
         </q-btn>
       </q-card-actions>
     </q-card-section>
@@ -73,6 +73,8 @@ import { patchQuestion, createQuestionVariant, deleteQuestion } from 'src/api';
 import { useRoute } from 'vue-router';
 import QuestionSetQuestionVariant, { QuestionVariantProp } from 'components/questionSets/QuestionSetQuestionVariant.vue';
 import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
+import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 
 interface VariantEditQuiz {
   content: string,
@@ -98,12 +100,15 @@ export default defineComponent({
   },
   emits: ['updateQuestions'],
   setup(props, { emit }) {
+    const quasar = useQuasar();
+    const i18n = useI18n();
+    const route = useRoute();
+
     const variantsVisible = ref(false);
     const variantCreatorVisible = ref(false);
     const variantsValue = [...props.question.variants];
     const variantsEdit = ref<(VariantEditQuiz|VariantEditOpen)[]>(variantsValue);
 
-    const route = useRoute();
     const maxPoints = ref<number>(props.question.maxPoints);
 
     const questionVariantsWithTypes = computed<QuestionVariantProp[]>(() => {
@@ -120,19 +125,27 @@ export default defineComponent({
     });
 
     async function addVariant() {
-      await createQuestionVariant(
-        route.params.id as string,
-        props.question.shortId,
-        props.question.type === 'quiz'
-          ? {
-            type: props.question.type,
-            content: '',
-            correctAnswer: '',
-            incorrectAnswers: [],
-          }
-          : { type: props.question.type, content: '' },
-      );
-      emit('updateQuestions');
+      try {
+        await createQuestionVariant(
+          route.params.id as string,
+          props.question.shortId,
+          props.question.type === 'quiz'
+            ? {
+              type: props.question.type,
+              content: '',
+              correctAnswer: '',
+              incorrectAnswers: [],
+            }
+            : { type: props.question.type, content: '' },
+        );
+        emit('updateQuestions');
+      } catch (error) {
+        console.error(error);
+        quasar.notify({
+          type: 'negative',
+          message: i18n.t('questionSets.createQuestionVariantError'),
+        });
+      }
     }
 
     watch(maxPoints, async () => {
@@ -142,8 +155,16 @@ export default defineComponent({
     });
 
     async function removeQuestion() {
-      await deleteQuestion(route.params.id as string, props.question.shortId);
-      emit('updateQuestions');
+      try {
+        await deleteQuestion(route.params.id as string, props.question.shortId);
+        emit('updateQuestions');
+      } catch (error) {
+        console.error(error);
+        quasar.notify({
+          type: 'negative',
+          message: i18n.t('questionSets.deleteQuestionError'),
+        });
+      }
     }
 
     return {

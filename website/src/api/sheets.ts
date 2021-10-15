@@ -2,7 +2,7 @@ import ky from 'ky';
 import {
   CreateRandomSheetsBody, CreateRandomSheetsReply,
   CreateSheetBody,
-  CreateSheetReply, GetSheetReply,
+  CreateSheetReply, DeleteSheetBody, DeleteSheetReply, GetSheetReply,
   ListSheetsReply, PatchSheetBody, PatchSheetReply,
 } from 'greatest-api-schemas';
 
@@ -24,4 +24,8 @@ export function getSheet(testShortId: string, sheetShortId: string) {
 
 export function patchSheet(testShortId: string, sheetShortId: string, body: PatchSheetBody) {
   return ky.patch(`/api/tests/${testShortId}/sheets/${sheetShortId}`, { json: body }).json<PatchSheetReply>();
+}
+
+export function deleteSheet(testShortId: string, sheetShortId: string, body: DeleteSheetBody) {
+  return ky.delete(`/api/tests/${testShortId}/sheets/${sheetShortId}`, { json: body }).json<DeleteSheetReply>();
 }

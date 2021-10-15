@@ -21,6 +21,7 @@
       @add-ignored-request-id="onAddIgnoredRequestId"
       @sheet-student-changed="onSheetStudentChanged"
       @sheets-created="onSheetsCreated"
+      @sheet-deleted="onSheetDeleted"
     />
   </q-page>
 </template>
@@ -51,6 +52,7 @@ export default defineComponent({
     addIgnoredRequestId: getTypeValidator<[requestId: string]>(),
     sheetStudentChanged: getTypeValidator<[sheetShortId: string, name: string]>(),
     sheetsCreated: getTypeValidator<[sheets: Sheet[]]>(),
+    sheetDeleted: getTypeValidator<[sheetShortId: string]>(),
   },
   setup(props, { emit }) {
     return {
@@ -62,6 +64,9 @@ export default defineComponent({
       },
       onSheetsCreated: (sheets: Sheet[]) => {
         emit('sheetsCreated', sheets);
+      },
+      onSheetDeleted: (sheetShortId: string) => {
+        emit('sheetDeleted', sheetShortId);
       },
     };
   },

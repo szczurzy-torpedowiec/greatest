@@ -14,6 +14,7 @@
         @add-ignored-request-id="onAddIgnoredRequestId"
         @sheet-student-changed="onSheetStudentChanged"
         @sheets-created="onSheetsCreated"
+        @sheet-deleted="onSheetDeleted"
       />
     </q-tab-panel>
     <q-tab-panel name="scans">
@@ -88,6 +89,16 @@ export default defineComponent({
       loadSheets();
       loadScans();
     });
+    const deleteSheet = (sheetShortId: string) => {
+      sheets.value = sheets.value?.filter(
+        (sheet) => sheet.shortId !== sheetShortId,
+      ) ?? null;
+    };
+    const deleteScan = (scanShortId: string) => {
+      scans.value = scans.value?.filter(
+        (scan) => scan.shortId !== scanShortId,
+      ) ?? null;
+    };
     websocket.onMessage((message) => {
       if (ignoredRequestIds.value.has(message.causingRequestId)) return;
       if (message.type === 'sheet-create') sheets.value?.push(message.sheet);
@@ -100,15 +111,8 @@ export default defineComponent({
         if (scans.value === null) return;
         const index = scans.value.findIndex((scan) => scan.shortId === message.scan.shortId);
         scans.value[index] = message.scan;
-      } else if (message.type === 'sheet-delete') {
-        sheets.value = sheets.value?.filter(
-          (sheet) => sheet.shortId !== message.sheetShortId,
-        ) ?? null;
-      } else if (message.type === 'scan-delete') {
-        scans.value = scans.value?.filter(
-          (scan) => scan.shortId !== message.scanShortId,
-        ) ?? null;
-      }
+      } else if (message.type === 'sheet-delete') deleteSheet(message.sheetShortId);
+      else if (message.type === 'scan-delete') deleteScan(message.scanShortId);
     });
     watch(testShortId, async (value) => {
       test.value = null;
@@ -150,6 +154,9 @@ export default defineComponent({
       },
       onSheetsCreated: (newSheets: Sheet[]) => {
         sheets.value?.push(...newSheets);
+      },
+      onSheetDeleted: (sheetShortId: string) => {
+        deleteSheet(sheetShortId);
       },
     };
   },

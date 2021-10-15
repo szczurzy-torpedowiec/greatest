@@ -12,9 +12,33 @@
   >
     <template #top>
       <div class="row items-center full-width">
-        <q-btn color="primary">
-          Generate and print
-        </q-btn>
+        <span>
+          <q-btn
+            color="primary"
+            :disable="selected.length === 0"
+          >
+            Generate and print
+          </q-btn>
+          <q-tooltip v-if="selected.length === 0">
+            {{ $t('test.sheets.noSheetsSelected') }}
+          </q-tooltip>
+        </span>
+        <span class="q-ml-sm">
+          <q-btn
+            outline
+            color="negative"
+            :disable="selected.length === 0 || selectedHasScanned"
+          >
+            {{ $t('test.sheets.delete') }}
+            <delete-confirm-menu :submit="deleteSheets" />
+          </q-btn>
+          <q-tooltip v-if="selected.length === 0">
+            {{ $t('test.sheets.noSheetsSelected') }}
+          </q-tooltip>
+          <q-tooltip v-else-if="selectedHasScanned">
+            {{ $t('test.sheets.cannotDeleteScannedSheets') }}
+          </q-tooltip>
+        </span>
         <q-space />
         <q-btn
           color="primary"
@@ -130,28 +154,41 @@ import {
   computed, defineComponent, PropType, ref,
 } from 'vue';
 import SetStudentPopup from 'components/test/sheets/SetStudentPopup.vue';
-import { uid } from 'quasar';
-import { createRandomSheets, patchSheet } from 'src/api';
+import { uid, useQuasar } from 'quasar';
+import { createRandomSheets, deleteSheet, patchSheet } from 'src/api';
 import { getTypeValidator, DefaultsMap } from 'src/utils';
 import { useI18n } from 'vue-i18n';
 import CreateSheetsPopup from 'components/test/sheets/CreateSheetsPopup.vue';
 import { Scan, Sheet } from 'greatest-api-schemas';
+import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
 
 interface ScanWithSheet extends Scan {
   sheet: NonNullable<Scan['sheet']>;
 }
 
-function mapPages(sheet: Sheet, sheetScans: ScanWithSheet[] | undefined): {
+interface Pages {
   pageScans: number[] | null;
   allScanned: boolean,
   additional: number;
-} | null {
+  total: number;
+}
+
+interface Row {
+  shortId: string;
+  student: string;
+  phrase: string;
+  pages: Pages | null;
+  setStudentSubmit: (student: string) => Promise<void>;
+}
+
+function mapPages(sheet: Sheet, sheetScans: ScanWithSheet[] | undefined): Pages | null {
   if (sheetScans === undefined) return null;
   if (sheet.generated === null) {
     return {
       pageScans: null,
       allScanned: false,
       additional: sheetScans.length,
+      total: sheetScans.length,
     };
   }
   const pageScans = new Array(sheet.generated.pages).fill(0);
@@ -164,11 +201,12 @@ function mapPages(sheet: Sheet, sheetScans: ScanWithSheet[] | undefined): {
     pageScans,
     allScanned: pageScans.every((x) => x > 0),
     additional,
+    total: sheetScans.length,
   };
 }
 
 export default defineComponent({
-  components: { CreateSheetsPopup, SetStudentPopup },
+  components: { DeleteConfirmMenu, CreateSheetsPopup, SetStudentPopup },
   props: {
     testShortId: {
       type: String,
@@ -187,9 +225,11 @@ export default defineComponent({
     addIgnoredRequestId: getTypeValidator<[requestId: string]>(),
     sheetStudentChanged: getTypeValidator<[sheetShortId: string, name: string]>(),
     sheetsCreated: getTypeValidator<[sheets: Sheet[]]>(),
+    sheetDeleted: getTypeValidator<[sheetShortId: string]>(),
   },
   setup(props, { emit }) {
     const i18n = useI18n();
+    const quasar = useQuasar();
 
     const scansBySheetId = computed(() => {
       if (props.scans === null) return null;
@@ -204,9 +244,29 @@ export default defineComponent({
       });
       return map;
     });
-    const selected = ref<Sheet[]>([]);
+    const selected = ref<Row[]>([]);
+    const selectedHasScanned = computed(() => selected.value.some(
+      (sheet) => sheet.pages !== null && sheet.pages?.total > 0,
+    ));
+    const deleteSheetAndHandle = async (sheetShortId: string) => {
+      try {
+        const requestId = uid();
+        emit('addIgnoredRequestId', requestId);
+        await deleteSheet(props.testShortId, sheetShortId, {
+          requestId,
+        });
+        emit('sheetDeleted', sheetShortId);
+      } catch (error) {
+        console.error(error);
+        quasar.notify({
+          type: 'negative',
+          message: i18n.t('test.sheets.deleteSheetError'),
+        });
+      }
+    };
     return {
       selected,
+      selectedHasScanned,
       createSheetsSubmit: async (count: number) => {
         const requestId = uid();
         emit('addIgnoredRequestId', requestId);
@@ -216,6 +276,11 @@ export default defineComponent({
         });
         // TODO: Select new sheets
         emit('sheetsCreated', newSheets);
+      },
+      deleteSheets: async () => {
+        await Promise.all(selected.value.map(
+          (sheet) => deleteSheetAndHandle(sheet.shortId),
+        ));
       },
       columns: computed(() => [
         {
@@ -236,7 +301,7 @@ export default defineComponent({
           field: 'pages',
         },
       ]),
-      rows: computed(() => props.sheets.map((sheet) => ({
+      rows: computed<Row[]>(() => props.sheets.map((sheet) => ({
         shortId: sheet.shortId,
         student: sheet.student,
         phrase: sheet.phrase,

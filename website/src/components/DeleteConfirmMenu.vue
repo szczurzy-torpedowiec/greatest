@@ -1,27 +1,57 @@
 <template>
-  <q-popup-proxy>
-    <div class="q-pa-md">
-      {{ $t('common.deleteConfirmation') }}
-      <div class="row justify-end q-mt-sm">
+  <q-popup-proxy
+    v-model="show"
+    :persistent="loading"
+  >
+    <q-card>
+      <q-card-section class="q-pb-none">
+        {{ $t('common.deleteConfirmation') }}
+      </q-card-section>
+      <q-card-actions align="right">
         <q-btn
-          v-close-popup
-          color="red"
+          color="negative"
+          autofocus
           :label="$t('common.delete')"
-          @click="$emit('confirm')"
+          :loading="loading"
+          @click="onConfirm"
         />
-      </div>
-    </div>
+      </q-card-actions>
+    </q-card>
   </q-popup-proxy>
 </template>
 
 <script lang="ts">
 import {
-  defineComponent,
+  defineComponent, PropType, ref,
 } from 'vue';
 
 export default defineComponent({
   name: 'DeleteConfirmMenu',
-  emits: ['confirm'],
+  props: {
+    submit: {
+      type: Function as PropType<() => Promise<void>>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const show = ref(false);
+    const loading = ref(false);
+    return {
+      show,
+      loading,
+      async onConfirm() {
+        loading.value = true;
+        try {
+          await props.submit();
+          show.value = false;
+        } catch (error) {
+          console.error('Unhandled error in delete confirm submit function:');
+          console.error(error);
+        }
+        loading.value = false;
+      },
+    };
+  },
 });
 </script>
 

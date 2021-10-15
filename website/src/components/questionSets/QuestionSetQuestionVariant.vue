@@ -17,7 +17,7 @@
           color="red"
           icon="delete"
         >
-          <DeleteConfirmMenu @confirm="deleteVariant" />
+          <delete-confirm-menu :submit="deleteVariant" />
         </q-btn>
       </div>
 
@@ -85,6 +85,8 @@ import {
 
 import { patchQuestionVariant, deleteQuestionVariant } from 'src/api';
 import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
+import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 
 export interface QuestionVariantOpenProp extends QuestionVariantOpen {
   type: 'open';
@@ -111,9 +113,12 @@ export default defineComponent({
   },
   emits: ['updateQuestions'],
   setup(props, { emit }) {
+    const quasar = useQuasar();
+    const i18n = useI18n();
+    const route = useRoute();
+
     const values = ref<QuestionVariantProp>({ ...props.variant });
     const edited = ref<boolean>(false);
-    const route = useRoute();
 
     async function saveVariant() {
       const body: PatchQuestionVariantBody = values.value.type === 'quiz'
@@ -156,12 +161,20 @@ export default defineComponent({
     }, { deep: true });
 
     async function deleteVariant() {
-      await deleteQuestionVariant(
-        route.params.id as string,
-        props.questionId,
-        props.variant.shortId,
-      );
-      emit('updateQuestions');
+      try {
+        await deleteQuestionVariant(
+          route.params.id as string,
+          props.questionId,
+          props.variant.shortId,
+        );
+        emit('updateQuestions');
+      } catch (error) {
+        console.error(error);
+        quasar.notify({
+          type: 'negative',
+          message: i18n.t('questionSets.deleteQuestionVariantError'),
+        });
+      }
     }
 
     return {
