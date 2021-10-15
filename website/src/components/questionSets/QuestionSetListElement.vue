@@ -102,6 +102,7 @@ export default defineComponent({
       await router.push(`/question-sets/${props.id}/edit`);
     }
 
+    // TODO: Fix rename
     async function submitName() {
       await patchQuestionSet(props.id, {
         name: newName.value.trim(),
