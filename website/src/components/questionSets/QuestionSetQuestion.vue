@@ -5,15 +5,16 @@
     >
       <q-card-section class="col">
         <div
-          :class="!question.variants[0] || question.variants[0].content === ''
-            ? 'text-h6 text-orange'
-            : 'text-h6'"
+          v-if="question.variants.length === 0 || question.variants[0].content === ''"
+          class="text-h6 text-orange"
         >
-          {{
-            !question.variants[0] || question.variants[0].content === ''
-              ? $t('questionSets.noVariants')
-              : question.variants[0].content
-          }}
+          {{ $t('questionSets.noVariants') }}
+        </div>
+        <div
+          v-else
+          class="text-h6"
+        >
+          {{ question.variants[0].content }}
         </div>
         <q-btn
           flat
