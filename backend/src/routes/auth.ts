@@ -102,7 +102,7 @@ export async function AuthPlugin(authInstance: FastifyInstance, { dbManager }: A
   if (config.allowDemoLogin) {
     authInstance.log.warn('Demo login enabled');
 
-    authInstance.get<{
+    authInstance.post<{
       Reply: CreateDemoUserReply,
     }>('/create-demo-user', {
       schema: {
