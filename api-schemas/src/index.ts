@@ -9,3 +9,4 @@ export * from './routes/tests';
 export * from './routes/user-info';
 
 export * from './websocket';
+export * from './auth';

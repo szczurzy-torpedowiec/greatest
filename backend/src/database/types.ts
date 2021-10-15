@@ -1,11 +1,25 @@
 import { ObjectId, WithoutId } from 'mongodb';
 
-export interface DbUser {
+export interface DbUserBase {
   _id: ObjectId;
-  googleId: string;
-  googleRefreshToken: string;
+  type: string;
   email: string;
 }
+
+export interface DbUserGoogle extends DbUserBase {
+  type: 'google'
+  googleId: string;
+  googleRefreshToken: string;
+}
+
+export interface DbUserDemo extends DbUserBase {
+  type: 'demo',
+  passwordHash: string,
+  name: string;
+  avatarUrl: string;
+}
+
+export type DbUser = DbUserGoogle | DbUserDemo;
 
 export interface DbApiToken {
   _id: ObjectId,

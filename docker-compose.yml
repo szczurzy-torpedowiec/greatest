@@ -6,6 +6,7 @@ services:
       - PORT=80
       - BASE_URL
       - QR_ORIGIN
+      - ALLOW_DEMO_LOGIN
     ports:
       - "${BACKEND_PORT}:80"
     secrets:

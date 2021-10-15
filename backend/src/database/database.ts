@@ -38,7 +38,10 @@ export class DbManager {
   }
 
   async init() {
-    await this.usersCollection.createIndex({ googleId: 1 }, { unique: true });
+    await this.usersCollection.createIndex({ googleId: 1 }, {
+      unique: true, partialFilterExpression: { type: { $eq: 'google' } },
+    });
+    await this.usersCollection.createIndex({ email: 1 }, { unique: true });
 
     await this.apiTokensCollection.createIndex({ tokenId: 1 }, { unique: true });
     await this.apiTokensCollection.createIndex({ ownerId: 1 });

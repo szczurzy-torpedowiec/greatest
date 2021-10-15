@@ -1,6 +1,6 @@
 import { OAuth2Client } from 'google-auth-library';
 import { config, getGoogleKeys } from './config';
-import { DbUser } from './database/types';
+import { DbUserGoogle } from './database/types';
 
 const keysPromise = getGoogleKeys();
 
@@ -27,7 +27,7 @@ const userInfoCache = new Map<string, {
   expires: Date,
   info: UserInfo,
 }>();
-export async function getUserInfo(user: DbUser, withCache: boolean): Promise<UserInfo> {
+export async function getGoogleUserInfo(user: DbUserGoogle, withCache: boolean): Promise<UserInfo> {
   if (withCache) {
     const cached = userInfoCache.get(user._id.toHexString());
     if (cached !== undefined && new Date() < cached.expires) return cached.info;

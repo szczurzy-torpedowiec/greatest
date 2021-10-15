@@ -4,6 +4,7 @@
     "bcrypt": "^5.0.1",
     "busboy": "^0.3.1",
     "eol": "^0.9.1",
+    "faker": "^5.5.3",
     "fastify": "^3.21.0",
     "fastify-http-proxy": "^6.2.1",
     "fastify-secure-session": "^2.3.1",
@@ -36,6 +37,7 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/busboy": "^0.2.4",
+    "@types/faker": "^5.5.8",
     "@types/fs-extra": "^9.0.12",
     "@types/json-schema": "^7.0.9",
     "@types/node": "^16.7.10",
