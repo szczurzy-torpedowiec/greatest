@@ -87,6 +87,7 @@ import { patchQuestionVariant, deleteQuestionVariant } from 'src/api';
 import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
+import { isNotEmpty } from 'src/utils';
 
 export interface QuestionVariantOpenProp extends QuestionVariantOpen {
   type: 'open';
@@ -126,7 +127,7 @@ export default defineComponent({
           type: 'quiz',
           content: values.value.content,
           correctAnswer: values.value.correctAnswer,
-          incorrectAnswers: values.value.incorrectAnswers.filter(Boolean),
+          incorrectAnswers: values.value.incorrectAnswers.filter(isNotEmpty),
         } : {
           type: 'open',
           content: values.value.content,
@@ -144,7 +145,7 @@ export default defineComponent({
 
     function refreshIncorrect() {
       if (values.value.type === 'quiz') {
-        values.value.incorrectAnswers = values.value.incorrectAnswers.filter(Boolean);
+        values.value.incorrectAnswers = values.value.incorrectAnswers.filter(isNotEmpty);
         values.value.incorrectAnswers.push('');
       }
     }
