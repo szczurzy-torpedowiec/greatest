@@ -111,6 +111,8 @@ module.exports = {
     '@typescript-eslint/switch-exhaustiveness-check': 'error',
     'consistent-return': 'off',
     'vue/return-in-computed-property': 'off',
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': 'error'
   },
   settings: {
     'vue-i18n': {

@@ -1,10 +1,12 @@
 import { Static, Type } from '@sinclair/typebox';
-import { sheetSchema } from '../common';
+import { emptyReplySchema, sheetSchema, trimmedStringSchema } from '../common';
 
 export const createSheetBodySchema = Type.Object({
   questionVariants: Type.Array(Type.Integer({ minimum: 0 }), {
     minItems: 1,
   }),
+  student: Type.Optional(trimmedStringSchema(true)),
+  requestId: Type.String(),
 });
 export type CreateSheetBody = Static<typeof createSheetBodySchema>;
 export const createSheetReplySchema = sheetSchema;
@@ -20,6 +22,7 @@ export const createRandomSheetsBodySchema = Type.Object({
   count: Type.Integer({
     minimum: 0,
   }),
+  requestId: Type.String(),
 });
 export type CreateRandomSheetsBody = Static<typeof createRandomSheetsBodySchema>;
 export const createRandomSheetsReplySchema = Type.Object({
@@ -34,3 +37,18 @@ export type ListSheetsReply = Static<typeof listSheetsReplySchema>;
 
 export const getSheetReplySchema = sheetSchema;
 export type GetSheetReply = Static<typeof getSheetReplySchema>;
+
+export const patchSheetBodySchema = Type.Object({
+  student: Type.Optional(trimmedStringSchema(true)),
+  requestId: Type.String(),
+});
+export type PatchSheetBody = Static<typeof patchSheetBodySchema>;
+export const patchSheetReplySchema = emptyReplySchema;
+export type PatchSheetReply = Static<typeof patchSheetReplySchema>;
+
+export const deleteSheetBodySchema = Type.Object({
+  requestId: Type.String(),
+});
+export type DeleteSheetBody = Static<typeof deleteSheetBodySchema>;
+export const deleteSheetReplySchema = emptyReplySchema;
+export type DeleteSheetReply = Static<typeof deleteSheetReplySchema>;

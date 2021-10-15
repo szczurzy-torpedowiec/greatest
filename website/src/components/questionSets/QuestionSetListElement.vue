@@ -35,7 +35,7 @@
           </q-btn>
         </div>
         <div class="text-subtitle1">
-          {{ $tc('questionSets.questionCount', size) }}
+          {{ $tc('questionSets.questionCount', questionCount) }}
         </div>
       </q-card-section>
       <q-card-actions>
@@ -44,7 +44,7 @@
           color="red"
           icon="delete"
         >
-          <DeleteConfirmMenu @confirm="deleteSet" />
+          <delete-confirm-menu :submit="deleteSet" />
         </q-btn>
         <q-btn
           outline
@@ -71,6 +71,8 @@ import {
 import { useRouter } from 'vue-router';
 import { patchQuestionSet, deleteQuestionSet } from 'src/api';
 import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
+import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'QuestionSetListElement',
@@ -86,14 +88,17 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    size: {
+    questionCount: {
       type: Number,
       required: true,
     },
   },
   emits: ['updateQuestionSets'],
   setup(props, { emit }) {
+    const quasar = useQuasar();
+    const i18n = useI18n();
     const router = useRouter();
+
     const newName = ref<string>(props.title);
     const submittedName = ref<string>(props.title);
     const menuOpen = ref<boolean>(false);
@@ -104,17 +109,33 @@ export default defineComponent({
 
     // TODO: Fix rename
     async function submitName() {
-      await patchQuestionSet(props.id, {
-        name: newName.value.trim(),
-      });
+      try {
+        await patchQuestionSet(props.id, {
+          name: newName.value.trim(),
+        });
 
-      submittedName.value = newName.value;
-      menuOpen.value = false;
+        submittedName.value = newName.value;
+        menuOpen.value = false;
+      } catch (error) {
+        console.error(error);
+        quasar.notify({
+          type: 'negative',
+          message: i18n.t('questionSets.renameQuestionSetError'),
+        });
+      }
     }
 
     async function deleteSet() {
-      await deleteQuestionSet(props.id);
-      emit('updateQuestionSets');
+      try {
+        await deleteQuestionSet(props.id);
+        emit('updateQuestionSets');
+      } catch (error) {
+        console.error(error);
+        quasar.notify({
+          type: 'negative',
+          message: i18n.t('questionSets.deleteQuestionSetError'),
+        });
+      }
     }
 
     return {

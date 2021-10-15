@@ -21,6 +21,30 @@ const routes: RouteRecordRaw[] = [
         path: 'tests',
         component: () => import('pages/tests/Tests.vue'),
       },
+      {
+        path: 'tests/:testShortId',
+        components: {
+          default: () => import('pages/tests/Test.vue'),
+          toolbarContent: () => import('components/test/Toolbar.vue'),
+        },
+        children: [
+          {
+            name: 'test-tab-questions',
+            path: 'questions',
+            component: () => import('pages/tests/tabs/Questions.vue'),
+          },
+          {
+            name: 'test-tab-sheets',
+            path: 'sheets',
+            component: () => import('pages/tests/tabs/Sheets.vue'),
+          },
+          {
+            name: 'test-tab-scans',
+            path: 'scans',
+            component: () => import('pages/tests/tabs/Scans.vue'),
+          },
+        ],
+      },
     ],
   },
   {

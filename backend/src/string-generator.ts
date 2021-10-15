@@ -1,7 +1,7 @@
 import eol from 'eol';
 import fse from 'fs-extra';
 import path from 'path';
-import { randomInt } from './utils';
+import { randomElement } from './utils';
 
 let dictionary: string[] | null = null;
 
@@ -16,5 +16,5 @@ export async function loadDictionary() {
 
 export function getRandomString() {
   if (dictionary === null) throw new Error('Dictionary not loaded');
-  return dictionary[randomInt(dictionary.length)];
+  return randomElement(dictionary);
 }

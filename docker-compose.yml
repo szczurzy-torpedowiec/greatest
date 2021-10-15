@@ -5,6 +5,8 @@ services:
     environment:
       - PORT=80
       - BASE_URL
+      - QR_ORIGIN
+      - ALLOW_DEMO_LOGIN
     ports:
       - "${BACKEND_PORT}:80"
     secrets:
@@ -16,6 +18,9 @@ services:
     image: mongo
     volumes:
       - db:/data/db
+    restart: on-failure
+  scanner:
+    build: scanner
     restart: on-failure
 secrets:
   session-key:

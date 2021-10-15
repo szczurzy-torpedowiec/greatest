@@ -85,3 +85,10 @@ export async function requireTest(
   if (!test.ownerId.equals(user._id)) throw request.server.httpErrors.forbidden();
   return test;
 }
+
+export const getSecurity = (): {
+  [key: string]: string[]
+}[] => [
+  { apiTokenHeader: [] },
+  { sessionCookie: [] },
+];

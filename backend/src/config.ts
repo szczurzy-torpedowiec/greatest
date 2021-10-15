@@ -1,11 +1,13 @@
 import fse from 'fs-extra';
-import { requireEnv } from './utils';
+import { requireBooleanEnv, requireEnv } from './utils';
 
 export const config = {
   port: requireEnv('PORT'),
   mongodbUrl: 'mongodb://mongodb:27017/greatest',
   baseUrl: requireEnv('BASE_URL'),
   development: requireEnv('SERVER_MODE') === 'development',
+  qrOrigin: requireEnv('QR_ORIGIN'),
+  allowDemoLogin: requireBooleanEnv('ALLOW_DEMO_LOGIN'),
 };
 
 export interface GoogleKeys {

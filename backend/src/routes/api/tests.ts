@@ -15,9 +15,9 @@ import {
 } from 'greatest-api-schemas';
 import { nanoid } from 'nanoid';
 import { DbManager } from '../../database/database';
-import { requireAuthentication, requireTest } from '../../guards';
+import { getSecurity, requireAuthentication, requireTest } from '../../guards';
 import { DbQuestion, DbQuestionVariantBase } from '../../database/types';
-import { promiseCache } from '../../utils';
+import { DefaultsMap } from '../../utils';
 
 export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager) {
   apiInstance.get<{
@@ -27,6 +27,7 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
       response: {
         200: listTestsReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -62,12 +63,13 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
       response: {
         200: createTestReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
     const shortId = nanoid(10);
     const createdOn = new Date();
-    const getQuestionSet = promiseCache(
+    const getQuestionSet = new DefaultsMap(
       async (setShortId: string) => {
         const questionSet = await dbManager.questionSetsCollection.findOne({
           shortId: setShortId,
@@ -76,7 +78,7 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
         if (!questionSet.ownerId.equals(user._id)) throw apiInstance.httpErrors.forbidden(`User does not own question set "${setShortId}"`);
         return questionSet;
       },
-    );
+    ).get;
     await dbManager.withTransaction(async () => {
       const questions: DbQuestion<false>[] = await Promise.all(
         request.body.questions.map<Promise<DbQuestion<false>>>(async (question) => {
@@ -147,6 +149,7 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
       response: {
         200: getTestReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
@@ -168,6 +171,7 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
       response: {
         200: patchTestReplySchema,
       },
+      security: getSecurity(),
     },
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);

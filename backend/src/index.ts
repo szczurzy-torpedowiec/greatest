@@ -1,6 +1,7 @@
 import fastify from 'fastify';
 import FastifySensible from 'fastify-sensible';
 import FastifySecureSession from 'fastify-secure-session';
+import FastifyFormBody from 'fastify-formbody';
 import fsPromises from 'fs/promises';
 import { parseMultipart } from './utils';
 import { connectDb } from './database/database';
@@ -52,6 +53,7 @@ async function main() {
       if (!fileFields.has(field)) throw server.httpErrors.badRequest(`Missing "${field}" file field`);
     });
   });
+  server.register(FastifyFormBody);
 
   server.log.info('DB connected');
   server.register(AuthPlugin, {

@@ -1,9 +1,25 @@
-import { WithoutId } from 'mongodb';
-import { DbSheet } from './database/types';
-import { EventBus } from './utils';
+import { ObjectId, WithoutId } from 'mongodb';
+import { Scan } from 'greatest-api-schemas';
+import { DbScan, DbSheet } from './database/types';
+import {
+  DefaultsMap, EventChannel,
+} from './utils';
+
+export type SheetListenerParams = [sheet: WithoutId<DbSheet>, causingRequestId: string];
+function getTestBus() {
+  return {
+    sheetCreate: new EventChannel<SheetListenerParams>(),
+    sheetChange: new EventChannel<SheetListenerParams>(),
+    sheetDelete: new EventChannel<SheetListenerParams>(),
+    scanCreateBody: new EventChannel<[scanBody: Scan, causingRequestId: string]>(),
+    scanChange: new EventChannel<[scan: WithoutId<DbScan>, causingRequestId: string]>(),
+    scanDelete: new EventChannel<[scan: WithoutId<DbScan>, causingRequestId: string]>(),
+  };
+}
+export type TestBus = ReturnType<typeof getTestBus>;
+const testMap = new DefaultsMap<string, TestBus>(getTestBus);
 
 export const getWebsocketBus = () => ({
-  sheetCreate: new EventBus<[sheet: WithoutId<DbSheet>]>(),
-  sheetChange: new EventBus<[sheet: WithoutId<DbSheet>]>(),
+  getTest: (testId: ObjectId) => testMap.get(testId.toHexString()),
 });
 export type WebsocketBus = ReturnType<typeof getWebsocketBus>;

@@ -1,13 +1,18 @@
 import { FastifyInstance, FastifyRequest } from 'fastify';
 import FastifyWebsocket, { SocketStream } from 'fastify-websocket';
 import { IncomingMessage } from 'http';
-import { TestParams, testParamsSchema, TestWebsocketMessage } from 'greatest-api-schemas';
+import {
+  Scan, TestParams, testParamsSchema, TestWebsocketMessage,
+} from 'greatest-api-schemas';
 import { WithoutId } from 'mongodb';
 import { DbManager } from '../../database/database';
-import { requireAuthentication } from '../../guards';
-import { DbSheet, DbTest, DbUser } from '../../database/types';
+import { getSecurity, requireAuthentication } from '../../guards';
+import {
+  DbScan, DbSheet, DbTest, DbUser,
+} from '../../database/types';
 import { WebsocketBus } from '../../websocket-bus';
-import { mapSheet } from '../../mappers';
+import { mapScan, mapSheet } from '../../mappers';
+import { OffFunction } from '../../utils';
 
 interface MyIncomingMessage extends IncomingMessage {
   greatest?: {
@@ -39,7 +44,7 @@ export async function WebsocketPlugin(
       verifyClient(info, next) {
         const req = info.req as MyIncomingMessage;
         if (req?.greatest?.error) {
-          next(false, 1, req.greatest.error);
+          next(false, 1008, req.greatest.error);
         } else next(true);
       },
     },
@@ -51,6 +56,7 @@ export async function WebsocketPlugin(
     schema: {
       params: testParamsSchema,
       tags: ['websocket'],
+      security: getSecurity(),
     },
     websocket: true,
     async preHandler(request) {
@@ -71,30 +77,70 @@ export async function WebsocketPlugin(
       connection.socket.close();
       return;
     }
+    const { user, test } = req.greatest;
     const sendMessage = (message: TestWebsocketMessage) => {
-      connection.socket.send(JSON.stringify(message));
+      connection.socket.send(JSON.stringify(message, null, 2));
     };
-    const { test } = req.greatest;
-    const onSheetChange = (sheet: WithoutId<DbSheet>) => {
-      if (!sheet.testId.equals(test._id)) return;
-      sendMessage({
-        type: 'change',
-        sheet: mapSheet(sheet),
-      });
-    };
-    const onSheetCreate = (sheet: WithoutId<DbSheet>) => {
-      if (!sheet.testId.equals(test._id)) return;
-      sendMessage({
-        type: 'create',
-        sheet: mapSheet(sheet),
-      });
-    };
-    websocketBus.sheetChange.on(onSheetChange);
-    websocketBus.sheetCreate.on(onSheetCreate);
+    const offList: OffFunction[] = [];
+    offList.push(
+      websocketBus.getTest(test._id).sheetChange.on(
+        (sheet: WithoutId<DbSheet>, causingRequestId: string) => {
+          sendMessage({
+            type: 'sheet-change',
+            sheet: mapSheet(sheet),
+            causingRequestId,
+          });
+        },
+      ),
+      websocketBus.getTest(test._id).sheetCreate.on(
+        (sheet: WithoutId<DbSheet>, causingRequestId: string) => {
+          sendMessage({
+            type: 'sheet-create',
+            sheet: mapSheet(sheet),
+            causingRequestId,
+          });
+        },
+      ),
+      websocketBus.getTest(test._id).sheetDelete.on(
+        (sheet: WithoutId<DbSheet>, causingRequestId: string) => {
+          sendMessage({
+            type: 'sheet-delete',
+            sheetShortId: sheet.shortId,
+            causingRequestId,
+          });
+        },
+      ),
+      websocketBus.getTest(test._id).scanChange.on(
+        async (scan: WithoutId<DbScan>, causingRequestId: string) => {
+          sendMessage({
+            type: 'scan-change',
+            scan: await mapScan(scan, user, dbManager),
+            causingRequestId,
+          });
+        },
+      ),
+      websocketBus.getTest(test._id).scanCreateBody.on(
+        async (scan: Scan, causingRequestId: string) => {
+          sendMessage({
+            type: 'scan-create',
+            scan,
+            causingRequestId,
+          });
+        },
+      ),
+      websocketBus.getTest(test._id).scanDelete.on(
+        async (scan: WithoutId<DbScan>, causingRequestId: string) => {
+          sendMessage({
+            type: 'scan-delete',
+            scanShortId: scan.shortId,
+            causingRequestId,
+          });
+        },
+      ),
+    );
 
     connection.socket.on('close', () => {
-      websocketBus.sheetChange.off(onSheetChange);
-      websocketBus.sheetCreate.off(onSheetCreate);
+      offList.forEach((off) => off());
     });
   });
 }

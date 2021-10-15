@@ -1,11 +1,25 @@
 import { ObjectId, WithoutId } from 'mongodb';
 
-export interface DbUser {
+export interface DbUserBase {
   _id: ObjectId;
-  googleId: string;
-  googleRefreshToken: string;
+  type: string;
   email: string;
 }
+
+export interface DbUserGoogle extends DbUserBase {
+  type: 'google'
+  googleId: string;
+  googleRefreshToken: string;
+}
+
+export interface DbUserDemo extends DbUserBase {
+  type: 'demo',
+  passwordHash: string,
+  name: string;
+  avatarUrl: string;
+}
+
+export type DbUser = DbUserGoogle | DbUserDemo;
 
 export interface DbApiToken {
   _id: ObjectId,
@@ -77,10 +91,32 @@ export interface DbSheet {
   _id: ObjectId;
   shortId: string;
   testId: ObjectId;
+  qrCodeId: string;
   questions: {
     variant: number;
     points: number | null;
   }[];
   phrase: string;
-  pages: number | null;
+  generated: {
+    pages: number;
+  } | null;
+  student: string;
+}
+
+export interface DbScanDetection {
+  sheetId: ObjectId,
+  page: number;
+}
+
+export interface DbScan {
+  _id: ObjectId;
+  shortId: string;
+  testId: ObjectId;
+  sheet: {
+    id: ObjectId,
+    page: number | null,
+  } | null;
+  otherTests: ObjectId[],
+  detections: DbScanDetection[];
+  uploadedOn: Date;
 }

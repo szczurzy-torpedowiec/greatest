@@ -23,7 +23,7 @@ export const questionVariantParamsSchema = Type.Intersect([
 export type QuestionVariantParams = Static<typeof questionVariantParamsSchema>;
 
 export const createQuestionSetBodySchema = Type.Object({
-  name: trimmedStringSchema(),
+  name: trimmedStringSchema(false),
 });
 export type CreateQuestionSetBody = Static<typeof createQuestionSetBodySchema>;
 export const createQuestionSetReplySchema = Type.Object({
@@ -44,7 +44,7 @@ export const listQuestionSetsReplySchema = Type.Object({
 export type ListQuestionSetsReply = Static<typeof listQuestionSetsReplySchema>;
 
 export const patchQuestionSetBodySchema = Type.Partial(Type.Object({
-  name: trimmedStringSchema(),
+  name: trimmedStringSchema(false),
 }));
 export type PatchQuestionSetBody = Static<typeof patchQuestionSetBodySchema>;
 export const patchQuestionSetReplySchema = emptyReplySchema;

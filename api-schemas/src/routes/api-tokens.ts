@@ -1,7 +1,7 @@
 import { Static, Type } from '@sinclair/typebox';
 import { emptyReplySchema, trimmedStringSchema } from '../common';
 
-const tokenNameSchema = trimmedStringSchema({
+const tokenNameSchema = trimmedStringSchema(false, {
   maxLength: 64,
 });
 
@@ -13,7 +13,7 @@ export const tokenSchema = Type.Object({
   }),
 });
 export type Token = Static<typeof tokenSchema>;
-export const revealedTokenSchema = Type.Union([
+export const revealedTokenSchema = Type.Intersect([
   tokenSchema,
   Type.Object({
     token: Type.String(),

@@ -14,9 +14,18 @@
         />
 
         <q-toolbar-title>
-          {{ $t('appName') }}
+          <q-skeleton
+            v-if="titleState === TitleLoading"
+            dark
+            type="text"
+            width="200px"
+          />
+          <template v-else>
+            {{ titleState ?? $t('appName') }}
+          </template>
         </q-toolbar-title>
       </q-toolbar>
+      <router-view name="toolbarContent" />
     </q-header>
 
     <q-drawer
@@ -94,6 +103,7 @@ const linksList = [
 ];
 
 import { defineComponent, ref } from 'vue';
+import { TitleLoading, titleState } from 'src/state/title';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -111,6 +121,8 @@ export default defineComponent({
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
+      TitleLoading,
+      titleState,
     };
   },
 });
