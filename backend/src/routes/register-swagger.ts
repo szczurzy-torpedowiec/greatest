@@ -46,8 +46,9 @@ export default function registerSwagger(server: FastifyInstance) {
       let newBody: JSONSchema7 | undefined;
       if (typeof schema.body === 'object' && schema.body !== null) {
         newBody = { ...schema.body };
-      } else newBody = Type.Object({});
+      }
       if (schema.files !== undefined) {
+        if (newBody === undefined) newBody = Type.Object({});
         const newProperties = Object.fromEntries(schema.files.map(
           (fieldName) => [fieldName, Type.String({ format: 'binary' })],
         ));
