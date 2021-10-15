@@ -6,24 +6,24 @@
           v-model="newTestName"
           class="col q-my-sm"
           outlined
-          label="Test name"
-          :rules="[ val => val && val.length > 0 || 'Podaj nazwę testu']"
+          :label="$t('tests.testName')"
+          :rules="[ val => val && val.length > 0 || $t('tests.testNameEmptyError')]"
         />
         <q-select
           v-model="newTestQuestionSet"
           class="col q-my-sm"
           outlined
-          label="Dataset"
+          :label="$t('tests.questionSet')"
           :options="questionSets"
           option-label="name"
-          :rules="[ val => val.questionCount >= 1 || 'Ten zestaw jest pusty']"
+          :rules="[ val => val.questionCount >= 1 || $t('tests.questionSetEmptyError')]"
         />
         <div class="row">
           <q-space />
           <q-btn
             type="submit"
             color="primary"
-            label="Create"
+            :label="$t('common.create')"
           />
         </div>
       </q-form>
@@ -39,6 +39,7 @@ import {
 import { QuestionSet, QuestionVariantOpen, QuestionVariantQuiz } from 'greatest-api-schemas';
 import { listQuestionSets, getQuestionSet, createTest } from 'src/api';
 import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'TestCreator',
@@ -52,39 +53,45 @@ export default defineComponent({
     }
 
     onMounted(getQuestionSets);
-    const $q = useQuasar();
+    const quasar = useQuasar();
+    const i18n = useI18n();
 
     async function submitNewTest() {
-      const questionSet = (
-        await getQuestionSet(newTestQuestionSet.value?.shortId as string)
-      ).questions.map((question) => ({
-        questionSetShortId: newTestQuestionSet.value?.shortId as string,
-        questionShortId: question.shortId,
-        variants: question.variants.map(
-          (variant: QuestionVariantOpen | QuestionVariantQuiz) => variant.shortId,
-        ),
-      })).filter((question) => question.variants.length > 0);
+      // TODO: Add loading when creating test and make menu a card
+      try {
+        const questionSet = (
+          await getQuestionSet(newTestQuestionSet.value?.shortId as string)
+        ).questions.map((question) => ({
+          questionSetShortId: newTestQuestionSet.value?.shortId as string,
+          questionShortId: question.shortId,
+          variants: question.variants.map(
+            (variant: QuestionVariantOpen | QuestionVariantQuiz) => variant.shortId,
+          ),
+        })).filter((question) => question.variants.length > 0);
 
-      if (questionSet.length >= 1) {
-        const response = await createTest({
-          name: newTestName.value,
-          questions: questionSet,
-        });
-
-        if (!response.shortId) {
-          $q.notify({
-            message: 'Unknown error while creating test',
-            color: 'red',
-            position: 'bottom',
-          });
+        if (questionSet.length >= 1) {
+          try {
+            const response = await createTest({
+              name: newTestName.value,
+              questions: questionSet,
+            });
+            // TODO: Redirect to test
+          } catch (error) {
+            quasar.notify({
+              type: 'negative',
+              message: i18n.t('tests.testCreateError'),
+            });
+          }
         } else {
-          // Redirect to test
+          quasar.notify({
+            type: 'negative',
+            message: i18n.t('tests.questionSetEmptyError'),
+          });
         }
-      } else {
-        $q.notify({
-          message: 'Error while creating test: No questions',
-          color: 'red',
-          position: 'bottom',
+      } catch (error) {
+        quasar.notify({
+          type: 'negative',
+          message: i18n.t('tests.getQuestionSetError'),
         });
       }
     }

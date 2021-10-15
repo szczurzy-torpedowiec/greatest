@@ -1,6 +1,5 @@
 <template>
   <q-page padding>
-    <h2>Tests</h2>
     <q-card
       v-for="test in tests"
       :key="test.shortId"
@@ -8,7 +7,10 @@
     >
       <span class="q-focus-helper" />
       <q-card-section horizontal>
-        <q-card-section class="text-h6 col q-hoverable cursor-pointer" v-ripple>
+        <q-card-section
+          v-ripple
+          class="text-h6 col q-hoverable cursor-pointer"
+        >
           {{ test.name }}
         </q-card-section>
         <q-card-actions>
@@ -17,7 +19,7 @@
             icon="delete"
             color="red"
           >
-            <delete-confirm-menu />
+            <delete-confirm-menu :submit="deleteTest" />
           </q-btn>
         </q-card-actions>
       </q-card-section>
@@ -30,7 +32,7 @@
         fab
         icon="add"
         color="primary"
-        label="New test"
+        :label="$t('tests.addTest')"
       >
         <test-settings />
       </q-btn>
@@ -40,6 +42,7 @@
 
 <script lang="ts">
 import {
+  computed,
   defineComponent,
   onMounted,
   ref,
@@ -49,6 +52,10 @@ import { listTests } from 'src/api';
 
 import TestSettings from 'components/tests/TestSettings.vue';
 import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
+
+import { useI18n } from 'vue-i18n';
+import { useTitleState } from 'src/state/title';
+import { useQuasar } from 'quasar';
 
 interface ListTest {
   shortId: string,
@@ -65,8 +72,18 @@ export default defineComponent({
   setup() {
     const tests = ref<ListTest[]>();
 
+    const i18n = useI18n();
+    const quasar = useQuasar();
+
     async function loadTests() {
-      tests.value = (await listTests()).tests;
+      try {
+        tests.value = (await listTests()).tests;
+      } catch (error) {
+        quasar.notify({
+          type: 'negative',
+          message: i18n.t('tests.listTestsError'),
+        });
+      }
     }
 
     async function deleteTest() {
@@ -75,7 +92,9 @@ export default defineComponent({
 
     onMounted(loadTests);
 
-    return { tests };
+    useTitleState(computed(() => i18n.t('tests.tests')));
+
+    return { tests, deleteTest };
   },
 });
 </script>
