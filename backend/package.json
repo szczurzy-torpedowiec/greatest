@@ -6,6 +6,7 @@
     "eol": "^0.9.1",
     "faker": "^5.5.3",
     "fastify": "^3.21.0",
+    "fastify-formbody": "^5.1.0",
     "fastify-http-proxy": "^6.2.1",
     "fastify-secure-session": "^2.3.1",
     "fastify-sensible": "^3.1.1",

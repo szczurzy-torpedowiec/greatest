@@ -42,14 +42,12 @@ export default function registerSwagger(server: FastifyInstance) {
         },
       },
     },
-    transform: (schema?: FastifySchema): FastifySchema | undefined => {
-      if (schema === undefined) return undefined;
+    transform: (schema: FastifySchema = {}): FastifySchema | undefined => {
       let newBody: JSONSchema7 | undefined;
       if (typeof schema.body === 'object' && schema.body !== null) {
         newBody = { ...schema.body };
-      }
+      } else newBody = Type.Object({});
       if (schema.files !== undefined) {
-        if (newBody === undefined) newBody = Type.Object({});
         const newProperties = Object.fromEntries(schema.files.map(
           (fieldName) => [fieldName, Type.String({ format: 'binary' })],
         ));
@@ -63,6 +61,7 @@ export default function registerSwagger(server: FastifyInstance) {
         ];
       }
       return {
+        consumes: ['application/json', 'application/x-www-form-urlencoded', 'multipart/form-data'],
         ...schema,
         body: newBody,
       };
