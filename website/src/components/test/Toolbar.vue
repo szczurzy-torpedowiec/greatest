@@ -1,19 +1,19 @@
 <template>
   <q-tabs>
     <q-route-tab
-      to="questions"
+      :to="getPath('questions')"
       exact
       replace
       :label="$t('test.tabs.questions')"
     />
     <q-route-tab
-      to="sheets"
+      :to="getPath('sheets')"
       exact
       replace
       :label="$t('test.tabs.sheets')"
     />
     <q-route-tab
-      to="scans"
+      :to="getPath('scans')"
       exact
       replace
       :label="$t('test.tabs.scans')"
@@ -36,6 +36,10 @@ import { testToolbarState } from 'src/state/test-toolbar';
 export default defineComponent({
   setup() {
     return {
+      getPath: (tab: string): string | undefined => {
+        if (testToolbarState.value === null) return undefined;
+        return `/tests/${testToolbarState.value.testShortId}/${tab}`;
+      },
       unassignedScanCount: computed(() => testToolbarState.value?.unassignedScanCount ?? 0),
     };
   },

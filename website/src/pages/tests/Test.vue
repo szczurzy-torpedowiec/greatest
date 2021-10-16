@@ -37,7 +37,7 @@ import { getTest, listScans, listSheets } from 'src/api';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { firstNotUndefined } from 'src/utils';
-import { TestToolbarState, useToolbarState } from 'src/state/test-toolbar';
+import { TestToolbarState, useTestToolbarState } from 'src/state/test-toolbar';
 import { TitleLoading, useTitleState } from 'src/state/title';
 
 export default defineComponent({
@@ -128,10 +128,11 @@ export default defineComponent({
         });
       }
     }, { immediate: true });
-    useToolbarState(computed<TestToolbarState>(() => ({
+    useTestToolbarState(computed<TestToolbarState>(() => ({
       unassignedScanCount: scans.value?.reduce(
         (count, scan) => count + (scan.sheet === null ? 1 : 0), 0,
       ) ?? null,
+      testShortId: testShortId.value,
     })));
     useTitleState(computed(
       () => {
