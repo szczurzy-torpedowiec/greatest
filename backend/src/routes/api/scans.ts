@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import {
+  binarySchema,
   ListScansReply,
   listScansReplySchema,
   PatchScanBody, patchScanBodySchema, PatchScanReply, patchScanReplySchema,
@@ -14,6 +15,9 @@ import {
 } from 'greatest-api-schemas';
 import { nanoid } from 'nanoid';
 import { ObjectId } from 'mongodb';
+import sharp from 'sharp';
+import path from 'path';
+import fse from 'fs-extra';
 import { DbManager } from '../../database/database';
 import {
   getSecurity,
@@ -25,6 +29,8 @@ import { config } from '../../config';
 import { filterNotNull, getOnly } from '../../utils';
 import { WebsocketBus } from '../../websocket-bus';
 import { mapScan, mapScanOtherTest } from '../../mappers';
+
+const getScanPath = (imageFilename: string) => path.join('/data/scans', imageFilename);
 
 export function registerScans(
   apiInstance: FastifyInstance,
@@ -127,6 +133,10 @@ export function registerScans(
     const shortId = nanoid(10);
     const uploadedOn = new Date();
     const pickedDetection = getOnly(detections);
+    const imageFilename = `${nanoid()}.webp`;
+    await sharp(file.data)
+      .rotate()
+      .toFile(getScanPath(imageFilename));
     await dbManager.scansCollection.insertOne({
       testId: test._id,
       detections: detections.map((detection) => ({
@@ -140,6 +150,7 @@ export function registerScans(
         id: pickedDetection.sheet._id,
         page: pickedDetection.page,
       },
+      imageFilename,
     });
 
     const scan: Scan = {
@@ -207,9 +218,36 @@ export function registerScans(
     }, {
       returnDocument: 'after',
     });
-    if (newScan.value === null) return apiInstance.httpErrors.notFound('Scan not found');
+    if (newScan.value === null) throw apiInstance.httpErrors.notFound('Scan not found');
 
     await websocketBus.getTest(test._id).scanChange.emit(newScan.value, request.body.requestId);
     return {};
+  });
+
+  apiInstance.get<{
+    Params: ScanParams,
+  }>('/tests/:testShortId/scans/:scanShortId.webp', {
+    schema: {
+      params: scanParamsSchema,
+      security: [
+        { apiTokenHeader: [] },
+        { sessionCookie: [] },
+      ],
+      produces: ['image/webp'],
+      response: {
+        200: binarySchema,
+      },
+    },
+  }, async (request, reply) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const test = await requireTest(request, dbManager, user, request.params.testShortId);
+    const scan = await dbManager.scansCollection.findOne({
+      testId: test._id,
+      shortId: request.params.scanShortId,
+    });
+    if (scan === null) throw apiInstance.httpErrors.notFound('Scan not found');
+    reply
+      .type('image/webp')
+      .send(fse.createReadStream(getScanPath(scan.imageFilename)));
   });
 }

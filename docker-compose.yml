@@ -14,6 +14,8 @@ services:
       - google-keys
     depends_on:
       - mongodb
+    volumes:
+      - scans:/data/scans
   mongodb:
     image: mongo
     volumes:
@@ -29,3 +31,4 @@ secrets:
     file: google-keys.json
 volumes:
   db:
+  scans:

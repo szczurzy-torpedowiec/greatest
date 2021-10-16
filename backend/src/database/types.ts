@@ -119,4 +119,5 @@ export interface DbScan {
   otherTests: ObjectId[],
   detections: DbScanDetection[];
   uploadedOn: Date;
+  imageFilename: string;
 }

@@ -19,7 +19,8 @@
     "got": "^11.8.2",
     "greatest-api-schemas": "file:../api-schemas",
     "mongodb": "^4.1.1",
-    "nanoid": "^3.1.25"
+    "nanoid": "^3.1.25",
+    "sharp": "^0.29.1"
   },
   "name": "greatest-backend",
   "version": "1.0.0",
@@ -42,6 +43,7 @@
     "@types/fs-extra": "^9.0.12",
     "@types/json-schema": "^7.0.9",
     "@types/node": "^16.7.10",
+    "@types/sharp": "^0.29.2",
     "@types/ws": "^8.2.0",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
