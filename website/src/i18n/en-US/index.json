@@ -6,7 +6,7 @@
     "use": "Use",
     "newQuestionSet": "New question set",
     "questionSetName": "Question set name",
-    "newQuestion":"New question",
+    "noVariants": "No variants",
     "addVariant": "Add variant",
     "addOpenQuestion": "Add open question",
     "addQuizQuestion": "Add quiz question",
@@ -79,5 +79,16 @@
     "subtitle": "Page not found",
     "notFunny": "Please pretend you didn't see that",
     "goHome": "Go home"
+  },
+  "tests": {
+    "tests": "Tests",
+    "testName": "Test name",
+    "testNameEmptyError": "Test name should not be empty",
+    "questionSet": "Question set",
+    "questionSetEmptyError": "Selected question set is empty",
+    "getQuestionSetError": "Failed to get question set",
+    "testCreateError": "Failed to create test",
+    "addTest": "Add test",
+    "listTestsError": "Failed to load tests"
   }
 }
