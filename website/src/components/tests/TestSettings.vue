@@ -7,7 +7,7 @@
           class="col q-my-sm"
           outlined
           :label="$t('tests.testName')"
-          :rules="[ val => val && val.length > 0 || $t('tests.testNameEmptyError')]"
+          :rules="[ val => val.trim() !== '' || $t('tests.testNameEmptyError')]"
         />
         <q-select
           v-model="newTestQuestionSet"
@@ -69,23 +69,23 @@ export default defineComponent({
           ),
         })).filter((question) => question.variants.length > 0);
 
-        if (questionSet.length >= 1) {
-          try {
-            const response = await createTest({
-              name: newTestName.value,
-              questions: questionSet,
-            });
-            // TODO: Redirect to test
-          } catch (error) {
-            quasar.notify({
-              type: 'negative',
-              message: i18n.t('tests.testCreateError'),
-            });
-          }
-        } else {
+        if (questionSet.length < 1) {
           quasar.notify({
             type: 'negative',
             message: i18n.t('tests.questionSetEmptyError'),
+          });
+          return;
+        }
+        try {
+          const response = await createTest({
+            name: newTestName.value,
+            questions: questionSet,
+          });
+            // TODO: Redirect to test
+        } catch (error) {
+          quasar.notify({
+            type: 'negative',
+            message: i18n.t('tests.testCreateError'),
           });
         }
       } catch (error) {
