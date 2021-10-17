@@ -79,7 +79,7 @@ import {
   defineComponent, onMounted, ref,
 } from 'vue';
 
-import { listApiTokens, generateApiToken, revokeApiToken } from 'src/api/api-tokens';
+import { listApiTokens, generateApiToken, revokeApiToken } from 'src/api';
 import { Token } from 'greatest-api-schemas';
 import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
 import { useQuasar } from 'quasar';

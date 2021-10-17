@@ -14,7 +14,15 @@
         />
 
         <q-toolbar-title>
-          {{ $t('appName') }}
+          <q-skeleton
+            v-if="titleState === TitleLoading"
+            dark
+            type="text"
+            width="200px"
+          />
+          <template v-else>
+            {{ titleState ?? $t('appName') }}
+          </template>
         </q-toolbar-title>
         <q-skeleton
           v-if="!viewerLoaded"
@@ -95,6 +103,7 @@
           </q-btn>
         </div>
       </q-toolbar>
+      <router-view name="toolbarContent" />
     </q-header>
 
     <q-drawer
@@ -141,6 +150,7 @@ import { getViewer } from 'src/api';
 import { Viewer } from 'greatest-api-schemas';
 import DemoSignIn from 'components/signIn/DemoSignIn.vue';
 import ApiTokens from 'components/signIn/ApiTokens.vue';
+import { TitleLoading, titleState } from 'src/state/title';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -182,6 +192,11 @@ export default defineComponent({
       viewerLoaded,
       demoUserDialog,
       apiTokensDialog,
+      TitleLoading,
+      titleState,
+      toggleLeftDrawer() {
+        leftDrawerOpen.value = !leftDrawerOpen.value;
+      },
     };
   },
 });
