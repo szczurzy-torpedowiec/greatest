@@ -39,7 +39,7 @@ export default route((/* { store, ssrContext } */) => {
     const viewer = await getViewer();
 
     if (requiresAuth && !viewer) {
-      next('/');
+      next('/?error=authRequired');
     } else {
       next();
     }

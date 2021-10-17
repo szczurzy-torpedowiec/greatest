@@ -90,5 +90,8 @@
     "testCreateError": "Failed to create test",
     "addTest": "Add test",
     "listTestsError": "Failed to load tests"
+  },
+  "login": {
+    "authRequired": "You need to be signed in to access this function"
   }
 }
