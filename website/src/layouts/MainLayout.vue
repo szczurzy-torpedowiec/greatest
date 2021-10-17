@@ -172,12 +172,12 @@ export default defineComponent({
       {
         title: i18n.t('menu.questionSets'),
         icon: 'folder',
-        location: '/question-sets',
+        location: '/teacher/question-sets',
       },
       {
         title: i18n.t('menu.tests'),
         icon: 'description',
-        location: '/tests',
+        location: '/teacher/tests',
       },
     ];
 
