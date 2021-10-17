@@ -10,22 +10,34 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/Index.vue'),
       },
       {
-        path: 'question-sets',
+        path: 'teacher/question-sets',
         component: () => import('pages/questionSets/QuestionSets.vue'),
+        meta: {
+          requiresAuth: true,
+        },
       },
       {
-        path: 'question-sets/:id/edit',
+        path: 'teacher/question-sets/:id/edit',
         component: () => import('pages/questionSets/Editor.vue'),
+        meta: {
+          requiresAuth: true,
+        },
       },
       {
-        path: 'tests',
+        path: 'teacher/tests',
         component: () => import('pages/tests/Tests.vue'),
+        meta: {
+          requiresAuth: true,
+        },
       },
       {
-        path: 'tests/:testShortId',
+        path: 'teacher/tests/:testShortId',
         components: {
           default: () => import('pages/tests/Test.vue'),
           toolbarContent: () => import('components/test/Toolbar.vue'),
+          meta: {
+            requiresAuth: true,
+          },
         },
         children: [
           {

@@ -5,6 +5,7 @@ import {
   createWebHashHistory,
   createWebHistory,
 } from 'vue-router';
+import { getViewer } from 'src/api';
 import routes from './routes';
 
 /*
@@ -21,7 +22,7 @@ export default route((/* { store, ssrContext } */) => {
     ? createMemoryHistory
     : (process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory);
 
-  return createRouter({
+  const router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
     routes,
 
@@ -32,4 +33,17 @@ export default route((/* { store, ssrContext } */) => {
       process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE,
     ),
   });
+
+  router.beforeEach(async (to, from, next) => {
+    const requiresAuth = to.matched.some((x) => x.meta.requiresAuth);
+    const viewer = await getViewer();
+
+    if (requiresAuth && !viewer) {
+      next('/');
+    } else {
+      next();
+    }
+  });
+
+  return router;
 });
