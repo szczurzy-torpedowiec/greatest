@@ -66,9 +66,23 @@
       </q-card>
       <div
         v-if="!tokens[0]"
-        class="items-center column q-ma-lg"
+        class="q-ma-lg"
       >
-        {{ $t('signIn.noApiTokens') }}
+        <div
+          v-if="tokensLoaded"
+          class="items-center column"
+        >
+          {{ $t('signIn.noApiTokens') }}
+        </div>
+        <div
+          v-else
+          class="row"
+        >
+          <q-skeleton
+            class="col"
+            type="rect"
+          />
+        </div>
       </div>
     </q-card-section>
   </q-card>
@@ -92,6 +106,7 @@ export default defineComponent({
   },
   setup() {
     const tokens = ref<Token[]>([]);
+    const tokensLoaded = ref<boolean>(false);
     const newTokenName = ref<string>('');
 
     const quasar = useQuasar();
@@ -108,6 +123,7 @@ export default defineComponent({
             weekday: 'long',
           }),
         }));
+        tokensLoaded.value = true;
       } catch (error) {
         quasar.notify({
           type: 'negative',
@@ -158,6 +174,7 @@ export default defineComponent({
       newTokenName,
       submitToken,
       deleteToken,
+      tokensLoaded,
     };
   },
 });
