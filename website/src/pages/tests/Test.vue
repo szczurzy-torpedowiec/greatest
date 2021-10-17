@@ -17,8 +17,15 @@
         @sheet-deleted="onSheetDeleted"
       />
     </q-tab-panel>
-    <q-tab-panel name="scans">
-      <router-view />
+    <q-tab-panel
+      name="scans"
+      class="q-pa-none"
+    >
+      <router-view
+        :sheets="sheets"
+        :scans="scans"
+        :test-short-id="testShortId"
+      />
     </q-tab-panel>
   </q-tab-panels>
 </template>
@@ -46,14 +53,8 @@ export default defineComponent({
     const quasar = useQuasar();
     const i18n = useI18n();
     const testShortId = ref(route.params.testShortId as string);
-    const getTab = () => firstNotUndefined(route.matched, (matched) => {
-      switch (matched.name) {
-        case 'test-tab-questions': return 'questions';
-        case 'test-tab-sheets': return 'sheets';
-        case 'test-tab-scans': return 'scans';
-        default: return undefined;
-      }
-    }) ?? null;
+    const getTab = () => firstNotUndefined(route.matched,
+      (matched) => matched.meta.testTab) ?? null;
     const tab = computed(getTab);
     watch(() => route.params.testShortId as string | undefined, (value) => {
       if (value !== undefined) testShortId.value = value;

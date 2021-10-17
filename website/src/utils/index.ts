@@ -16,3 +16,4 @@ export function firstNotUndefined<T, V>(
 }
 
 export * from './defaults-map';
+export * from './storage';
