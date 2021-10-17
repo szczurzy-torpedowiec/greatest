@@ -10,7 +10,7 @@
           round
           icon="menu"
           aria-label="Menu"
-          @click="toggleLeftDrawer"
+          @click="leftDrawerOpen = !leftDrawerOpen"
         />
 
         <q-toolbar-title>
@@ -24,6 +24,84 @@
             {{ titleState ?? $t('appName') }}
           </template>
         </q-toolbar-title>
+        <q-skeleton
+          v-if="!viewerLoaded"
+          type="QBtn"
+        />
+        <q-btn
+          v-else-if="viewer"
+          round
+          flat
+        >
+          <q-avatar>
+            <img :src="viewer.avatarUrl">
+          </q-avatar>
+          <q-menu>
+            <q-card>
+              <q-card-section class="row items-center">
+                <q-avatar>
+                  <img :src="viewer.avatarUrl">
+                </q-avatar>
+                <div class="col q-ml-sm">
+                  {{ viewer.name }}
+                </div>
+              </q-card-section>
+              <q-card-actions vertical>
+                <q-btn
+                  :label="$t('signIn.apiTokens')"
+                  color="primary"
+                  outline
+                  @click="apiTokensDialog = !apiTokensDialog"
+                />
+                <q-btn
+                  :label="$t('signIn.signOut')"
+                  color="primary"
+                  type="a"
+                  href="/auth/sign-out"
+                />
+              </q-card-actions>
+            </q-card>
+          </q-menu>
+        </q-btn>
+        <div v-else>
+          <div class="q-gutter-md xs-hide">
+            <q-btn
+              type="a"
+              href="/auth/sign-in/google"
+              :label="$t('signIn.signInGoogle')"
+              outline
+            />
+            <q-btn
+              :label="$t('signIn.signInDemo')"
+              outline
+              @click="demoUserDialog = !demoUserDialog"
+            />
+          </div>
+          <q-btn
+            class="xs"
+            flat
+            icon="login"
+          >
+            <q-menu>
+              <q-card>
+                <q-card-actions vertical>
+                  <q-btn
+                    color="primary"
+                    outline
+                    :label="$t('signIn.signInDemo')"
+                    @click="demoUserDialog = !demoUserDialog"
+                  />
+                  <q-btn
+                    type="a"
+                    href="/auth/sign-in/google"
+                    color="primary"
+                    :label="$t('signIn.signInGoogle')"
+                  />
+                </q-card-actions>
+              </q-card>
+            </q-menu>
+          </q-btn>
+        </div>
       </q-toolbar>
       <router-view name="toolbarContent" />
     </q-header>
@@ -34,95 +112,94 @@
       bordered
     >
       <q-list>
-        <q-item-label
-          header
+        <q-item
+          v-for="link in menu"
+          :key="link.location"
+          v-ripple
+          :to="link.location"
+          clickable
         >
-          Essential Links
-        </q-item-label>
-
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+          <q-item-section avatar>
+            <q-icon :name="link.icon" />
+          </q-item-section>
+          <q-item-section>
+            {{ link.title }}
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
-
     <q-page-container>
       <router-view />
     </q-page-container>
+    <q-dialog
+      v-model="demoUserDialog"
+    >
+      <demo-sign-in />
+    </q-dialog>
+    <q-dialog
+      v-model="apiTokensDialog"
+    >
+      <api-tokens />
+    </q-dialog>
   </q-layout>
 </template>
 
 <script lang="ts">
-import EssentialLink from 'components/EssentialLink.vue';
-
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'mdi-chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
-  },
-];
-
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
+import { getViewer } from 'src/api';
+import { Viewer } from 'greatest-api-schemas';
+import DemoSignIn from 'components/signIn/DemoSignIn.vue';
+import ApiTokens from 'components/signIn/ApiTokens.vue';
 import { TitleLoading, titleState } from 'src/state/title';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'MainLayout',
-
   components: {
-    EssentialLink,
+    DemoSignIn,
+    ApiTokens,
   },
-
   setup() {
     const leftDrawerOpen = ref(false);
+    const viewer = ref<Viewer | null>(null);
+    const viewerLoaded = ref<boolean>(false);
+    const demoUserDialog = ref<boolean>(false);
+    const apiTokensDialog = ref<boolean>(false);
+
+    const i18n = useI18n();
+
+    const menu = [
+      {
+        title: i18n.t('menu.questionSets'),
+        icon: 'folder',
+        location: '/question-sets',
+      },
+      {
+        title: i18n.t('menu.tests'),
+        icon: 'description',
+        location: '/tests',
+      },
+    ];
+
+    async function loadViewer() {
+      viewer.value = await getViewer();
+      viewerLoaded.value = true;
+    }
+
+    onMounted(loadViewer);
 
     return {
-      essentialLinks: linksList,
       leftDrawerOpen,
+      menu,
+      viewer,
+      viewerLoaded,
+      demoUserDialog,
+      apiTokensDialog,
+      TitleLoading,
+      titleState,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
-      TitleLoading,
-      titleState,
     };
   },
 });
