@@ -29,7 +29,9 @@
     "create": "Create",
     "save": "save",
     "delete": "Delete",
-    "deleteConfirmation": "Do you really want to delete this element?"
+    "deleteConfirmation": "Do you really want to delete this element?",
+    "add": "Add",
+    "use": "Use"
   },
   "test": {
     "loadTestError": "Failed to load test info",
@@ -90,5 +92,23 @@
     "testCreateError": "Failed to create test",
     "addTest": "Add test",
     "listTestsError": "Failed to load tests"
+  },
+  "signIn": {
+    "signIn": "Sign in",
+    "apiTokens": "API tokens",
+    "signOut": "Sign out",
+    "signInGoogle": "Sign in with google",
+    "signInDemo": "Demo user",
+    "email": "E-mail",
+    "password": "Password",
+    "generateMessage": "If you don't have demo user credentials, you can generate them",
+    "generate": "Generate",
+    "noApiTokens": "No API tokens",
+    "tokenCopied": "API token copied to clipboard",
+    "tokenCopyFallback": "Generated API token:",
+    "tokenError": "Failed to generate API token",
+    "tokenDeleteError": "Failed to delete API token",
+    "tokenListError": "Failed to get API tokens",
+    "created": "Created:"
   }
 }
