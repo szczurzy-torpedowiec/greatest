@@ -110,5 +110,9 @@
     "tokenDeleteError": "Failed to delete API token",
     "tokenListError": "Failed to get API tokens",
     "created": "Created:"
+  },
+  "menu": {
+    "questionSets": "Question sets",
+    "tests": "Tests"
   }
 }

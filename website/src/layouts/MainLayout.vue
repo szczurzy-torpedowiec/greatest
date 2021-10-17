@@ -151,6 +151,7 @@ import { Viewer } from 'greatest-api-schemas';
 import DemoSignIn from 'components/signIn/DemoSignIn.vue';
 import ApiTokens from 'components/signIn/ApiTokens.vue';
 import { TitleLoading, titleState } from 'src/state/title';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -165,14 +166,16 @@ export default defineComponent({
     const demoUserDialog = ref<boolean>(false);
     const apiTokensDialog = ref<boolean>(false);
 
+    const i18n = useI18n();
+
     const menu = [
       {
-        title: 'Question sets',
+        title: i18n.t('menu.questionSets'),
         icon: 'folder',
         location: '/question-sets',
       },
       {
-        title: 'Tests',
+        title: i18n.t('menu.tests'),
         icon: 'description',
         location: '/tests',
       },
