@@ -69,16 +69,16 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
     const user = await requireAuthentication(request, dbManager, true);
     const shortId = nanoid(10);
     const createdOn = new Date();
-    const getQuestionSet = new DefaultsMap(
-      async (setShortId: string) => {
+    const getQuestionSet = (setShortId: string) => new DefaultsMap(
+      async (newSetShortId: string) => {
         const questionSet = await dbManager.questionSetsCollection.findOne({
-          shortId: setShortId,
+          shortId: newSetShortId,
         });
-        if (questionSet === null) throw apiInstance.httpErrors.notFound(`Question set "${setShortId}" not found`);
-        if (!questionSet.ownerId.equals(user._id)) throw apiInstance.httpErrors.forbidden(`User does not own question set "${setShortId}"`);
+        if (questionSet === null) throw apiInstance.httpErrors.notFound(`Question set "${shortId}" not found`);
+        if (!questionSet.ownerId.equals(user._id)) throw apiInstance.httpErrors.forbidden(`User does not own question set "${shortId}"`);
         return questionSet;
       },
-    ).get;
+    ).get(setShortId);
     await dbManager.withTransaction(async () => {
       const questions: DbQuestion<false>[] = await Promise.all(
         request.body.questions.map<Promise<DbQuestion<false>>>(async (question) => {

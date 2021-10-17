@@ -16,7 +16,7 @@ export function firstNotUndefined<T, V>(
 }
 
 export function isEmpty(value: string) {
-  return value.trim() !== '';
+  return value.trim() === '';
 }
 
 export function isNotEmpty(value: string) {
