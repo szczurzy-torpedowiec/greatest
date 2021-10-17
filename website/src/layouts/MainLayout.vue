@@ -107,6 +107,7 @@
           v-for="link in menu"
           :key="link.location"
           v-ripple
+          :to="link.location"
           clickable
         >
           <q-item-section avatar>
