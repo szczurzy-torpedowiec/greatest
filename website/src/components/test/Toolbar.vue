@@ -14,7 +14,6 @@
     />
     <q-route-tab
       :to="getPath('scans')"
-      exact
       replace
       :label="$t('test.tabs.scans')"
     >

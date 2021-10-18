@@ -38,11 +38,16 @@ const routes: RouteRecordRaw[] = [
             path: 'scans',
             component: () => import('pages/tests/tabs/Scans.vue'),
             meta: { testTab: 'scans' },
-          },
-          {
-            path: 'scans/:scanShortId',
-            component: () => import('pages/tests/tabs/Scans.vue'),
-            meta: { testTab: 'scans' },
+            children: [
+              {
+                path: '/',
+                components: {}, // TODO: Remove if possible
+              },
+              {
+                path: ':scanShortId',
+                components: {},
+              },
+            ],
           },
         ],
       },

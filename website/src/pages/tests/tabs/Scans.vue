@@ -9,8 +9,23 @@
       :limits="[20, 80]"
     >
       <template #before>
-        <div class="image-contain full-height">
-          <img alt="Scan uploaded image"> <!-- TODO: Translate -->
+        <div
+          v-if="selectedScan === null"
+          class="full-height bg-dark text-white text-center column justify-center q-pa-sm"
+        >
+          <div class="text-h6">
+            No scan selected
+          </div>
+        </div>
+        <div
+          v-else
+          class="full-height column no-wrap"
+        >
+          <scan-details
+            :sheets="sheets"
+            :test-short-id="testShortId"
+            :scan="selectedScan"
+          />
         </div>
       </template>
       <template #after>
@@ -206,11 +221,14 @@
 
 <script lang="ts">
 import {
-  computed, defineComponent, reactive, PropType,
+  computed, defineComponent, reactive, PropType, ref,
 } from 'vue';
 import { useStorage } from 'src/utils';
 import { Scan, Sheet } from 'greatest-api-schemas';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
+import { getScanImageUrl, patchSheet } from 'src/api';
+import ScanDetails from 'components/test/scans/ScanDetails.vue';
 
 enum UnassignedReason {
   NoDetected,
@@ -248,6 +266,7 @@ interface Filters {
 }
 
 export default defineComponent({
+  components: { ScanDetails },
   props: {
     scans: {
       type: Array as PropType<Scan[] | null>,
@@ -264,6 +283,8 @@ export default defineComponent({
   },
   setup(props) {
     const i18n = useI18n();
+    const route = useRoute();
+
     const indexedSheets = computed(() => {
       if (props.sheets === null) return null;
       const map = new Map<string, Sheet>();
@@ -318,6 +339,15 @@ export default defineComponent({
       otherTestsDetected: null,
       reassigned: null,
     });
+    const selectedScan = computed(() => {
+      if (props.scans === null || !('scanShortId' in route.params)) return null;
+      const scan = props.scans.find((el) => el.shortId === route.params.scanShortId);
+      if (scan === undefined) return null;
+      return {
+        ...scan,
+        scanImageUrl: getScanImageUrl(props.testShortId, scan.shortId),
+      };
+    });
     return {
       UnassignedReason,
       pageStyleFn: (offset: number) => ({ height: offset ? `calc(100vh - ${offset}px)` : '100vh' }),
@@ -354,6 +384,7 @@ export default defineComponent({
           return filtered;
         },
       ),
+      selectedScan,
     };
   },
 });
