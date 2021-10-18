@@ -7,7 +7,11 @@
     >
       <div class="flex-grow">
         <q-item-label header>
-          {{ assignedSheet === null ? 'No assigned sheet' : 'Has assigned sheet' }}
+          {{
+            assignedSheet === null
+              ? $t('test.scans.hasAssigned.yes')
+              : $t('test.scans.hasAssigned.no')
+          }}
         </q-item-label>
       </div>
       <q-btn
@@ -19,14 +23,14 @@
         :disable="assignedSheet === null"
         @click="removeAssignment"
       >
-        <q-tooltip>Remove assigment</q-tooltip>
+        <q-tooltip>{{ $t('test.scans.removeAssignment') }}</q-tooltip>
       </q-btn>
       <q-btn
         color="primary"
         class="q-ma-sm"
         @click="showSheetSelect = true"
       >
-        Select
+        {{ $t('common.select') }}
       </q-btn>
     </q-card>
 
@@ -36,7 +40,7 @@
       class="q-mt-md rounded-borders"
     >
       <q-item-label header>
-        Detected sheets
+        {{ $t('test.scans.detectedSheets') }}
       </q-item-label>
       <q-item
         v-for="detection in detectedSheets"
@@ -48,15 +52,18 @@
         <q-item-section>
           <q-item-label>
             <code>{{ detection.phrase }}</code>
-            <span>
-              (page {{ detection.page + 1 }})
+            <span
+              v-if="scan.sheet.page !== null"
+              class="q-ml-xs"
+            >
+              {{ $t('test.scans.page', { page: detection.page + 1 }) }}
             </span>
           </q-item-label>
           <q-item-label
             v-if="detection.student === ''"
             class="text-grey-6"
           >
-            No student
+            {{ $t('test.scans.noStudent') }}
           </q-item-label>
           <q-item-label v-else>
             {{ detection.student }}
@@ -73,9 +80,9 @@
   <q-separator />
   <div class="image-contain flex-grow bg-dark text-white">
     <img
-      alt="Scan uploaded image"
+      :alt="$t('test.scans.imageAlt')"
       :src="scan.scanImageUrl"
-    > <!-- TODO: Translate -->
+    >
   </div>
 </template>
 

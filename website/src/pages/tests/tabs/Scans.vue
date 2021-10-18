@@ -14,7 +14,7 @@
           class="full-height bg-dark text-white text-center column justify-center q-pa-sm"
         >
           <div class="text-h6">
-            No scan selected
+            {{ $t('test.scans.removeAssignment') }}
           </div>
         </div>
         <div
@@ -31,7 +31,7 @@
       <template #after>
         <q-scroll-area class="full-height overflow-hidden">
           <q-item-label header>
-            Unassigned scans
+            {{ $t('test.scans.unassignedScans') }}
           </q-item-label>
           <q-item v-if="unassignedScans === null">
             <q-item-section>
@@ -53,7 +53,7 @@
             v-else-if="unassignedScans.length === 0"
             class="text-h6 text-center q-px-sm q-py-lg text-grey-8"
           >
-            Great, all scans are assigned!
+            {{ $t('test.scans.allAssigned') }}
           </div>
           <q-list v-else>
             <q-item
@@ -71,22 +71,22 @@
                   v-if="scan.reason === UnassignedReason.NoDetected"
                   class="text-red"
                 >
-                  No sheet detected
+                  {{ $t('test.scans.reason.noDetected') }}
                 </q-item-label>
                 <q-item-label
                   v-else-if="scan.reason === UnassignedReason.MultipleDetected"
                   class="text-amber"
                 >
-                  Multiple sheets detected
+                  {{ $t('test.scans.reason.multipleDetected') }}
                 </q-item-label>
                 <q-item-label
                   v-else-if="scan.reason === UnassignedReason.AnotherTest"
                   class="test-amber"
                 >
-                  Detected sheet from another test
+                  {{ $t('test.scans.reason.anotherTest') }}
                 </q-item-label>
                 <q-item-label v-else-if="scan.reason === UnassignedReason.AssignmentRemoved">
-                  Assignment removed
+                  {{ $t('test.scans.reason.assignmentRemoved') }}
                 </q-item-label>
               </q-item-section>
             </q-item>
@@ -94,7 +94,7 @@
           <q-separator />
           <div class="row items-center">
             <q-item-label header>
-              Assigned scans
+              {{ $t('test.scans.assignedScans') }}
             </q-item-label>
             <q-space />
             <q-btn
@@ -107,30 +107,30 @@
               <q-popup-proxy>
                 <q-card>
                   <q-card-section class="q-pb-none">
-                    <q-item-label>Other tests detected</q-item-label>
+                    <q-item-label>{{ $t('test.scans.filters.otherTests.label') }}</q-item-label>
                     <q-btn-toggle
                       v-model="filters.otherTestsDetected"
                       toggle-color="primary"
                       class="text-no-wrap"
                       outline
                       :options="[
-                        {label: 'Any', value: null},
-                        {label: 'Detected', value: true},
-                        {label: 'Not detected', value: false}
+                        {label: $t('test.scans.filters.otherTests.any'), value: null},
+                        {label: $t('test.scans.filters.otherTests.yes'), value: true},
+                        {label: $t('test.scans.filters.otherTests.no'), value: false}
                       ]"
                     />
                   </q-card-section>
                   <q-card-section class="q-pb-none">
-                    <q-item-label>With sheet reassigned</q-item-label>
+                    <q-item-label>{{ $t('test.scans.filters.reassigned.label') }}</q-item-label>
                     <q-btn-toggle
                       v-model="filters.reassigned"
                       toggle-color="primary"
                       class="text-no-wrap"
                       outline
                       :options="[
-                        {label: 'Any', value: null},
-                        {label: 'Yes', value: true},
-                        {label: 'No', value: false}
+                        {label: $t('test.scans.filters.reassigned.any'), value: null},
+                        {label: $t('test.scans.filters.reassigned.yes'), value: true},
+                        {label: $t('test.scans.filters.reassigned.no'), value: false}
                       ]"
                     />
                   </q-card-section>
@@ -140,8 +140,9 @@
                       outline
                       :disable="!filtersApplied"
                     >
-                      Reset
+                      {{ $t('common.reset') }}
                     </q-btn>
+                    <!-- TODO: Add logic -->
                   </q-card-actions>
                 </q-card>
               </q-popup-proxy>
@@ -166,7 +167,7 @@
             v-else-if="selectedAssignedScans.length === 0"
             class="text-h6 text-center q-px-sm q-py-lg text-grey-8"
           >
-            No scans match selected filters
+            {{ $t('test.scans.filters.noScans') }}
           </div>
           <q-item
             v-for="scan in selectedAssignedScans"
@@ -197,15 +198,18 @@
               <template v-else>
                 <q-item-label>
                   <code>{{ scan.sheet.phrase }}</code>
-                  <span v-if="scan.sheet.page !== null">
-                    (page {{ scan.sheet.page + 1 }})
+                  <span
+                    v-if="scan.sheet.page !== null"
+                    class="q-ml-xs"
+                  >
+                    {{ $t('test.scans.page', { page: scan.sheet.page + 1 }) }}
                   </span>
                 </q-item-label>
                 <q-item-label
                   v-if="scan.sheet.student === ''"
                   class="no-student-label"
                 >
-                  No student
+                  {{ $t('test.scans.noStudent') }}
                 </q-item-label>
                 <q-item-label v-else>
                   {{ scan.sheet.student }}
@@ -221,13 +225,13 @@
 
 <script lang="ts">
 import {
-  computed, defineComponent, reactive, PropType, ref,
+  computed, defineComponent, reactive, PropType,
 } from 'vue';
 import { useStorage } from 'src/utils';
 import { Scan, Sheet } from 'greatest-api-schemas';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
-import { getScanImageUrl, patchSheet } from 'src/api';
+import { getScanImageUrl } from 'src/api';
 import ScanDetails from 'components/test/scans/ScanDetails.vue';
 
 enum UnassignedReason {

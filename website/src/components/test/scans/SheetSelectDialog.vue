@@ -14,24 +14,22 @@
       >
         <q-step
           name="sheet"
-          title="Select sheet"
+          :title="$t('test.scans.selectSheet.title')"
           class="step-no-padding"
           :done="selectedSheet !== null"
         >
-          <!-- TODO: Translate -->
           <q-card-section>
             <q-input
               v-model="searchValue"
               type="search"
-              label="Search"
+              :label="$t('test.scans.selectSheet.search')"
               filled
               clearable
               icon="mdi-magnify"
               clear-icon="mdi-close"
-              hint="Search by sheet phrase or student"
+              :hint="$t('test.scans.selectSheet.searchHint')"
               autofocus
             >
-              <!-- Translate -->
               <template #prepend>
                 <q-icon name="mdi-magnify" />
               </template>
@@ -68,7 +66,7 @@
               v-else-if="sheetItems.length === 0"
               class="text-h6 text-center q-px-sm q-py-lg text-grey-8"
             >
-              No sheets match this search
+              {{ $t('test.scans.selectSheet.noMatching') }}
             </div>
             <q-item
               v-for="sheet in sheetItems"
@@ -81,7 +79,7 @@
                 v-if="sheet.student === ''"
                 class="text-grey-6 col-5"
               >
-                No student
+                {{ $t('test.scans.noStudent') }}
               </q-item-section>
               <q-item-section
                 v-else
@@ -97,7 +95,7 @@
         </q-step>
         <q-step
           name="page"
-          title="Select page"
+          :title="$t('test.scans.selectSheet.pageTitle')"
           :header-nav="selectedSheet !== null"
         >
           <q-slider
@@ -106,7 +104,7 @@
             :max="selectedSheet.generated.pages - 1"
             snap
             markers
-            :label-value="`Page ${page + 1}`"
+            :label-value="$t('test.scans.selectSheet.pageSlider', { page: page + 1 })"
             label-always
           />
           <q-card-actions
@@ -118,13 +116,13 @@
               outline
               @click="wrapSubmit(selectedSheetId, null)"
             >
-              Without a page
+              {{ $t('test.scans.selectSheet.submitWithoutPage') }}
             </q-btn>
             <q-btn
               color="primary"
               @click="wrapSubmit(selectedSheetId, page)"
             >
-              With page {{ page + 1 }}
+              {{ $t('test.scans.selectSheet.submitWithPage', { page: page + 1 }) }}
             </q-btn>
           </q-card-actions>
         </q-step>
@@ -180,26 +178,18 @@ export default defineComponent({
       searchValue,
       selectedSheetId,
       selectedSheet: computed(() => {
-        console.time('selected sheet computed ran');
         if (props.sheets === null || selectedSheetId.value === null) return null;
-        const item = props.sheets.find((sheet) => sheet.shortId === selectedSheetId.value) ?? null;
-        console.timeEnd('selected sheet computed ran');
-        return item;
+        return props.sheets.find((sheet) => sheet.shortId === selectedSheetId.value) ?? null;
       }),
       page,
       sheetItems: computed(() => {
-        console.time('sheet items computed ran');
         if (props.sheets === null) return null;
         const search = searchValue.value.trim().toLowerCase();
         if (search === '') return props.sheets;
-        const filtered = props.sheets
-          .filter(
-            (sheet) => (sheet.phrase.toLowerCase().includes(search)
-            || sheet.student.toLowerCase().includes(search)
-            || sheet.shortId === search),
-          );
-        console.timeEnd('sheet items computed ran');
-        return filtered;
+        return props.sheets.filter((sheet) => (
+          sheet.phrase.toLowerCase().includes(search)
+          || sheet.student.toLowerCase().includes(search)
+          || sheet.shortId === search));
       }),
       selectSheet: async (sheet: Sheet) => {
         if (sheet.generated === null) await wrapSubmit(sheet.shortId, null);
