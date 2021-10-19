@@ -1,76 +1,83 @@
 <template>
-  <div class="q-pa-md">
+  <div :class="fullScreen ? 'q-pa-sm' : 'q-pa-md'">
+    <q-btn
+      v-if="fullScreen"
+      flat
+      round
+      icon="mdi-arrow-left"
+      class="q-mb-sm"
+      :to="`/tests/${testShortId}/scans`"
+    />
     <q-card
       bordered
       flat
-      class="row items-center no-wrap"
     >
-      <div class="flex-grow">
-        <q-item-label header>
-          {{
-            assignedSheet === null
-              ? $t('test.scans.hasAssigned.no')
-              : $t('test.scans.hasAssigned.yes')
-          }}
-        </q-item-label>
+      <div class="row items-center no-wrap">
+        <div class="flex-grow">
+          <q-item-label header>
+            {{
+              assignedSheet === null
+                ? $t('test.scans.hasAssigned.no')
+                : $t('test.scans.hasAssigned.yes')
+            }}
+          </q-item-label>
+        </div>
+        <q-btn
+          icon="mdi-delete"
+          flat
+          round
+          color="negative"
+          :loading="removeAssignmentLoading"
+          :disable="assignedSheet === null"
+          @click="removeAssignment"
+        >
+          <q-tooltip>{{ $t('test.scans.removeAssignment') }}</q-tooltip>
+        </q-btn>
+        <q-btn
+          color="primary"
+          class="q-ma-sm"
+          @click="showSheetSelect = true"
+        >
+          {{ $t('common.select') }}
+        </q-btn>
       </div>
-      <q-btn
-        icon="mdi-delete"
-        flat
-        round
-        color="negative"
-        :loading="removeAssignmentLoading"
-        :disable="assignedSheet === null"
-        @click="removeAssignment"
-      >
-        <q-tooltip>{{ $t('test.scans.removeAssignment') }}</q-tooltip>
-      </q-btn>
-      <q-btn
-        color="primary"
-        class="q-ma-sm"
-        @click="showSheetSelect = true"
-      >
-        {{ $t('common.select') }}
-      </q-btn>
-    </q-card>
-
-    <q-list
-      v-if="detectedSheets !== null && detectedSheets.length > 0"
-      bordered
-      class="q-mt-md rounded-borders"
-    >
-      <q-item-label header>
-        {{ $t('test.scans.detectedSheets') }}
-      </q-item-label>
-      <q-item
-        v-for="detection in detectedSheets"
-        :key="detection.sheetShortId"
-        clickable
-        :active="assignedSheet?.shortId === detection.sheetShortId"
-        @click="sheetSelectSubmit(detection.sheetShortId, detection.page)"
-      >
-        <q-item-section>
-          <q-item-label>
-            <code>{{ detection.phrase }}</code>
-            <span
-              v-if="scan.sheet.page !== null"
-              class="q-ml-xs"
-            >
-              {{ $t('test.scans.page', { page: detection.page + 1 }) }}
-            </span>
-          </q-item-label>
-          <q-item-label
-            v-if="detection.student === ''"
-            class="text-grey-6"
+      <template v-if="detectedSheets !== null && detectedSheets.length > 0">
+        <q-separator />
+        <q-item-label header>
+          {{ $t('test.scans.detectedSheets') }}
+        </q-item-label>
+        <q-list>
+          <q-item
+            v-for="detection in detectedSheets"
+            :key="detection.sheetShortId"
+            clickable
+            :active="assignedSheet?.shortId === detection.sheetShortId"
+            @click="sheetSelectSubmit(detection.sheetShortId, detection.page)"
           >
-            {{ $t('test.scans.noStudent') }}
-          </q-item-label>
-          <q-item-label v-else>
-            {{ detection.student }}
-          </q-item-label>
-        </q-item-section>
-      </q-item>
-    </q-list>
+            <q-item-section>
+              <q-item-label>
+                <code>{{ detection.phrase }}</code>
+                <span
+                  v-if="scan.sheet.page !== null"
+                  class="q-ml-xs"
+                >
+                  {{ $t('test.scans.page', { page: detection.page + 1 }) }}
+                </span>
+              </q-item-label>
+              <q-item-label
+                v-if="detection.student === ''"
+                class="text-grey-6"
+              >
+                {{ $t('test.scans.noStudent') }}
+              </q-item-label>
+              <q-item-label v-else>
+                {{ detection.student }}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </template>
+    </q-card>
     <sheet-select-dialog
       v-model="showSheetSelect"
       :sheets="sheets"
@@ -78,7 +85,7 @@
     />
   </div>
   <q-separator />
-  <div class="image-contain flex-grow bg-dark text-white">
+  <div class="image-contain flex-grow bg-dark text-white scan-details__image">
     <img
       :alt="$t('test.scans.imageAlt')"
       :src="scan.scanImageUrl"
@@ -101,6 +108,9 @@ export default defineComponent({
     SheetSelectDialog,
   },
   props: {
+    fullScreen: {
+      type: Boolean,
+    },
     testShortId: {
       type: String,
       required: true,
@@ -189,3 +199,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss">
+.scan-details__image {
+  min-height: 200px;
+}
+</style>

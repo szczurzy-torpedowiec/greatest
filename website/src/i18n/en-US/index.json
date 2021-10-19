@@ -119,7 +119,8 @@
         "searchHint": "Search by sheet phrase or student"
       },
       "assignSheetFailed": "Failed to select sheet",
-      "removeSheetAssignmentFailed": "Failed to deselect sheet"
+      "removeSheetAssignmentFailed": "Failed to deselect sheet",
+      "notSelected": "No sheet selected"
     }
   },
   "404": {
