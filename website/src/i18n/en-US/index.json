@@ -6,6 +6,7 @@
     "use": "Use",
     "newQuestionSet": "New question set",
     "questionSetName": "Question set name",
+    "newQuestion":"New question",
     "noVariants": "No variants",
     "addVariant": "Add variant",
     "addOpenQuestion": "Add open question",
@@ -29,6 +30,8 @@
     "create": "Create",
     "save": "save",
     "delete": "Delete",
+    "reset": "Reset",
+    "select": "Select",
     "deleteConfirmation": "Do you really want to delete this element?",
     "add": "Add",
     "use": "Use"
@@ -73,6 +76,54 @@
       "noSheetsSelected": "No sheets selected",
       "cannotDeleteScannedSheets": "Cannot delete scanned sheets",
       "deleteSheetError": "Failed to delete sheet"
+    },
+    "scans": {
+      "assignedScans": "Assigned scans",
+      "unassignedScans": "Unassigned scans",
+      "reason": {
+        "noDetected": "No sheet detected",
+        "multipleDetected": "Multiple sheets detected",
+        "anotherTest": "Detected sheet from another test",
+        "assignmentRemoved": "Assignment removed"
+      },
+      "allAssigned": "Great, all scans are assigned!",
+      "filters": {
+        "otherTests": {
+          "label": "Other tests detected",
+          "any": "Any",
+          "yes": "Detected",
+          "no": "Not detected"
+        },
+        "reassigned": {
+          "label": "With sheet reassigned",
+          "any": "Any",
+          "yes": "Yes",
+          "no": "No"
+        },
+        "noScans": "No scans match selected filters"
+      },
+      "noStudent": "No student",
+      "page": "(page {page})",
+      "imageAlt": "Image of selected scan",
+      "detectedSheets": "Detected sheets",
+      "hasAssigned": {
+        "yes": "Has assigned sheet",
+        "no": "No assigned sheet"
+      },
+      "removeAssignment": "Remove assignment",
+      "selectSheet": {
+        "title": "Select sheet",
+        "pageTitle": "Select page",
+        "pageSlider": "Page {page}",
+        "submitWithoutPage": "Without page",
+        "submitWithPage": "With page {page}",
+        "noMatching": "No sheets match this search",
+        "search": "Search",
+        "searchHint": "Search by sheet phrase or student"
+      },
+      "assignSheetFailed": "Failed to select sheet",
+      "removeSheetAssignmentFailed": "Failed to deselect sheet",
+      "notSelected": "No sheet selected"
     }
   },
   "404": {
@@ -105,11 +156,14 @@
     "generate": "Generate",
     "noApiTokens": "No API tokens",
     "tokenCopied": "API token copied to clipboard",
-    "tokenCopyFallback": "Generated API token:",
+    "tokenCopyFallback": "Generated API token: {token}",
     "tokenError": "Failed to generate API token",
     "tokenDeleteError": "Failed to delete API token",
     "tokenListError": "Failed to get API tokens",
     "created": "Created:",
+    "newToken": "New token",
+    "tokenName": "Token name",
+    "fillCredentials": "Fill",
     "authRequired": "You need to be signed in to access this function"
   },
   "menu": {

@@ -92,6 +92,13 @@
       </q-td>
     </template>
     <template
+      #body-cell-phrase="cell"
+    >
+      <q-td :props="cell">
+        <code>{{ cell.value }}</code>
+      </q-td>
+    </template>
+    <template
       #body-cell-pages="cell"
     >
       <q-td :props="cell">
