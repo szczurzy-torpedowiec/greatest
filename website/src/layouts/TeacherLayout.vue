@@ -160,7 +160,7 @@ import { TitleLoading, titleState } from 'src/state/title';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-  name: 'MainLayout',
+  name: 'TeacherLayout',
   components: {
     DemoSignIn,
     ApiTokens,

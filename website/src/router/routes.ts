@@ -3,41 +3,36 @@ import { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('pages/Index.vue'),
+  },
+  {
+    path: '/teacher',
+    component: () => import('layouts/TeacherLayout.vue'),
+    meta: {
+      requiresAuth: true,
+    },
     children: [
       {
         path: '',
-        component: () => import('pages/Index.vue'),
+        component: () => import('pages/Teacher.vue'),
       },
       {
-        path: 'teacher/question-sets',
+        path: 'question-sets',
         component: () => import('pages/questionSets/QuestionSets.vue'),
-        meta: {
-          requiresAuth: true,
-        },
       },
       {
-        path: 'teacher/question-sets/:id/edit',
+        path: 'question-sets/:id/edit',
         component: () => import('pages/questionSets/Editor.vue'),
-        meta: {
-          requiresAuth: true,
-        },
       },
       {
-        path: 'teacher/tests',
+        path: 'tests',
         component: () => import('pages/tests/Tests.vue'),
-        meta: {
-          requiresAuth: true,
-        },
       },
       {
-        path: 'teacher/tests/:testShortId',
+        path: 'tests/:testShortId',
         components: {
           default: () => import('pages/tests/Test.vue'),
           toolbarContent: () => import('components/test/Toolbar.vue'),
-          meta: {
-            requiresAuth: true,
-          },
         },
         children: [
           {
