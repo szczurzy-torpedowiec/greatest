@@ -17,7 +17,3 @@ export default defineComponent({
   name: 'MainLayout',
 });
 </script>
-
-<style scoped>
-
-</style>
