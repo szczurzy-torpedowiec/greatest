@@ -107,7 +107,9 @@
               <q-popup-proxy>
                 <q-card>
                   <q-card-section class="q-pb-none">
-                    <q-item-label>{{ $t('test.scans.filters.otherTests.label') }}</q-item-label>
+                    <q-item-label class="q-mb-sm">
+                      {{ $t('test.scans.filters.otherTests.label') }}
+                    </q-item-label>
                     <q-btn-toggle
                       v-model="filters.otherTestsDetected"
                       toggle-color="primary"
@@ -121,12 +123,15 @@
                     />
                   </q-card-section>
                   <q-card-section class="q-pb-none">
-                    <q-item-label>{{ $t('test.scans.filters.reassigned.label') }}</q-item-label>
+                    <q-item-label class="q-mb-sm">
+                      {{ $t('test.scans.filters.reassigned.label') }}
+                    </q-item-label>
                     <q-btn-toggle
                       v-model="filters.reassigned"
                       toggle-color="primary"
                       class="text-no-wrap"
                       outline
+                      spread
                       :options="[
                         {label: $t('test.scans.filters.reassigned.any'), value: null},
                         {label: $t('test.scans.filters.reassigned.yes'), value: true},
@@ -139,10 +144,10 @@
                       color="red"
                       outline
                       :disable="!filtersApplied"
+                      @click="resetFilters"
                     >
                       {{ $t('common.reset') }}
                     </q-btn>
-                    <!-- TODO: Add logic -->
                   </q-card-actions>
                 </q-card>
               </q-popup-proxy>
@@ -369,6 +374,10 @@ export default defineComponent({
       filtersApplied: computed(
         () => filters.otherTestsDetected !== null || filters.reassigned !== null,
       ),
+      resetFilters: () => {
+        filters.otherTestsDetected = null;
+        filters.reassigned = null;
+      },
       selectedAssignedScans: computed<ScanItemAssigned[] | null>(
         () => {
           if (scanItems.value === null) return null;
