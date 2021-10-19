@@ -32,6 +32,7 @@
                   type="submit"
                   color="primary"
                   :label="$t('common.add')"
+                  :disable="newTokenDisable"
                 />
               </q-card-actions>
             </q-form>
@@ -92,6 +93,7 @@
 
 <script lang="ts">
 import {
+  computed,
   defineComponent, onMounted, ref,
 } from 'vue';
 
@@ -133,7 +135,9 @@ export default defineComponent({
     }
 
     const showNewTokenPopup = ref(false);
+    const newTokenDisable = computed(() => newTokenName.value.trim() === '');
     async function submitToken() {
+      if (newTokenDisable.value) return;
       try {
         const key = await generateApiToken(newTokenName.value);
         try {
@@ -175,6 +179,7 @@ export default defineComponent({
       showNewTokenPopup,
       tokens,
       newTokenName,
+      newTokenDisable,
       submitToken,
       deleteToken,
     };

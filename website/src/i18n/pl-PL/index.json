@@ -109,7 +109,8 @@
       "tokenError": "Nie udało się wygenerować tokenu API",
       "tokenDeleteError": "Nie udało się usunąć tokenu API",
       "tokenListError": "Nie udało się załadować listy tokenów API",
-      "created": "Stworzony:"
+      "created": "Stworzony:",
+      "fillCredentials": "Wypełnij"
     },
     "menu": {
       "questionSets": "Zestawy pytań",

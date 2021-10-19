@@ -111,7 +111,8 @@
     "tokenListError": "Failed to get API tokens",
     "created": "Created:",
     "newToken": "New token",
-    "tokenName": "Token name"
+    "tokenName": "Token name",
+    "fillCredentials": "Fill"
   },
   "menu": {
     "questionSets": "Question sets",

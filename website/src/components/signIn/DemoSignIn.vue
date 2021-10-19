@@ -16,10 +16,10 @@
             {{ $t('signIn.email') }}: {{ credentials.email }}<br>
             {{ $t('signIn.password') }}: {{ credentials.password }}
           </q-card-section>
-          <q-card-actions class="justify-end">
+          <q-card-actions align="right">
             <q-btn
               flat
-              :label="$t('common.use')"
+              :label="$t('signIn.fillCredentials')"
               @click="useCredentials"
             />
           </q-card-actions>
@@ -39,18 +39,20 @@
         </div>
       </q-card>
     </q-card-section>
-    <q-card-section>
-      <q-form
-        class="q-gutter-md"
-        action="/auth/sign-in/demo"
-        method="POST"
-      >
+    <q-form
+      action="/auth/sign-in/demo"
+      method="POST"
+      @submit="onSignInSubmit"
+    >
+      <q-card-section class="q-gutter-md">
         <q-input
           v-model="email"
           outlined
           :label="$t('signIn.email')"
           type="email"
           name="email"
+          filled
+          required
         />
         <q-input
           v-model="password"
@@ -58,19 +60,24 @@
           outlined
           type="password"
           name="password"
+          filled
         />
+      </q-card-section>
+      <q-card-actions align="right">
         <q-btn
           color="primary"
           :label="$t('signIn.signIn')"
           type="submit"
+          :disable="disableSignIn"
         />
-      </q-form>
-    </q-card-section>
+      </q-card-actions>
+    </q-form>
   </q-card>
 </template>
 
 <script lang="ts">
 import {
+  computed,
   defineComponent, ref,
 } from 'vue';
 import { createDemoUser } from 'src/api';
@@ -87,6 +94,13 @@ export default defineComponent({
       credentials.value = await createDemoUser();
     }
 
+    const disableSignIn = computed(() => email.value.trim() === '' || password.value === '');
+
+    function onSignInSubmit(event: Event) {
+      if (disableSignIn.value) event.preventDefault();
+      else (event.target as HTMLFormElement).submit();
+    }
+
     function useCredentials() {
       if (credentials.value) {
         email.value = credentials.value?.email;
@@ -98,8 +112,10 @@ export default defineComponent({
       email,
       password,
       credentials,
+      disableSignIn,
       generateCredentials,
       useCredentials,
+      onSignInSubmit,
     };
   },
 });
