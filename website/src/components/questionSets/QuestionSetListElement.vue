@@ -15,7 +15,7 @@
               <div class="q-pa-md">
                 <q-input
                   v-model="newName"
-                  outlined
+                  filled
                   :label="$t('questionSets.questionSetName')"
                   @keydown.enter="submitName"
                 >

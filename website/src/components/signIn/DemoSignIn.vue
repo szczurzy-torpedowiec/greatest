@@ -48,7 +48,6 @@
       <q-card-section class="q-gutter-md">
         <q-input
           v-model="email"
-          outlined
           :label="$t('signIn.email')"
           type="email"
           name="email"
@@ -58,7 +57,6 @@
         <q-input
           v-model="password"
           :label="$t('signIn.password')"
-          outlined
           type="password"
           name="password"
           filled

@@ -5,14 +5,14 @@
         <q-input
           v-model="newTestName"
           class="col q-my-sm"
-          outlined
+          filled
           :label="$t('tests.testName')"
           :rules="[ val => val.trim() !== '' || $t('tests.testNameEmptyError')]"
         />
         <q-select
           v-model="newTestQuestionSet"
           class="col q-my-sm"
-          outlined
+          filled
           :label="$t('tests.questionSet')"
           :options="questionSets"
           option-label="name"

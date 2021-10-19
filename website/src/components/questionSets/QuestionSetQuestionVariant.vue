@@ -9,6 +9,7 @@
       <div class="row">
         <q-input
           v-model="values.content"
+          filled
           class="col"
           :label="$t('common.question')"
         />
@@ -27,7 +28,7 @@
       >
         <q-input
           v-model="values.correctAnswer"
-          outlined
+          filled
           color="green"
           class="q-mt-md q-mx-sm col-5"
           :label="$t('common.correctAnswer')"
@@ -43,7 +44,7 @@
           v-for="(_, index) in values.incorrectAnswers"
           :key="index"
           v-model="values.incorrectAnswers[index]"
-          outlined
+          filled
           color="red"
           class="q-mt-md q-mx-sm col-5"
           :label="$t('common.incorrectAnswer')"
@@ -59,8 +60,10 @@
         </q-input>
       </div>
     </q-card-section>
-    <q-card-actions v-if="edited">
-      <q-space />
+    <q-card-actions
+      v-if="edited"
+      align="right"
+    >
       <q-btn
         color="orange"
         :label="$t('common.save')"

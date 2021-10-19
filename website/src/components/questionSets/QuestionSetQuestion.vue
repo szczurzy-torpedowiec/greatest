@@ -30,7 +30,7 @@
           type="number"
           :label="$t('common.points')"
           dense
-          outlined
+          filled
           class="q-mx-sm"
           min="0"
           max="50"
