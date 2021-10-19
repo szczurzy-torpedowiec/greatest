@@ -9,8 +9,8 @@
         <q-item-label header>
           {{
             assignedSheet === null
-              ? $t('test.scans.hasAssigned.yes')
-              : $t('test.scans.hasAssigned.no')
+              ? $t('test.scans.hasAssigned.no')
+              : $t('test.scans.hasAssigned.yes')
           }}
         </q-item-label>
       </div>
