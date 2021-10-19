@@ -105,11 +105,13 @@
     "generate": "Generate",
     "noApiTokens": "No API tokens",
     "tokenCopied": "API token copied to clipboard",
-    "tokenCopyFallback": "Generated API token:",
+    "tokenCopyFallback": "Generated API token: {token}",
     "tokenError": "Failed to generate API token",
     "tokenDeleteError": "Failed to delete API token",
     "tokenListError": "Failed to get API tokens",
-    "created": "Created:"
+    "created": "Created:",
+    "newToken": "New token",
+    "tokenName": "Token name"
   },
   "menu": {
     "questionSets": "Question sets",

@@ -1,41 +1,63 @@
 <template>
   <q-card
-    class="q-pa-lg"
     style="width: 700px"
   >
-    <q-card-section>
-      <div class="row">
-        <div class="text-h4 col">
-          {{ $t('signIn.apiTokens') }}
-        </div>
-        <div>
-          <q-btn
-            flat
-            icon="add"
-          >
-            <q-menu>
-              <div class="q-pa-md">
+    <q-card-section class="row items-center">
+      <div class="text-h6 col">
+        {{ $t('signIn.apiTokens') }}
+      </div>
+      <q-btn
+        flat
+        :label="$t('signIn.newToken')"
+        color="primary"
+        icon="add"
+      >
+        <q-popup-proxy
+          v-model="showNewTokenPopup"
+          no-refocus
+        >
+          <q-card>
+            <q-form @submit.prevent="submitToken">
+              <q-card-section class="q-pb-none">
                 <q-input
                   v-model="newTokenName"
                   class="q-my-sm"
-                  outlined
-                  @keydown.enter="submitToken"
+                  filled
+                  autofocus
+                  :label="$t('signIn.tokenName')"
                 />
-                <div class="row justify-end">
-                  <q-btn
-                    v-close-popup
-                    color="primary"
-                    :label="$t('common.add')"
-                    @click="submitToken"
-                  />
-                </div>
-              </div>
-            </q-menu>
-          </q-btn>
-        </div>
+              </q-card-section>
+              <q-card-actions align="right">
+                <q-btn
+                  type="submit"
+                  color="primary"
+                  :label="$t('common.add')"
+                />
+              </q-card-actions>
+            </q-form>
+          </q-card>
+        </q-popup-proxy>
+      </q-btn>
+    </q-card-section>
+    <q-card-section>
+      <div
+        v-if="tokens === null"
+        class="q-ma-lg row"
+      >
+        <q-skeleton
+          class="col"
+          type="rect"
+        />
+      </div>
+      <div
+        v-else-if="tokens.length === 0"
+        class="text-h6 text-center q-px-sm q-py-lg text-grey-8"
+      >
+        {{ $t('signIn.noApiTokens') }}
       </div>
       <q-card
         v-for="token in tokens"
+        v-else
         :key="token.tokenId"
         class="q-my-md"
         bordered
@@ -55,7 +77,7 @@
               flat
               icon="delete"
               color="red"
-              dense
+              round
             >
               <delete-confirm-menu
                 :submit="() => deleteToken(token.tokenId)"
@@ -64,26 +86,6 @@
           </q-card-section>
         </q-card-section>
       </q-card>
-      <div
-        v-if="!tokens[0]"
-        class="q-ma-lg"
-      >
-        <div
-          v-if="tokensLoaded"
-          class="items-center column"
-        >
-          {{ $t('signIn.noApiTokens') }}
-        </div>
-        <div
-          v-else
-          class="row"
-        >
-          <q-skeleton
-            class="col"
-            type="rect"
-          />
-        </div>
-      </div>
     </q-card-section>
   </q-card>
 </template>
@@ -96,7 +98,7 @@ import {
 import { listApiTokens, generateApiToken, revokeApiToken } from 'src/api';
 import { Token } from 'greatest-api-schemas';
 import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
-import { useQuasar } from 'quasar';
+import { copyToClipboard, useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -105,8 +107,7 @@ export default defineComponent({
     DeleteConfirmMenu,
   },
   setup() {
-    const tokens = ref<Token[]>([]);
-    const tokensLoaded = ref<boolean>(false);
+    const tokens = ref<Token[] | null>(null);
     const newTokenName = ref<string>('');
 
     const quasar = useQuasar();
@@ -123,7 +124,6 @@ export default defineComponent({
             weekday: 'long',
           }),
         }));
-        tokensLoaded.value = true;
       } catch (error) {
         quasar.notify({
           type: 'negative',
@@ -132,19 +132,21 @@ export default defineComponent({
       }
     }
 
+    const showNewTokenPopup = ref(false);
     async function submitToken() {
       try {
         const key = await generateApiToken(newTokenName.value);
         try {
-          await navigator.clipboard.writeText(key.token);
+          await copyToClipboard(key.token);
           quasar.notify({
             message: i18n.t('signIn.tokenCopied'),
           });
         } catch (error) {
           quasar.notify({
-            message: `${i18n.t('signIn.tokenCopyFallback')} ${key.token}`,
+            message: i18n.t('signIn.tokenCopyFallback', { token: key.token }),
           });
         }
+        showNewTokenPopup.value = false;
       } catch (error) {
         quasar.notify({
           type: 'negative',
@@ -170,11 +172,11 @@ export default defineComponent({
     onMounted(getApiTokens);
 
     return {
+      showNewTokenPopup,
       tokens,
       newTokenName,
       submitToken,
       deleteToken,
-      tokensLoaded,
     };
   },
 });

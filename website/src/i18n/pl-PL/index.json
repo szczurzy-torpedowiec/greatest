@@ -105,7 +105,7 @@
       "generate": "Generuj",
       "noApiTokens": "Brak tokenów API",
       "tokenCopied": "Token API skopiowany do schowka",
-      "tokenCopyFallback": "Wygenerowany token API:",
+      "tokenCopyFallback": "Wygenerowany token API: {token}",
       "tokenError": "Nie udało się wygenerować tokenu API",
       "tokenDeleteError": "Nie udało się usunąć tokenu API",
       "tokenListError": "Nie udało się załadować listy tokenów API",
@@ -116,4 +116,3 @@
       "tests": "Testy"
     }
   }
-  

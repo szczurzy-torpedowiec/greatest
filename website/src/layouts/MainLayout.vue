@@ -34,15 +34,21 @@
           flat
         >
           <q-avatar>
-            <img :src="viewer.avatarUrl">
+            <img
+              :src="viewer.avatarUrl"
+              :alt="viewer.name"
+            >
           </q-avatar>
           <q-menu>
             <q-card>
               <q-card-section class="row items-center">
                 <q-avatar>
-                  <img :src="viewer.avatarUrl">
+                  <img
+                    :src="viewer.avatarUrl"
+                    :alt="viewer.name"
+                  >
                 </q-avatar>
-                <div class="col q-ml-sm">
+                <div class="col q-ml-sm text-no-wrap">
                   {{ viewer.name }}
                 </div>
               </q-card-section>
