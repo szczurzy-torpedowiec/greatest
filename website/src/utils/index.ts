@@ -24,3 +24,4 @@ export function isNotEmpty(value: string) {
 }
 
 export * from './defaults-map';
+export * from './storage';

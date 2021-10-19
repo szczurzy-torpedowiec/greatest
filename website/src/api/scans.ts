@@ -12,3 +12,10 @@ export function patchScan(
 ) {
   return ky.patch(`/api/tests/${testShortId}/scans/${sheetShortId}`, { json: body }).json<PatchScanReply>();
 }
+
+export function getScanImageUrl(
+  testShortId: string,
+  sheetShortId: string,
+) {
+  return `/api/tests/${testShortId}/scans/${sheetShortId}.webp`;
+}

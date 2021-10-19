@@ -29,19 +29,20 @@ const routes: RouteRecordRaw[] = [
         },
         children: [
           {
-            name: 'test-tab-questions',
             path: 'questions',
             component: () => import('pages/tests/tabs/Questions.vue'),
+            meta: { testTab: 'questions' },
           },
           {
-            name: 'test-tab-sheets',
             path: 'sheets',
             component: () => import('pages/tests/tabs/Sheets.vue'),
+            meta: { testTab: 'sheets' },
           },
           {
-            name: 'test-tab-scans',
-            path: 'scans',
+            name: 'TestScanTab',
+            path: 'scans/:scanShortId?',
             component: () => import('pages/tests/tabs/Scans.vue'),
+            meta: { testTab: 'scans' },
           },
         ],
       },
