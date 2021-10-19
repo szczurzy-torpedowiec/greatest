@@ -13,7 +13,7 @@
       :label="$t('test.tabs.sheets')"
     />
     <q-route-tab
-      :to="getPath('scans')"
+      :to="scansPath"
       replace
       :label="$t('test.tabs.scans')"
     >
@@ -39,6 +39,9 @@ export default defineComponent({
         if (testToolbarState.value === null) return undefined;
         return `/tests/${testToolbarState.value.testShortId}/${tab}`;
       },
+      scansPath: computed(() => ({
+        name: 'TestScanTab',
+      })),
       unassignedScanCount: computed(() => testToolbarState.value?.unassignedScanCount ?? 0),
     };
   },
