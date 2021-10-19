@@ -19,6 +19,7 @@
           <q-card-actions align="right">
             <q-btn
               flat
+              color="primary"
               :label="$t('signIn.fillCredentials')"
               @click="useCredentials"
             />
