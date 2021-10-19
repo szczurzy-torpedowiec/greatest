@@ -15,5 +15,13 @@ export function firstNotUndefined<T, V>(
   return matched;
 }
 
+export function isEmpty(value: string) {
+  return value.trim() === '';
+}
+
+export function isNotEmpty(value: string) {
+  return !isEmpty(value);
+}
+
 export * from './defaults-map';
 export * from './storage';

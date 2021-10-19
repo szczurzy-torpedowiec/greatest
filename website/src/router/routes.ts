@@ -18,6 +18,10 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/questionSets/Editor.vue'),
       },
       {
+        path: 'tests',
+        component: () => import('pages/tests/Tests.vue'),
+      },
+      {
         path: 'tests/:testShortId',
         components: {
           default: () => import('pages/tests/Test.vue'),
