@@ -93,7 +93,8 @@ import {
 } from 'vue';
 import SheetSelectDialog from 'components/test/scans/SheetSelectDialog.vue';
 import { Scan, Sheet } from 'greatest-api-schemas';
-import { uid } from 'quasar';
+import { uid, useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
@@ -114,6 +115,9 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const i18n = useI18n();
+    const quasar = useQuasar();
+
     const showSheetSelect = ref(false);
     const removeAssignmentLoading = ref(false);
     return {
@@ -130,7 +134,10 @@ export default defineComponent({
           showSheetSelect.value = false;
         } catch (error) {
           console.error(error);
-          // TODO: Notify
+          quasar.notify({
+            type: 'negative',
+            message: i18n.t('test.scans.assignSheetFailed'),
+          });
         }
       },
       showSheetSelect,
@@ -146,7 +153,10 @@ export default defineComponent({
           showSheetSelect.value = false;
         } catch (error) {
           console.error(error);
-          // TODO: Notify
+          quasar.notify({
+            type: 'negative',
+            message: i18n.t('test.scans.removeSheetAssignmentFailed'),
+          });
         }
         removeAssignmentLoading.value = false;
       },
