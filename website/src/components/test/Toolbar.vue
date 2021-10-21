@@ -37,7 +37,7 @@ export default defineComponent({
     return {
       getPath: (tab: string): string | undefined => {
         if (testToolbarState.value === null) return undefined;
-        return `/tests/${testToolbarState.value.testShortId}/${tab}`;
+        return `/teacher/tests/${testToolbarState.value.testShortId}/${tab}`;
       },
       scansPath: computed(() => ({
         name: 'TestScanTab',

@@ -163,7 +163,8 @@
     "created": "Created:",
     "newToken": "New token",
     "tokenName": "Token name",
-    "fillCredentials": "Fill"
+    "fillCredentials": "Fill",
+    "authRequired": "You need to be signed in to access this function"
   },
   "menu": {
     "questionSets": "Question sets",

@@ -9,6 +9,19 @@ const routes: RouteRecordRaw[] = [
         path: '',
         component: () => import('pages/Index.vue'),
       },
+    ],
+  },
+  {
+    path: '/teacher',
+    component: () => import('layouts/TeacherLayout.vue'),
+    meta: {
+      requiresAuth: true,
+    },
+    children: [
+      {
+        path: '',
+        component: () => import('pages/Teacher.vue'),
+      },
       {
         path: 'question-sets',
         component: () => import('pages/questionSets/QuestionSets.vue'),

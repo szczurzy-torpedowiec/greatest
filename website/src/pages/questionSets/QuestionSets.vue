@@ -101,7 +101,7 @@ export default defineComponent({
         const response = await createQuestionSet({
           name: newQuestionSetName.value.trim(),
         });
-        await router.push(`/question-sets/${response.shortId}/edit`);
+        await router.push(`/teacher/question-sets/${response.shortId}/edit`);
       } catch (error) {
         quasar.notify({
           type: 'negative',
