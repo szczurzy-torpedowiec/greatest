@@ -26,3 +26,9 @@
     padding: 0;
   }
 }
+
+.scrollarea-full-width {
+  .q-scrollarea__content {
+    width: 100%;
+  }
+}

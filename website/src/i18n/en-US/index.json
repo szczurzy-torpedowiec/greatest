@@ -168,5 +168,11 @@
   "menu": {
     "questionSets": "Question sets",
     "tests": "Tests"
+  },
+  "createTest": {
+    "loadQuestionSetsError": "Failed to load question sets",
+    "loadQuestionsError": "Failed to load questions",
+    "questionSet": "Question set",
+    "setNotSelected": "No question set selected"
   }
 }

@@ -112,7 +112,8 @@ module.exports = {
     'consistent-return': 'off',
     'vue/return-in-computed-property': 'off',
     'no-shadow': 'off',
-    '@typescript-eslint/no-shadow': 'error'
+    '@typescript-eslint/no-shadow': 'error',
+    'array-callback-return': 'off'
   },
   settings: {
     'vue-i18n': {

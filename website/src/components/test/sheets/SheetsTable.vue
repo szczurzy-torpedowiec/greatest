@@ -184,7 +184,7 @@ interface Row {
   shortId: string;
   student: string;
   phrase: string;
-  pages: Pages | null;
+  totalPages: Pages | null;
   setStudentSubmit: (student: string) => Promise<void>;
 }
 
@@ -253,7 +253,7 @@ export default defineComponent({
     });
     const selected = ref<Row[]>([]);
     const selectedHasScanned = computed(() => selected.value.some(
-      (sheet) => sheet.pages !== null && sheet.pages?.total > 0,
+      (sheet) => sheet.totalPages !== null && sheet.totalPages?.total > 0,
     ));
     const deleteSheetAndHandle = async (sheetShortId: string) => {
       try {
@@ -312,7 +312,7 @@ export default defineComponent({
         shortId: sheet.shortId,
         student: sheet.student,
         phrase: sheet.phrase,
-        pages: mapPages(sheet, scansBySheetId.value?.get(sheet.shortId)),
+        totalPages: mapPages(sheet, scansBySheetId.value?.get(sheet.shortId)),
         setStudentSubmit: async (student: string) => {
           const requestId = uid();
           emit('addIgnoredRequestId', requestId);

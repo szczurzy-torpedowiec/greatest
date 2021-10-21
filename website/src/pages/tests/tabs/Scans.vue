@@ -21,10 +21,7 @@
       </q-card>
     </q-dialog>
   </q-page>
-  <q-page
-    v-else
-    :style-fn="pageStyleFn"
-  >
+  <full-height-page v-else>
     <q-splitter
       v-model="splitter"
       class="full-height"
@@ -60,7 +57,7 @@
         </q-scroll-area>
       </template>
     </q-splitter>
-  </q-page>
+  </full-height-page>
 </template>
 
 <script lang="ts">
@@ -73,9 +70,10 @@ import { useRoute, useRouter } from 'vue-router';
 import { getScanImageUrl } from 'src/api';
 import ScanDetails from 'components/test/scans/ScanDetails.vue';
 import ScanList from 'components/test/scans/ScanList.vue';
+import FullHeightPage from 'components/FullHeightPage.vue';
 
 export default defineComponent({
-  components: { ScanList, ScanDetails },
+  components: { FullHeightPage, ScanList, ScanDetails },
   props: {
     scans: {
       type: Array as PropType<Scan[] | null>,
@@ -104,9 +102,6 @@ export default defineComponent({
       };
     });
     return {
-      pageStyleFn: (offset: number) => ({
-        height: offset ? `calc(100vh - ${offset}px)` : '100vh',
-      }),
       splitter: useStorage<number>('scans-splitter-position', () => 80),
       selectedScan,
       onDialogHide: async () => {
