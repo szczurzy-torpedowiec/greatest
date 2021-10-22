@@ -6,7 +6,11 @@
       :limits="[20, 80]"
     >
       <template #before>
-        <question-picker />
+        <question-picker
+          :used-questions="usedQuestions"
+          :questions-map="questionsMap"
+          @add-question="onAddQuestion"
+        />
       </template>
       <template #after>
         <q-scroll-area class="full-height full-width scrollarea-full-width overflow-hidden">
@@ -21,6 +25,7 @@
               <page-render
                 :page-index="pageIndex"
                 :total-pages="pageItems.length"
+                :elements="page"
               />
             </preview-render>
             <div class="absolute-top-right q-ma-sm">
@@ -56,40 +61,80 @@
   </full-height-page>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import {
+  computed, defineComponent, reactive, ref,
+} from 'vue';
 import PreviewRender from 'components/render/PreviewRender.vue';
+import {
+  PageElement,
+  PageIdElement,
+  QuestionElementOpen,
+  QuestionElementQuiz,
+} from 'components/render/types';
+import { QuestionWithIds } from 'greatest-api-schemas';
 import QuestionPicker from '../components/createTest/QuestionPicker.vue';
 import PageRender from '../components/render/PageRender.vue';
-import { useStorage } from '../utils';
+import { DefaultsMap, typed, useStorage } from '../utils';
 import FullHeightPage from '../components/FullHeightPage.vue';
-
-interface Question {
-  type: 'question',
-  shortId: string;
-  variants: string[];
-}
-
-type PageElement = Question;
 
 export default defineComponent({
   components: {
     PreviewRender, PageRender, QuestionPicker, FullHeightPage,
   },
   setup() {
-    const pages = ref<PageElement[][]>([[]]);
+    const pages = ref<PageIdElement[][]>([[]]);
 
+    const usedQuestions = computed(() => {
+      const map = new DefaultsMap<string, Set<string>>(() => new Set());
+      pages.value.forEach((page) => page.forEach((item) => {
+        if (item.type === 'question') map.get(item.questionSetShortId).add(item.questionShortId);
+      }));
+      return map;
+    });
+    const questionsMap = reactive(new Map<string, QuestionWithIds[] | null>());
     return {
+      questionsMap,
       splitter: useStorage<number>('create-test-splitter-position', () => 40),
-      pageItems: computed(() => {
+      pages,
+      usedQuestions,
+      pageItems: computed<PageElement[][]>(() => {
         let questionCounter = 0;
         return pages.value.map((page) => page.map((element) => {
-          if (element.type === 'question') {
-            const item = {
-              type: 'question',
-              number: questionCounter,
-            };
-            questionCounter += 1;
-            return item;
+          switch (element.type) {
+            case 'question': {
+              const itemBase = {
+                type: 'question',
+                number: questionCounter,
+              } as const;
+              questionCounter += 1;
+              // TODO: Fix O(n^2) complexity
+              const question = questionsMap
+                .get(element.questionSetShortId)
+                ?.find((question1) => question1.shortId === element.questionShortId);
+              if (question === undefined) throw new Error('Question set not found');
+              switch (question.type) {
+                case 'open': return typed<QuestionElementOpen>({
+                  ...itemBase,
+                  maxPoints: question.maxPoints,
+                  questionType: 'open',
+                  variants: question.variants.map((variant) => ({
+                    type: 'open',
+                    content: variant.content,
+                  })),
+                });
+                case 'quiz': return typed<QuestionElementQuiz>({
+                  ...itemBase,
+                  maxPoints: question.maxPoints,
+                  questionType: 'quiz',
+                  variants: question.variants.map((variant) => ({
+                    type: 'quiz',
+                    content: variant.content,
+                    correctAnswer: variant.correctAnswer,
+                    incorrectAnswers: [...variant.incorrectAnswers],
+                  })),
+                });
+              }
+            }
           }
         }));
       }),
@@ -98,6 +143,14 @@ export default defineComponent({
       },
       removePage: (pageIndex: number) => {
         pages.value.splice(pageIndex, 1);
+      },
+      onAddQuestion: (questionSetShortId: string, questionShortId: string, variants: string[]) => {
+        pages.value[pages.value.length - 1].push({
+          type: 'question',
+          questionSetShortId,
+          questionShortId,
+          variants,
+        });
       },
     };
   },

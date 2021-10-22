@@ -23,5 +23,7 @@ export function isNotEmpty(value: string) {
   return !isEmpty(value);
 }
 
+export const typed = <X>(value: X): X => value;
+
 export * from './defaults-map';
 export * from './storage';

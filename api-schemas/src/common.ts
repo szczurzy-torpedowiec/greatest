@@ -23,7 +23,7 @@ export const sheetSchema = Type.Object({
   }),
   phrase: Type.String(),
   generated: nullable(Type.Object({
-    totalPages: Type.Integer(),
+    pages: Type.Integer(),
   })),
   questions: Type.Array(Type.Object({
     variant: Type.Integer(),

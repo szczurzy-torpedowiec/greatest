@@ -7,16 +7,19 @@
     />
     <div>
       <render-question
-        :points="20"
-        :variants="[]"
+        v-for="question in elements"
+        :key="`${question.questionSetShortId} ${question.questionShortId}`"
+        :points="question.maxPoints"
+        :variants="question.variants"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import RenderQuestion from 'components/render/RenderQuestion.vue';
+import { PageElement } from 'components/render/types';
 import RenderHeader from './RenderHeader.vue';
 
 export default defineComponent({
@@ -28,6 +31,10 @@ export default defineComponent({
     },
     totalPages: {
       type: Number,
+      required: true,
+    },
+    elements: {
+      type: Array as PropType<PageElement[]>,
       required: true,
     },
   },
