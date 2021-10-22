@@ -48,9 +48,23 @@ export default defineComponent({
   height: render-mm($page-height-mm);
   overflow: hidden;
 
-  &.page-render--show-excess:not(.page-render--dragging) {
+  &.page-render--show-excess {
     height: fit-content;
     min-height: render-mm($page-height-mm);
+  }
+
+  &.page-render--dragging {
+    display: flex;
+    flex-direction: column;
+
+    .page-render__wrapper {
+      flex-grow: 1;
+
+      .page-render__body {
+        display: flex;
+        flex-direction: column;
+      }
+    }
   }
 
   .page-render__wrapper {
@@ -60,10 +74,6 @@ export default defineComponent({
     .page-render__body {
       flex-grow: 1;
     }
-  }
-
-  &.page-render--dragging .page-render__wrapper {
-    height: 100%;
   }
 }
 </style>

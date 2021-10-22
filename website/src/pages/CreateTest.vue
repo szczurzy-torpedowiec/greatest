@@ -30,18 +30,18 @@
                   :page-index="pageIndex"
                   :total-pages="pageItems.length"
                   show-excess
-                  :dragging="dragging"
+                  :dragging="draggingCount > 0"
                 >
                   <draggable
                     group="page"
                     :model-value="page.elements"
                     item-key="key"
                     :component-data="{
-                      class: 'full-height'
+                      class: (draggingCount > 0) ? 'flex-grow' : 'fill-height',
                     }"
                     @change="page.onQuestionOrderChange"
-                    @start="dragging = true"
-                    @end="dragging = false"
+                    @start="draggingCount += 1"
+                    @end="draggingCount -= 1"
                   >
                     <template #item="{element, index}">
                       <render-question
@@ -52,7 +52,7 @@
                         variant-clickable
                         class="create-test__render-question"
                         :class="{
-                          'create-test__render-question--dragging': dragging
+                          'create-test__render-question--dragging': draggingCount > 0
                         }"
                       >
                         <template #variant-menu>
@@ -75,7 +75,7 @@
                   </draggable>
                   <template #wrapper>
                     <page-overflow-observer
-                      :freeze="dragging"
+                      :freeze="draggingCount > 0"
                       :render-mm-pixels="renderMmPixels"
                       @update:overflow="page.onOverflowUpdate"
                     />
@@ -194,7 +194,7 @@ export default defineComponent({
       splitter: useStorage<number>('create-test-splitter-position', () => 40),
       pages,
       usedQuestions,
-      dragging: ref(false),
+      draggingCount: ref(0),
       pageItems: computed<PageItem[]>(() => {
         let questionCounter = 0;
         return pages.value.map((page, pageIndex) => ({
