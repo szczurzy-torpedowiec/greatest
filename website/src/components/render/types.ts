@@ -17,14 +17,16 @@ export interface QuestionIdElement {
   questionSetShortId: string;
   questionShortId: string;
   variants: string[];
+  variant: number;
 }
 
 export type PageIdElement = QuestionIdElement;
 
 interface QuestionElementBase {
-  type: 'question';
+  key: string;
   number: number;
   maxPoints: number;
+  idElement: QuestionIdElement;
 }
 
 export interface QuestionElementOpen extends QuestionElementBase {

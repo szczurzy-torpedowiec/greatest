@@ -1,62 +1,56 @@
 <template>
   <div class="render-question">
-    <div class="render-question__label">
-      <div class="render-question__label-question">
-        Pytanie <b>{{ questionIndex ?? '-' }}</b>
-      </div>
-      <div class="render-question__label-variant">
-        Wariant
-        <b v-if="variant !== null">
-          {{ getVariantSymbol(variant) }}
-        </b>
-        <span
-          v-for="index in variants.length"
-          v-else
-          :key="index"
-          class="render-question__label-variant-item"
+    <div class="render-question__label-wrapper">
+      <div class="render-question__label">
+        <div class="render-question__label-question">
+          <span class="render-question__label-question-text">
+            {{ questionNumberString }}
+          </span>
+        </div>
+        <div
+          v-if="variants.length !== 1"
+          class="render-question__label-variant"
           :class="{
-            'render-question__label-variant-item--active': selectedVariant === index-1
+            'render-question__label-variant--clickable': variantClickable
           }"
-          tabindex="0"
-          @click="selectedVariant = index-1"
+          :role="variantClickable ? 'button' : undefined"
         >
-          {{ getVariantSymbol(index-1) }}
-        </span>
+          {{ variantSymbol }}
+          <slot name="variant-menu" />
+        </div>
       </div>
       <div class="render-question__label-spacer" />
-      <div class="render-question__label-points">
-        <b>{{ points }}</b> punktów
-      </div>
     </div>
-    <div class="render-question__variants">
-      <render-question-variant-open
-        v-for="(item, index) in variants"
-        :key="index"
-        class="render-question__variant"
-        :hidden="selectedVariant !== index"
-        :variant="item"
-      />
+    <render-question-content
+      :variant="variant"
+      :variants="variants"
+      class="render-question__content"
+    />
+    <div class="render-question__points">
+      <b>{{ points }}</b> punktów
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import {
-  defineComponent, PropType, ref, watch,
+  computed,
+  defineComponent, PropType,
 } from 'vue';
-import RenderQuestionVariantOpen from 'components/render/RenderQuestionVariantOpen.vue';
 import { RenderVariant } from 'components/render/types';
+import RenderQuestionContent from 'components/render/RenderQuestionContent.vue';
+import { getVariantSymbol } from 'src/utils';
 
 export default defineComponent({
-  components: { RenderQuestionVariantOpen },
+  components: { RenderQuestionContent },
   props: {
     questionIndex: {
       type: Number as PropType<number | null>,
       default: null,
     },
     variant: {
-      type: Number as PropType<number | null>,
-      default: null,
+      type: Number as PropType<number>,
+      required: true,
     },
     variants: {
       type: Array as PropType<RenderVariant[]>,
@@ -66,15 +60,15 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    variantClickable: Boolean,
   },
   setup(props) {
-    const selectedVariant = ref(0);
-    watch(() => props.variant, (value) => {
-      if (value !== null) selectedVariant.value = value;
-    }, { immediate: true });
     return {
-      selectedVariant,
-      getVariantSymbol: (variant: number) => String.fromCharCode(variant + 65),
+      variantSymbol: computed(() => getVariantSymbol(props.variant)),
+      questionNumberString: computed(() => {
+        if (props.questionIndex === null) return '-';
+        return props.questionIndex + 1;
+      }),
     };
   },
 });
@@ -85,59 +79,56 @@ export default defineComponent({
 
 .render-question {
   padding: 0 render-mm(5);
+  display: flex;
+  align-items: baseline;
+  margin-bottom: render-mm(5);
 
-  .render-question__label {
-    display: flex;
-    align-items: baseline;
+  .render-question__label-wrapper {
+    min-width: render-mm(18);
 
-    .render-question__label-question {
+    .render-question__label {
       border: render-mm(0.2) solid black;
       border-radius: render-mm(1);
-      padding: 0 render-mm(1.5);
+      display: flex;
       height: render-mm(8);
       line-height: render-mm(8);
-    }
+      overflow: hidden;
 
-    .render-question__label-variant {
-      margin-left: render-mm(1.5);
+      .render-question__label-question {
+        background-color: black;
+        color: white;
+        min-width: render-mm(8);
+        text-align: center;
+        padding: 0 render-mm(1.5);
+        flex-grow: 1;
+      }
 
-      .render-question__label-variant-item {
-        margin-right: render-mm(1.5);
-        padding: render-mm(0.5) render-mm(1);
-        border: render-mm(0.2) solid blue;
-        border-radius: render-mm(1);
-        user-select: none;
+      .render-question__label-variant {
+        min-width: render-mm(8);
+        padding: 0 render-mm(1.5);
+        text-align: center;
 
-        &.render-question__label-variant-item--active {
-          background-color: rgba(blue, 50%);
-          color: white;
-        }
-
-        &:not(.render-question__label-variant-item--active) {
-          color: blue;
+        &.render-question__label-variant--clickable {
           cursor: pointer;
+          user-select: none;
+          transition: background-color 150ms;
+
+          &:hover {
+            background: #0002;
+          }
         }
       }
     }
-
-    .render-question__label-spacer {
-      flex-grow: 1;
-      min-width: render-mm(2);
-    }
-
-    .render-question__label-points {
-
-    }
   }
 
-  .render-question__variants {
-    display: grid;
-    margin-top: render-mm(2);
+  .render-question__content {
+    margin-left: render-mm(3);
+    margin-right: render-mm(3);
+  }
 
-    .render-question__variant {
-      grid-row: 1;
-      grid-column: 1;
-    }
+  .render-question__points {
+    flex-grow: 1;
+    text-align: right;
   }
 }
 </style>

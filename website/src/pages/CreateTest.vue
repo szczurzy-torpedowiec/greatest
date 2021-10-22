@@ -21,12 +21,67 @@
           >
             <preview-render
               class="create-test__page"
+              :class="{
+                'create-test__page--overflow': page.overflow
+              }"
             >
-              <page-render
-                :page-index="pageIndex"
-                :total-pages="pageItems.length"
-                :elements="page"
-              />
+              <template #default="{ renderMmPixels }">
+                <page-render
+                  :page-index="pageIndex"
+                  :total-pages="pageItems.length"
+                  show-excess
+                  :dragging="dragging"
+                >
+                  <draggable
+                    group="page"
+                    :model-value="page.elements"
+                    item-key="key"
+                    :component-data="{
+                      class: 'full-height'
+                    }"
+                    @change="page.onQuestionOrderChange"
+                    @start="dragging = true"
+                    @end="dragging = false"
+                  >
+                    <template #item="{element, index}">
+                      <render-question
+                        :points="element.maxPoints"
+                        :variants="element.variants"
+                        :variant="element.idElement.variant"
+                        :question-index="element.number"
+                        variant-clickable
+                        class="create-test__render-question"
+                        :class="{
+                          'create-test__render-question--dragging': dragging
+                        }"
+                      >
+                        <template #variant-menu>
+                          <q-tooltip>
+                            Pick previewed variant
+                          </q-tooltip>
+                          <q-menu
+                            cover
+                            auto-close
+                          >
+                            <question-variant-picker
+                              :variant-count="element.variants.length"
+                              :model-value="element.idElement.variant"
+                              @update:model-value="page.onVariantPicked(index, $event)"
+                            />
+                          </q-menu>
+                        </template>
+                      </render-question>
+                    </template>
+                  </draggable>
+                  <template #wrapper>
+                    <page-overflow-observer
+                      :freeze="dragging"
+                      :render-mm-pixels="renderMmPixels"
+                      @update:overflow="page.onOverflowUpdate"
+                    />
+                  </template>
+                </page-render>
+              </template>
             </preview-render>
             <div class="absolute-top-right q-ma-sm">
               <q-btn
@@ -34,7 +89,7 @@
                 icon="mdi-file-remove"
                 round
                 size="md"
-                :disable="page.length !== 0 || pageItems.length === 1"
+                :disable="page.elements.length !== 0 || pageItems.length === 1"
                 @click="removePage(pageIndex)"
               >
                 <q-tooltip>Remove page</q-tooltip>
@@ -42,7 +97,7 @@
               <q-tooltip v-if="pageItems.length === 1">
                 Cannot remove all pages
               </q-tooltip>
-              <q-tooltip v-else-if="page.length !== 0">
+              <q-tooltip v-else-if="page.elements.length !== 0">
                 Cannot remove page with content
               </q-tooltip>
             </div>
@@ -72,21 +127,63 @@ import {
   QuestionElementQuiz,
 } from 'components/render/types';
 import { QuestionWithIds } from 'greatest-api-schemas';
+import QuestionVariantPicker from 'components/createTest/QuestionVariantPicker.vue';
+import RenderQuestion from 'components/render/RenderQuestion.vue';
+import Draggable from 'vuedraggable';
+import PageOverflowObserver from 'components/render/PageOverflowObserver.vue';
 import QuestionPicker from '../components/createTest/QuestionPicker.vue';
 import PageRender from '../components/render/PageRender.vue';
 import { DefaultsMap, typed, useStorage } from '../utils';
 import FullHeightPage from '../components/FullHeightPage.vue';
 
+type DraggableChangeEvent<T> = {
+  added: {
+    newIndex: number;
+    element: T;
+  };
+} | {
+  removed: {
+    oldIndex: number;
+    element: T;
+  };
+} | {
+  moved: {
+    newIndex: number;
+    oldIndex: number;
+    element: T;
+  };
+}
+
+interface Page {
+  idElements: PageIdElement[];
+  overflow: boolean;
+}
+
+interface PageItem {
+  elements: PageElement[];
+  overflow: boolean;
+  onVariantPicked: (elementIndex: number, variant: number) => void;
+  onQuestionOrderChange: (event: DraggableChangeEvent<PageElement>) => void;
+  onOverflowUpdate: (overflow: boolean) => void;
+}
+
 export default defineComponent({
   components: {
-    PreviewRender, PageRender, QuestionPicker, FullHeightPage,
+    PageOverflowObserver,
+    RenderQuestion,
+    QuestionVariantPicker,
+    PreviewRender,
+    PageRender,
+    QuestionPicker,
+    FullHeightPage,
+    Draggable,
   },
   setup() {
-    const pages = ref<PageIdElement[][]>([[]]);
+    const pages = ref<Page[]>([{ idElements: [], overflow: false }]);
 
     const usedQuestions = computed(() => {
       const map = new DefaultsMap<string, Set<string>>(() => new Set());
-      pages.value.forEach((page) => page.forEach((item) => {
+      pages.value.forEach((page) => page.idElements.forEach((item) => {
         if (item.type === 'question') map.get(item.questionSetShortId).add(item.questionShortId);
       }));
       return map;
@@ -97,59 +194,88 @@ export default defineComponent({
       splitter: useStorage<number>('create-test-splitter-position', () => 40),
       pages,
       usedQuestions,
-      pageItems: computed<PageElement[][]>(() => {
+      dragging: ref(false),
+      pageItems: computed<PageItem[]>(() => {
         let questionCounter = 0;
-        return pages.value.map((page) => page.map((element) => {
-          switch (element.type) {
-            case 'question': {
-              const itemBase = {
-                type: 'question',
-                number: questionCounter,
-              } as const;
-              questionCounter += 1;
-              // TODO: Fix O(n^2) complexity
-              const question = questionsMap
-                .get(element.questionSetShortId)
-                ?.find((question1) => question1.shortId === element.questionShortId);
-              if (question === undefined) throw new Error('Question set not found');
-              switch (question.type) {
-                case 'open': return typed<QuestionElementOpen>({
-                  ...itemBase,
-                  maxPoints: question.maxPoints,
-                  questionType: 'open',
-                  variants: question.variants.map((variant) => ({
-                    type: 'open',
-                    content: variant.content,
-                  })),
-                });
-                case 'quiz': return typed<QuestionElementQuiz>({
-                  ...itemBase,
-                  maxPoints: question.maxPoints,
-                  questionType: 'quiz',
-                  variants: question.variants.map((variant) => ({
-                    type: 'quiz',
-                    content: variant.content,
-                    correctAnswer: variant.correctAnswer,
-                    incorrectAnswers: [...variant.incorrectAnswers],
-                  })),
-                });
+        return pages.value.map((page, pageIndex) => ({
+          elements: page.idElements.map((element) => {
+            switch (element.type) {
+              case 'question': {
+                const itemBase = {
+                  type: 'question',
+                  number: questionCounter,
+                  key: `${element.questionSetShortId} ${element.questionShortId}`,
+                  idElement: element,
+                } as const;
+                questionCounter += 1;
+                // TODO: Fix O(n^2) complexity
+                const question = questionsMap
+                  .get(element.questionSetShortId)
+                  ?.find((question1) => question1.shortId === element.questionShortId);
+                if (question === undefined) throw new Error('Question set not found');
+                switch (question.type) {
+                  case 'open':
+                    return typed<QuestionElementOpen>({
+                      ...itemBase,
+                      maxPoints: question.maxPoints,
+                      questionType: 'open',
+                      variants: question.variants.map((variant) => ({
+                        type: 'open',
+                        content: variant.content,
+                      })),
+                    });
+                  case 'quiz':
+                    return typed<QuestionElementQuiz>({
+                      ...itemBase,
+                      maxPoints: question.maxPoints,
+                      questionType: 'quiz',
+                      variants: question.variants.map((variant) => ({
+                        type: 'quiz',
+                        content: variant.content,
+                        correctAnswer: variant.correctAnswer,
+                        incorrectAnswers: [...variant.incorrectAnswers],
+                      })),
+                    });
+                }
               }
             }
-          }
+          }),
+          onVariantPicked: (elementIndex, variant) => {
+            pages.value[pageIndex].idElements[elementIndex].variant = variant;
+          },
+          onQuestionOrderChange: (event) => {
+            if ('removed' in event) {
+              pages.value[pageIndex].idElements
+                .splice(event.removed.oldIndex, 1);
+            } else if ('added' in event) {
+              pages.value[pageIndex].idElements
+                .splice(event.added.newIndex, 0, event.added.element.idElement);
+            } else if ('moved' in event) {
+              pages.value[pageIndex].idElements
+                .splice(event.moved.oldIndex, 1);
+              pages.value[pageIndex].idElements
+                .splice(event.moved.newIndex, 0, event.moved.element.idElement);
+            }
+          },
+          onOverflowUpdate: (overflow) => {
+            pages.value[pageIndex].overflow = overflow;
+          },
+          overflow: page.overflow,
         }));
       }),
       addPage: () => {
-        pages.value.push([]);
+        pages.value.push({ idElements: [], overflow: false });
       },
       removePage: (pageIndex: number) => {
         pages.value.splice(pageIndex, 1);
       },
       onAddQuestion: (questionSetShortId: string, questionShortId: string, variants: string[]) => {
-        pages.value[pages.value.length - 1].push({
+        pages.value[pages.value.length - 1].idElements.push({
           type: 'question',
           questionSetShortId,
           questionShortId,
           variants,
+          variant: 0,
         });
       },
     };
@@ -158,9 +284,23 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+@import "src/css/render";
+
 .create-test {
   .create-test__page {
     outline: 1px solid black;
+
+    &.create-test__page--overflow {
+      outline: $negative 2px solid;
+    }
+  }
+
+  .create-test__render-question {
+    &.create-test__render-question--dragging {
+      .render-question__label-question-text {
+        filter: blur(render-mm(0.75));
+      }
+    }
   }
 }
 </style>

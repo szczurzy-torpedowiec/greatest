@@ -1,29 +1,31 @@
 <template>
-  <div class="page-render">
-    <render-header
-      phrase="eksperymentalnie przykład"
-      :page-index="pageIndex"
-      :total-pages="totalPages"
-    />
-    <div>
-      <render-question
-        v-for="question in elements"
-        :key="`${question.questionSetShortId} ${question.questionShortId}`"
-        :points="question.maxPoints"
-        :variants="question.variants"
+  <div
+    class="page-render"
+    :class="{
+      'page-render--show-excess': showExcess,
+      'page-render--dragging': dragging,
+    }"
+  >
+    <div class="page-render__wrapper">
+      <render-header
+        phrase="eksperymentalnie przykład"
+        :page-index="pageIndex"
+        :total-pages="totalPages"
       />
+      <div class="page-render__body">
+        <slot />
+      </div>
+      <slot name="wrapper" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import RenderQuestion from 'components/render/RenderQuestion.vue';
-import { PageElement } from 'components/render/types';
+import { defineComponent } from 'vue';
 import RenderHeader from './RenderHeader.vue';
 
 export default defineComponent({
-  components: { RenderQuestion, RenderHeader },
+  components: { RenderHeader },
   props: {
     pageIndex: {
       type: Number,
@@ -33,10 +35,8 @@ export default defineComponent({
       type: Number,
       required: true,
     },
-    elements: {
-      type: Array as PropType<PageElement[]>,
-      required: true,
-    },
+    showExcess: Boolean,
+    dragging: Boolean,
   },
 });
 </script>
@@ -46,5 +46,24 @@ export default defineComponent({
 
 .page-render {
   height: render-mm($page-height-mm);
+  overflow: hidden;
+
+  &.page-render--show-excess:not(.page-render--dragging) {
+    height: fit-content;
+    min-height: render-mm($page-height-mm);
+  }
+
+  .page-render__wrapper {
+    display: flex;
+    flex-direction: column;
+
+    .page-render__body {
+      flex-grow: 1;
+    }
+  }
+
+  &.page-render--dragging .page-render__wrapper {
+    height: 100%;
+  }
 }
 </style>

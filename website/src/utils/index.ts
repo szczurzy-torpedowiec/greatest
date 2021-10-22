@@ -23,7 +23,14 @@ export function isNotEmpty(value: string) {
   return !isEmpty(value);
 }
 
-export const typed = <X>(value: X): X => value;
+export function typed<X>(value: X): X {
+  return value;
+}
+
+export function getVariantSymbol(variant: number) {
+  return String.fromCharCode(variant + 65);
+}
 
 export * from './defaults-map';
+export * from './freeze';
 export * from './storage';

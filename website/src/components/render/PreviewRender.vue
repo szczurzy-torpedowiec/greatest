@@ -4,7 +4,7 @@
       class="preview-render__wrapper"
       :style="style"
     >
-      <slot />
+      <slot :render-mm-pixels="renderMmPixels" />
     </div>
     <q-resize-observer
       :debounce="0"
@@ -16,19 +16,29 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
 
+interface Size {
+  width: number;
+  height: number;
+}
+
 export default defineComponent({
-  setup() {
-    const width = ref<number>();
+  props: {
+    reduced: Boolean,
+  },
+  setup(props) {
+    const size = ref<Size>({ width: 100, height: 100 });
+    const widthMm = computed(() => (props.reduced ? 120 : 210));
+    const renderMmPixels = computed(() => (size.value.width - 1) / widthMm.value);
     return {
-      onResize: (size: { width: number, height: number }) => {
-        width.value = size.width;
+      onResize: (value: Size) => {
+        size.value = value;
       },
-      style: computed(() => {
-        if (width.value === undefined) return {};
-        return {
-          '--render-mm': `${(width.value - 1) / 210}px`,
-        };
-      }),
+      style: computed(() => ({
+        '--width-mm': `${widthMm.value}`,
+        '--render-mm': `${renderMmPixels.value}px`,
+      })),
+      size,
+      renderMmPixels,
     };
   },
 });
@@ -39,7 +49,7 @@ export default defineComponent({
 
 .preview-render {
   .preview-render__wrapper {
-    width: render-mm($page-width-mm);
+    width: render-mm(var(--width-mm));
     font-size: $render-font-size;
     margin-left: auto;
     margin-right: auto;

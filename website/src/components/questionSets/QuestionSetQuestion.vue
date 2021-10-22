@@ -62,13 +62,6 @@
         @click="addVariant"
       />
     </q-card-section>
-    <q-separator />
-    <preview-render>
-      <render-question
-        :variants="questionVariantsWithTypes"
-        :points="question.maxPoints"
-      />
-    </preview-render>
   </q-card>
 </template>
 
@@ -87,8 +80,6 @@ import QuestionSetQuestionVariant, { QuestionVariantProp } from 'components/ques
 import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import PreviewRender from 'components/render/PreviewRender.vue';
-import RenderQuestion from 'components/render/RenderQuestion.vue';
 
 interface VariantEditQuiz {
   content: string,
@@ -103,8 +94,6 @@ interface VariantEditOpen {
 export default defineComponent({
   name: 'QuestionSetQuestion',
   components: {
-    RenderQuestion,
-    PreviewRender,
     QuestionSetQuestionVariant,
     DeleteConfirmMenu,
   },
@@ -195,7 +184,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-
-</style>

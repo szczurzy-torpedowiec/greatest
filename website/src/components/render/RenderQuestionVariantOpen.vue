@@ -31,6 +31,8 @@ export default defineComponent({
 
 <style lang="scss">
 .render-question-variant-open {
+  text-align: justify;
+
   &.render-question-variant-open--hidden {
     visibility: hidden;
   }

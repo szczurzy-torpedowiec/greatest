@@ -41,11 +41,13 @@
             :disable="question.disable"
             @click="onAddQuestion(selectedQuestionSet.value, question)"
           >
-            <preview-render class="full-width">
-              <render-question
-                class="full-width"
-                :points="question.maxPoints"
+            <preview-render
+              reduced
+              class="full-width"
+            >
+              <render-question-content
                 :variants="question.variants"
+                :variant="0"
               />
             </preview-render>
           </q-item>
@@ -65,11 +67,11 @@ import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { getQuestionSet, listQuestionSets } from 'src/api';
 import PreviewRender from 'components/render/PreviewRender.vue';
-import RenderQuestion from 'components/render/RenderQuestion.vue';
 import { DefaultsMap, getTypeValidator } from 'src/utils';
+import RenderQuestionContent from 'components/render/RenderQuestionContent.vue';
 
 export default defineComponent({
-  components: { RenderQuestion, PreviewRender },
+  components: { RenderQuestionContent, PreviewRender },
   props: {
     usedQuestions: {
       type: Object as PropType<DefaultsMap<string, Set<string>>>,
