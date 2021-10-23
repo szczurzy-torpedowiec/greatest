@@ -15,10 +15,10 @@
         <span>
           <q-btn
             color="primary"
+            icon="mdi-printer"
+            :label="$t('test.sheets.print')"
             :disable="selected.length === 0"
-          >
-            Generate and print
-          </q-btn>
+          />
           <q-tooltip v-if="selected.length === 0">
             {{ $t('test.sheets.noSheetsSelected') }}
           </q-tooltip>
@@ -27,9 +27,10 @@
           <q-btn
             outline
             color="negative"
+            icon="mdi-delete"
+            :label="$t('test.sheets.delete')"
             :disable="selected.length === 0 || selectedHasScanned"
           >
-            {{ $t('test.sheets.delete') }}
             <delete-confirm-menu :submit="deleteSheets" />
           </q-btn>
           <q-tooltip v-if="selected.length === 0">

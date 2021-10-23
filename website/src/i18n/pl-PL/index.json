@@ -79,7 +79,8 @@
       "delete": "Usuń",
       "noSheetsSelected": "Brak zaznaczonych arkuszy",
       "cannotDeleteScannedSheets": "Nie udało się usunąć zeskanowanych arkuszy",
-      "deleteSheetError": "Nie udało się usunąć arkusza"
+      "deleteSheetError": "Nie udało się usunąć arkusza",
+      "print": "Drukuj"
     },
     "scans": {
       "assignedScans": "Przypisane skany",
