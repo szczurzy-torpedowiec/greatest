@@ -46,6 +46,7 @@
       :src="require('src/assets/demo-code.svg')"
       alt="Przykładowy kod arkusza"
     >
+    <slot />
   </div>
 </template>
 
@@ -84,6 +85,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   overflow: hidden;
+  position: relative;
 
   .render-header__content {
     flex-grow: 1;

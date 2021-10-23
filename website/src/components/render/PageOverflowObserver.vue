@@ -1,3 +1,8 @@
+<!-- The font size jumps instead of smoothly interpolating -->
+<!-- https://www.kirupa.com/animations/bad_idea_animating_text_size_scale.htm -->
+<!-- I could not find any viable solution to this problem, -->
+<!-- other than rendering the text on a canvas element -->
+
 <template>
   <q-resize-observer
     :debounce="0"
@@ -36,6 +41,7 @@ export default defineComponent({
       emit('update:overflow', value);
     }, { immediate: true });
     return {
+      currentHeightMm: computed(() => height.value / props.renderMmPixels),
       onResize: (value: Size) => {
         height.value = value.height;
       },

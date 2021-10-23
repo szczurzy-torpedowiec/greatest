@@ -17,14 +17,12 @@
           <div
             v-for="(page, pageIndex) in pageItems"
             :key="pageIndex"
-            class="q-ma-lg relative-position"
+            class="q-ma-lg relative-position create-test__page shadow-4"
+            :class="{
+              'create-test__page--overflow': page.overflow
+            }"
           >
-            <preview-render
-              class="create-test__page"
-              :class="{
-                'create-test__page--overflow': page.overflow
-              }"
-            >
+            <preview-render>
               <template #default="{ renderMmPixels }">
                 <page-render
                   :page-index="pageIndex"
@@ -73,6 +71,34 @@
                       </render-question>
                     </template>
                   </draggable>
+                  <template #header>
+                    <div
+                      v-if="draggingCount > 0"
+                      class="create-test__trash"
+                    >
+                      <draggable
+                        group="page"
+                        :items="[]"
+                        item-key="key"
+                        :component-data="{
+                          class: 'create-test__trash-zone full-height full-width',
+                        }"
+                        ghost-class="create-test__trash-ghost"
+                        @start="draggingCount += 1"
+                        @end="draggingCount -= 1"
+                      >
+                        <template #item="item">
+                          {{ item }}
+                        </template>
+                      </draggable>
+                      <div class="create-test__trash-body">
+                        <q-icon
+                          name="mdi-delete"
+                          color="negative"
+                        />
+                      </div>
+                    </div>
+                  </template>
                   <template #wrapper>
                     <page-overflow-observer
                       :freeze="draggingCount > 0"
@@ -85,6 +111,7 @@
             </preview-render>
             <div class="absolute-top-right q-ma-sm">
               <q-btn
+                v-if="draggingCount <= 0"
                 color="negative"
                 icon="mdi-file-remove"
                 round
@@ -100,6 +127,12 @@
               <q-tooltip v-else-if="page.elements.length !== 0">
                 Cannot remove page with content
               </q-tooltip>
+            </div>
+            <div
+              v-if="page.overflow"
+              class="create-test__page-overflow-info"
+            >
+              Page content exceeds page height
             </div>
           </div>
           <div class="row justify-center q-mb-lg">
@@ -288,11 +321,50 @@ export default defineComponent({
 
 .create-test {
   .create-test__page {
-    outline: 1px solid black;
+    //outline: 1px solid black;
+    border-radius: $generic-border-radius;
 
     &.create-test__page--overflow {
       outline: $negative 2px solid;
     }
+
+    .create-test__page-overflow-info {
+      background: $negative;
+      color: white;
+      text-align: center;
+      padding: 4px;
+    }
+  }
+
+  .create-test__trash {
+    position: absolute;
+    top: render-mm(3);
+    left: render-mm(3);
+    width: calc(100% - #{render-mm(6)});
+    height: calc(100% - #{render-mm(6)});
+    background-color: rgba($negative, 40%);
+    border: render-mm(1) solid $negative;
+    border-radius: render-mm(2);
+    display: grid;
+
+    .create-test__trash-zone {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .create-test__trash-body {
+      grid-column: 1;
+      grid-row: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: render-mm(20);
+    }
+  }
+
+  .create-test__trash-ghost {
+    display: none;
   }
 
   .create-test__render-question {

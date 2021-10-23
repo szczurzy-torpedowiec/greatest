@@ -11,7 +11,9 @@
         phrase="eksperymentalnie przykład"
         :page-index="pageIndex"
         :total-pages="totalPages"
-      />
+      >
+        <slot name="header" />
+      </render-header>
       <div class="page-render__body">
         <slot />
       </div>
