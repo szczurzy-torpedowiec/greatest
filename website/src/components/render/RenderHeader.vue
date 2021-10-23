@@ -14,13 +14,19 @@
           </div>
           <div class="render-header__field-box" />
         </div>
-        <div class="render-header__field render-header__field--name">
+        <div
+          v-if="!reducedInfo"
+          class="render-header__field render-header__field--name"
+        >
           <div class="render-header__field-label">
             Imię i nazwisko
           </div>
           <div class="render-header__field-box" />
         </div>
-        <div class="render-header__field render-header__field--date">
+        <div
+          v-if="!reducedInfo"
+          class="render-header__field render-header__field--date"
+        >
           <div class="render-header__field-label">
             Data
           </div>
@@ -71,6 +77,7 @@ export default defineComponent({
   setup(props) {
     return {
       phraseParts: computed(() => props.phrase.split(' ')),
+      reducedInfo: computed(() => props.pageIndex !== 0),
     };
   },
 });

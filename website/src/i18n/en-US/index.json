@@ -141,7 +141,7 @@
     "questionSetEmptyError": "Selected question set is empty",
     "getQuestionSetError": "Failed to get question set",
     "testCreateError": "Failed to create test",
-    "addTest": "Add test",
+    "createTest": "Create test",
     "listTestsError": "Failed to load tests"
   },
   "signIn": {
@@ -173,6 +173,8 @@
     "loadQuestionSetsError": "Failed to load question sets",
     "loadQuestionsError": "Failed to load questions",
     "questionSet": "Question set",
-    "setNotSelected": "No question set selected"
+    "setNotSelected": "No question set selected",
+    "submitErrorOverflow": "Cannot create test if some pages overflow",
+    "createTestError": "Failed to create test"
   }
 }

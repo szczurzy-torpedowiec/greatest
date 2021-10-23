@@ -90,7 +90,7 @@
       "questionSetEmptyError": "Wybrany zestaw pytań jest pusty",
       "getQuestionSetError": "Nie udało się załadować zestawu pytań",
       "testCreateError": "Nie udało się utworzyć testu",
-      "addTest": "Dodaj test",
+      "createTest": "Create test",
       "listTestsError": "Nie udało się załadować listy testów"
     },
     "signIn": {
