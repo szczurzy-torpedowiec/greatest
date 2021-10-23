@@ -24,11 +24,12 @@
             {{ titleState ?? $t('appName') }}
           </template>
         </q-toolbar-title>
-        <div>
+        <div class="row items-center">
           <language-selector />
           <q-skeleton
             v-if="!viewerLoaded"
-            type="QBtn"
+            type="QAvatar"
+            size="38px"
           />
           <q-btn
             v-else-if="viewer"

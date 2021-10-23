@@ -1,7 +1,9 @@
 <template>
   <q-btn
     flat
+    round
     icon="translate"
+    class="q-mr-sm"
   >
     <q-menu>
       <q-list>
@@ -13,10 +15,13 @@
           clickable
           :active="availableLocale === $i18n.locale"
           active-class="bg-teal-1 text-grey-8"
-          @click="useLocale(availableLocale)"
+          @click="setLocale(availableLocale)"
         >
           <q-item-section avatar>
-            <img :src="$t('languageIcon', availableLocale)">
+            <img
+              :src="$t('languageIcon', availableLocale)"
+              :alt="$t('languageName', availableLocale)"
+            >
           </q-item-section>
           <q-item-section>
             {{ $t('languageName', availableLocale) }}
@@ -30,25 +35,21 @@
 import {
   defineComponent,
 } from 'vue';
-import { useStorage } from 'src/utils';
-import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'LanguageSelector',
   setup() {
-    const locale = useStorage('language', () => 'en-US');
-    const quasar = useQuasar();
-    const i18n = useI18n();
+    const i18n = useI18n({
+      useScope: 'global',
+    });
 
-    function useLocale(selectedLocale: string) {
-      locale.value = selectedLocale;
-      quasar.notify({
-        message: i18n.t('common.requestRefresh'),
-      });
+    function setLocale(selectedLocale: string) {
+      i18n.locale.value = selectedLocale;
+      window.localStorage.setItem('language', selectedLocale);
     }
     return {
-      useLocale,
+      setLocale,
     };
   },
 });

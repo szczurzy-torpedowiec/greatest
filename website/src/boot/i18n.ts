@@ -1,11 +1,10 @@
 import { boot } from 'quasar/wrappers';
 import { createI18n } from 'vue-i18n';
-import { useStorage } from 'src/utils';
 
 import messages from 'src/i18n';
 
 const i18n = createI18n({
-  locale: useStorage('language', () => 'en-US').value,
+  locale: window.localStorage.getItem('language') ?? 'en-US',
   messages,
 });
 
