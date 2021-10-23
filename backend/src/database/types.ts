@@ -46,7 +46,7 @@ export type DbQuestionBase<WithId extends boolean> = Conditional<WithId, {
   questionSetId: ObjectId;
 }> & {
   maxPoints: number;
-  type: string;
+  questionType: string;
 };
 
 export type DbQuestionVariantBase<WithId extends boolean> = Conditional<WithId, {
@@ -54,7 +54,7 @@ export type DbQuestionVariantBase<WithId extends boolean> = Conditional<WithId, 
 }>;
 
 export type DbQuestionQuiz<WithId extends boolean> = DbQuestionBase<WithId> & {
-  type: 'quiz';
+  questionType: 'quiz';
   variants: DbQuestionVariantQuiz<WithId>[];
 };
 
@@ -65,7 +65,7 @@ export type DbQuestionVariantQuiz<WithId extends boolean> = DbQuestionVariantBas
 };
 
 export type DbQuestionOpen<WithId extends boolean> = DbQuestionBase<WithId> & {
-  type: 'open';
+  questionType: 'open';
   variants: DbQuestionVariantOpen<WithId>[];
 };
 
@@ -78,13 +78,19 @@ export type DbQuestion<WithId extends boolean> = DbQuestionOpen<WithId> | DbQues
 export type DbQuestionWithoutMongodbId =
   WithoutId<DbQuestionOpen<true>> | WithoutId<DbQuestionQuiz<true>>;
 
+export type DbPageElementQuestion = DbQuestion<false> & {
+  elementType: 'question';
+};
+
+export type DbPageElement = DbPageElementQuestion;
+
 export interface DbTest {
   _id: ObjectId;
   shortId: string;
   name: string;
   ownerId: ObjectId;
-  createdOn: Date,
-  questions: DbQuestion<false>[];
+  createdOn: Date;
+  pages: DbPageElement[][];
 }
 
 export interface DbSheet {
@@ -97,9 +103,6 @@ export interface DbSheet {
     points: number | null;
   }[];
   phrase: string;
-  generated: {
-    pages: number;
-  } | null;
   student: string;
 }
 

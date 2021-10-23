@@ -129,7 +129,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       maxPoints: question.maxPoints,
     };
     let mappedQuestion: QuestionWithIds;
-    switch (question.type) {
+    switch (question.questionType) {
       case 'quiz':
         mappedQuestion = {
           ...common,
@@ -255,7 +255,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       case 'quiz':
         question = {
           ...base,
-          type: 'quiz',
+          questionType: 'quiz',
           variants: request.body.variants.map((variant) => ({
             shortId: nanoid(10),
             ...variant,
@@ -265,7 +265,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       case 'open':
         question = {
           ...base,
-          type: 'open',
+          questionType: 'open',
           variants: request.body.variants.map((variant) => ({
             shortId: nanoid(10),
             ...variant,
@@ -372,7 +372,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       request.params.questionShortId,
       user,
     );
-    if (question.type !== request.body.type) {
+    if (question.questionType !== request.body.type) {
       throw apiInstance.httpErrors.badRequest('Variant type does not match question type');
     }
     const shortId = nanoid(10);
@@ -430,7 +430,7 @@ export function registerQuestionSets(apiInstance: FastifyInstance, dbManager: Db
       request.params.questionShortId,
       user,
     );
-    if (question.type !== request.body.type) {
+    if (question.questionType !== request.body.type) {
       throw apiInstance.httpErrors.badRequest('Variant type does not match question type');
     }
     if (!question.variants.some(

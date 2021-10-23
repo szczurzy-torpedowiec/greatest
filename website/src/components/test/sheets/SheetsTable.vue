@@ -105,13 +105,7 @@
         <q-skeleton v-if="cell.value === null" />
         <template v-else>
           <div class="row items-center no-wrap">
-            <div
-              v-if="cell.value.pageScans === null"
-              class="text-negative"
-            >
-              {{ $t('test.sheets.notGenerated') }}
-            </div>
-            <div v-else-if="cell.value.allScanned">
+            <div v-if="cell.value.allScanned">
               <q-chip
                 color="positive"
                 text-color="white"
@@ -174,7 +168,7 @@ interface ScanWithSheet extends Scan {
 }
 
 interface Pages {
-  pageScans: number[] | null;
+  pageScans: number[];
   allScanned: boolean,
   additional: number;
   total: number;
@@ -188,17 +182,13 @@ interface Row {
   setStudentSubmit: (student: string) => Promise<void>;
 }
 
-function mapPages(sheet: Sheet, sheetScans: ScanWithSheet[] | undefined): Pages | null {
-  if (sheetScans === undefined) return null;
-  if (sheet.generated === null) {
-    return {
-      pageScans: null,
-      allScanned: false,
-      additional: sheetScans.length,
-      total: sheetScans.length,
-    };
-  }
-  const pageScans = new Array(sheet.generated.pages).fill(0);
+function mapPages(
+  sheet: Sheet,
+  sheetScans: ScanWithSheet[] | undefined,
+  totalPages: number | null,
+): Pages | null {
+  if (sheetScans === undefined || totalPages === null) return null;
+  const pageScans = new Array(totalPages).fill(0);
   let additional = 0;
   sheetScans.forEach((scan) => {
     if (scan.sheet.page === null) additional += 1;
@@ -218,6 +208,10 @@ export default defineComponent({
     testShortId: {
       type: String,
       required: true,
+    },
+    totalPages: {
+      type: Number as PropType<number | null>,
+      default: null,
     },
     sheets: {
       type: Array as PropType<Sheet[]>,
@@ -288,6 +282,7 @@ export default defineComponent({
         await Promise.all(selected.value.map(
           (sheet) => deleteSheetAndHandle(sheet.shortId),
         ));
+        selected.value = [];
       },
       columns: computed(() => [
         {
@@ -312,7 +307,7 @@ export default defineComponent({
         shortId: sheet.shortId,
         student: sheet.student,
         phrase: sheet.phrase,
-        pages: mapPages(sheet, scansBySheetId.value?.get(sheet.shortId)),
+        pages: mapPages(sheet, scansBySheetId.value?.get(sheet.shortId), props.totalPages),
         setStudentSubmit: async (student: string) => {
           const requestId = uid();
           emit('addIgnoredRequestId', requestId);

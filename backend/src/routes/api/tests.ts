@@ -16,7 +16,7 @@ import {
 import { nanoid } from 'nanoid';
 import { DbManager } from '../../database/database';
 import { getSecurity, requireAuthentication, requireTest } from '../../guards';
-import { DbQuestion, DbQuestionVariantBase } from '../../database/types';
+import { DbPageElement, DbQuestionVariantBase } from '../../database/types';
 import { DefaultsMap } from '../../utils';
 
 export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager) {
@@ -80,21 +80,22 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
       },
     ).get(setShortId);
     await dbManager.withTransaction(async () => {
-      const questions: DbQuestion<false>[] = await Promise.all(
-        request.body.questions.map<Promise<DbQuestion<false>>>(async (question) => {
-          const dbSet = await getQuestionSet(question.questionSetShortId);
+      const pages: DbPageElement[][] = await Promise.all(
+        request.body.pages.map((page) => Promise.all(page.map(async (element) => {
+          const dbSet = await getQuestionSet(element.questionSetShortId);
           const dbQuestion = await dbManager.questionsCollection.findOne({
             questionSetId: dbSet._id,
-            shortId: question.questionShortId,
+            shortId: element.questionShortId,
           });
-          if (dbQuestion === null) throw apiInstance.httpErrors.notFound(`Question "${question.questionShortId}" not found`);
-          switch (dbQuestion.type) {
+          if (dbQuestion === null) throw apiInstance.httpErrors.notFound(`Question "${element.questionShortId}" not found`);
+          switch (dbQuestion.questionType) {
             case 'open': return {
-              type: 'open',
+              elementType: 'question',
+              questionType: 'open',
               maxPoints: dbQuestion.maxPoints,
               variants: mapVariants(
                 dbQuestion.variants,
-                question.variants,
+                element.variants,
                 (variant) => {
                   if (variant.content.trim() === '') throw apiInstance.httpErrors.badRequest(`Content of variant "${variant.shortId}" is empty`);
                   return ({
@@ -102,13 +103,14 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
                   });
                 },
               ),
-            };
+            } as const;
             case 'quiz': return {
-              type: 'quiz',
+              elementType: 'question',
+              questionType: 'quiz',
               maxPoints: dbQuestion.maxPoints,
               variants: mapVariants(
                 dbQuestion.variants,
-                question.variants,
+                element.variants,
                 (variant) => {
                   if (variant.content.trim() === '') throw apiInstance.httpErrors.badRequest(`Content of variant "${variant.shortId}" is empty`);
                   if (variant.correctAnswer.trim() === '') throw apiInstance.httpErrors.badRequest(`Correct answer of variant "${variant.shortId}" is empty`);
@@ -122,16 +124,16 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
                   });
                 },
               ),
-            };
+            } as const;
           }
-        }),
+        }))),
       );
       await dbManager.testsCollection.insertOne({
         shortId,
         ownerId: user._id,
         name: request.body.name,
         createdOn,
-        questions,
+        pages,
       });
     });
     return {
@@ -156,7 +158,7 @@ export function registerTests(apiInstance: FastifyInstance, dbManager: DbManager
     const test = await requireTest(request, dbManager, user, request.params.testShortId);
     return {
       name: test.name,
-      questions: test.questions,
+      pages: test.pages,
     };
   });
 

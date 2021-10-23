@@ -35,12 +35,11 @@
     >
       <q-btn
         fab
-        icon="add"
+        icon="mdi-plus"
         color="primary"
-        :label="$t('tests.addTest')"
-      >
-        <test-settings />
-      </q-btn>
+        :label="$t('tests.createTest')"
+        to="/teacher/create-test"
+      />
     </q-page-sticky>
   </q-page>
 </template>
@@ -55,7 +54,6 @@ import {
 
 import { listTests } from 'src/api';
 
-import TestSettings from 'components/tests/TestSettings.vue';
 import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
 
 import { useI18n } from 'vue-i18n';
@@ -71,7 +69,6 @@ interface ListTest {
 export default defineComponent({
   name: 'Tests',
   components: {
-    TestSettings,
     DeleteConfirmMenu,
   },
   setup() {

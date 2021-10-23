@@ -24,36 +24,17 @@ module.exports = {
     browser: true
   },
 
-  // Rules order is important, please avoid shuffling them
   extends: [
-    // Base ESLint recommended rules
-    // 'eslint:recommended',
-
-    // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#usage
-    // ESLint typescript rules
     'plugin:@typescript-eslint/recommended',
-    // consider disabling this class of rules if linting takes too long
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
-
-    // Uncomment any of the lines below to choose desired strictness,
-    // but leave only one uncommented!
-    // See https://eslint.vuejs.org/rules/#available-rules
-    // 'plugin:vue/vue3-essential', // Priority A: Essential (Error Prevention)
-    // 'plugin:vue/vue3-strongly-recommended', // Priority B: Strongly Recommended (Improving Readability)
-    'plugin:vue/vue3-recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
-
+    'plugin:vue/vue3-recommended',
     'airbnb-base',
     'plugin:@intlify/vue-i18n/recommended',
   ],
 
   plugins: [
-    // required to apply rules which need type information
     '@typescript-eslint',
-
-    // https://eslint.vuejs.org/user-guide/#why-doesn-t-it-work-on-vue-file
-    // required to lint *.vue files
     'vue',
-
   ],
 
   globals: {
@@ -70,7 +51,6 @@ module.exports = {
     defineProps: 'readonly'
   },
 
-  // add your custom rules here
   rules: {
     'no-param-reassign': 'off',
     'no-void': 'off',
@@ -112,8 +92,17 @@ module.exports = {
     'consistent-return': 'off',
     'vue/return-in-computed-property': 'off',
     'no-shadow': 'off',
-    '@typescript-eslint/no-shadow': 'error'
+    '@typescript-eslint/no-shadow': 'error',
+    'array-callback-return': 'off'
   },
+  overrides: [
+    {
+      files: "src/components/render/**.vue",
+      rules: {
+        '@intlify/vue-i18n/no-raw-text': 'off'
+      }
+    }
+  ],
   settings: {
     'vue-i18n': {
       localeDir: './src/i18n/**/*.{json,json5,yaml,yml}',

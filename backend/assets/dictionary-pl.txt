@@ -609,7 +609,6 @@ doprawdy
 jasno
 odejść
 błąd
-niebezpieczeństwo
 ciepło
 wcześnie
 pewność
@@ -2912,7 +2911,6 @@ potworny
 dołączyć
 kosmos
 niespodzianie
-prawdopodobieństwo
 granica
 powolny
 ręcznik
@@ -3136,7 +3134,6 @@ spoczynek
 zmierzyć
 manewr
 upór
-charakterystyczny
 granat
 mila
 namiętnie
@@ -3687,7 +3684,6 @@ prześcieradło
 zemścić
 zwój
 gram
-nieprawdopodobnie
 pochwalić
 tara
 brzęczenie
@@ -4696,7 +4692,6 @@ furgonetka
 kandydat
 przeczekać
 swobodny
-usprawiedliwienie
 bochenek
 brzydko
 homo
@@ -5423,11 +5418,9 @@ nadzwyczajny
 opóźnienie
 roześmiać
 rządca
-zniecierpliwienie
 kleszcze
 kubeł
 lakonicznie
-niesprawiedliwość
 ostrzegawczy
 portki
 posiedzieć
@@ -7719,7 +7712,6 @@ hołota
 kopyto
 krewniak
 narodzić
-niewypowiedzianie
 obszernie
 orientować
 oświadczyny
@@ -8409,7 +8401,6 @@ okręg
 paradoksalnie
 prowokować
 przedłużać
-przetransportować
 rabunek
 rozbójnik
 sedan
@@ -8519,7 +8510,6 @@ zażywać
 zeskoczyć
 chaszcze
 dorsz
-dziesięciokrotnie
 fan
 gitara
 gliniany
@@ -9198,7 +9188,6 @@ kontra
 miraż
 nadużyć
 niedorzeczność
-nieproporcjonalnie
 niewart
 niewygodny
 odłączyć
@@ -10503,7 +10492,6 @@ statystycznie
 subtelność
 szkiełko
 unia
-wspaniałomyślność
 współzawodnictwo
 wtajemniczyć
 wyczuwalny
@@ -12612,7 +12600,6 @@ przewiezienie
 przydrożny
 przystawać
 przywdziać
-radiotelegrafista
 rękawiczka
 rogalik
 rówieśnik
@@ -13375,7 +13362,6 @@ mikro
 modlitewnik
 myszkować
 niegodziwość
-nieodpowiedzialny
 nietykalny
 nosowy
 obły
@@ -13574,7 +13560,6 @@ tawerna
 totalny
 trójca
 umysłowość
-urzeczywistnienie
 uzębienie
 wariacki
 wkroczenie
@@ -15362,7 +15347,6 @@ chlebodawczyni
 cudotwórca
 dobosz
 dorosłość
-dziewięćdziesiąty
 eksploatować
 eliminacja
 emanacja
@@ -15425,7 +15409,6 @@ rehabilitacja
 rezerwowy
 rozdzierać
 rozkręcić
-rozpowszechnianie
 rozprzestrzenić
 ryzykownie
 rzeczownik
@@ -15473,7 +15456,6 @@ awionetka
 bagnisty
 buchalter
 całowanie
-charakterystycznie
 dygresja
 emigrować
 frasunek
@@ -16556,7 +16538,6 @@ nadłożyć
 napomnienie
 nasycenie
 niedrogo
-niekonwencjonalny
 niemoralny
 nieprzewidywalny
 niewesoły
@@ -16621,7 +16602,6 @@ szachowy
 szafirowy
 szalbierstwo
 szefostwo
-sześćdziesięcioletni
 szprot
 terapeuta
 tryumfująco
@@ -16766,7 +16746,6 @@ prehistoryczny
 przebąkiwać
 przecinka
 przeczołgać
-przedstawicielstwo
 przekląć
 przeleżeć
 przęsło
@@ -17097,7 +17076,6 @@ profesjonalizm
 programista
 prostytucja
 próżnować
-przedsiębiorczość
 przedsiębrać
 przedstawianie
 przekupień
@@ -17408,7 +17386,6 @@ majaczenie
 margrabina
 matczyny
 miarkować
-międzygalaktyczny
 międzyplanetarny
 moratorium
 muzułmański
@@ -17592,7 +17569,6 @@ kostny
 kraciasty
 krajowiec
 kraul
-krzywoprzysięstwo
 kucie
 kurort
 łamigłówka
@@ -17814,7 +17790,6 @@ niedyspozycja
 nieforemny
 niegościnny
 niekompetentny
-nieodpowiedzialnie
 nieomalże
 niesamowitość
 nośnik
@@ -17872,7 +17847,6 @@ spiż
 splądrować
 spoić
 sprint
-sprzeniewierzenie
 sterylny
 subiektywny
 świstak
@@ -17891,8 +17865,6 @@ uchylanie
 ucichnąć
 ugruntować
 ukrop
-unieszkodliwienie
-usatysfakcjonować
 ustny
 wartownia
 wiąz
@@ -18370,7 +18342,6 @@ doprosić
 dziatwa
 dziewiczo
 ekstrawagancki
-elektromagnetyczny
 emitować
 epicki
 faktura
@@ -18504,7 +18475,6 @@ robótka
 równoznaczny
 rozładowywać
 rozpasanie
-rozprzestrzenianie
 rozstąpić
 rozstaw
 rysunkowy
@@ -19665,7 +19635,6 @@ neta
 niecnota
 niedelikatnie
 niekonsekwentny
-nieprawdopodobieństwo
 nieprzyjaźń
 nieskazitelność
 niestałość

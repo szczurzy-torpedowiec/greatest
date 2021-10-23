@@ -1,0 +1,9 @@
+@function render-mm($value) {
+  @return calc(var(--render-mm) * #{$value});
+}
+
+$header-height: render-mm(30);
+$page-width-mm: 210;
+$page-height-mm: 297;
+$render-font-size: render-mm(4);
+$question-width-mm: 120;

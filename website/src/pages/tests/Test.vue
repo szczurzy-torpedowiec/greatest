@@ -11,6 +11,7 @@
         :sheets="sheets"
         :scans="scans"
         :test-short-id="testShortId"
+        :total-pages="totalPages"
         @add-ignored-request-id="onAddIgnoredRequestId"
         @sheet-student-changed="onSheetStudentChanged"
         @sheets-created="onSheetsCreated"
@@ -147,6 +148,10 @@ export default defineComponent({
       scans,
       sheets,
       testShortId,
+      totalPages: computed(() => {
+        if (test.value === null) return null;
+        return test.value.pages.length;
+      }),
       onAddIgnoredRequestId: (requestId: string) => {
         ignoredRequestIds.value.add(requestId);
       },

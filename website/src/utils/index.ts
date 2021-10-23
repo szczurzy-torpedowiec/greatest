@@ -23,5 +23,24 @@ export function isNotEmpty(value: string) {
   return !isEmpty(value);
 }
 
+export function typed<X>(value: X): X {
+  return value;
+}
+
+export function getVariantSymbol(variant: number) {
+  return String.fromCharCode(variant + 65);
+}
+
+export function getAnswerSymbol(answer: number) {
+  return `${String.fromCharCode(answer + 97)})`;
+}
+
+export function parsePxString(value: string): number | null {
+  const regexResult = /^(-?\d*(\d|(\.\d+)))px$/.exec(value);
+  if (regexResult === null) return null;
+  return parseFloat(regexResult[1]);
+}
+
 export * from './defaults-map';
+export * from './freeze';
 export * from './storage';
