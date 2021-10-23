@@ -1,5 +1,5 @@
 <template>
-  <div class="full-height column">
+  <div class="full-height column question-picker">
     <div class="q-pa-sm">
       <q-select
         v-model="selectedQuestionSet"
@@ -38,6 +38,7 @@
             :key="question.shortId"
             clickable
             :disable="question.disable"
+            class="question-picker__question"
             @click="onAddQuestion(selectedQuestionSet.value, question)"
           >
             <preview-render
@@ -200,3 +201,11 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss">
+.question-picker {
+  .question-picker__question {
+    min-height: initial;
+  }
+}
+</style>

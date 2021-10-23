@@ -52,7 +52,7 @@
                       >
                         <template #variant-menu>
                           <q-tooltip>
-                            Pick previewed variant
+                            {{ $t('createTest.pickVariant') }}
                           </q-tooltip>
                           <q-menu
                             cover
@@ -116,20 +116,20 @@
                 :disable="page.elements.length !== 0 || pageItems.length === 1"
                 @click="removePage(pageIndex)"
               >
-                <q-tooltip>Remove page</q-tooltip>
+                <q-tooltip>{{ $t('createTest.removePage') }}</q-tooltip>
               </q-btn>
               <q-tooltip v-if="pageItems.length === 1">
-                Cannot remove all pages
+                {{ $t('createTest.removeError.only') }}
               </q-tooltip>
               <q-tooltip v-else-if="page.elements.length !== 0">
-                Cannot remove page with content
+                {{ $t('createTest.removeError.hasContent') }}
               </q-tooltip>
             </div>
             <div
               v-if="page.overflow"
               class="create-test__page-overflow-info"
             >
-              Page content exceeds page height
+              {{ $t('createTest.overflow') }}
             </div>
           </div>
         </div>
@@ -137,13 +137,13 @@
           <q-btn
             color="primary"
             icon="mdi-file-plus"
-            label="Add page"
+            :label="$t('createTest.addPage')"
             @click="addPage"
           />
           <q-btn
             color="primary"
             icon="mdi-check"
-            label="Finish"
+            :label="$t('common.finish')"
             outline
           >
             <q-popup-proxy
@@ -157,7 +157,7 @@
                   <q-card-section class="q-pb-none">
                     <q-input
                       v-model="testName"
-                      label="Test name"
+                      :label="$t('createTest.testName')"
                       filled
                       autofocus
                     />
@@ -169,7 +169,7 @@
                       :disable="testNameInvalid"
                       :loading="createTestLoading"
                     >
-                      Create
+                      {{ $t('common.create') }}
                     </q-btn>
                   </q-card-actions>
                 </q-form>
