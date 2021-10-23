@@ -26,6 +26,7 @@
           <q-btn
             color="primary"
             :loading="loading"
+            type="submit"
           >
             {{ $t('common.save') }}
           </q-btn>

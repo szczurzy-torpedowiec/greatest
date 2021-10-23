@@ -1,6 +1,7 @@
 export interface RenderVariantOpen {
   type: 'open';
   content: string;
+  shortId: string;
 }
 
 export interface RenderVariantQuiz {
@@ -8,6 +9,7 @@ export interface RenderVariantQuiz {
   content: string;
   correctAnswer: string;
   incorrectAnswers: string[];
+  shortId: string;
 }
 
 export type RenderVariant = RenderVariantOpen | RenderVariantQuiz;

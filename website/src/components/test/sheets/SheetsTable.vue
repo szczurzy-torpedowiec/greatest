@@ -282,6 +282,7 @@ export default defineComponent({
         await Promise.all(selected.value.map(
           (sheet) => deleteSheetAndHandle(sheet.shortId),
         ));
+        selected.value = [];
       },
       columns: computed(() => [
         {
