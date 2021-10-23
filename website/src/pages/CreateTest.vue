@@ -1,184 +1,193 @@
 <template>
-  <full-height-page class="create-test row">
-    <question-picker
-      class="create-test__question-picker"
-      :used-questions="usedQuestions"
-      :questions-map="questionsMap"
-      @add-question="onAddQuestion"
-    />
-    <q-separator vertical />
-    <div class="flex-grow full-height">
-      <q-scroll-area class="full-height full-width scrollarea-full-width overflow-hidden">
-        <div class="create-test__pages q-px-lg">
-          <div
-            v-for="(page, pageIndex) in pageItems"
-            :key="pageIndex"
-            class="create-test__page q-mx-auto q-my-lg relative-position shadow-4"
-            :class="{
-              'create-test__page--overflow': page.overflow
-            }"
-          >
-            <preview-render>
-              <template #default="{ renderMmPixels }">
-                <page-render
-                  :page-index="pageIndex"
-                  :total-pages="pageItems.length"
-                  show-excess
-                  :dragging="draggingCount > 0"
-                >
-                  <draggable
-                    group="page"
-                    :model-value="page.elements"
-                    item-key="key"
-                    :component-data="{
-                      class: (draggingCount > 0) ? 'flex-grow' : 'fill-height',
-                    }"
-                    @change="page.onQuestionOrderChange"
-                    @start="draggingCount += 1"
-                    @end="draggingCount -= 1"
-                  >
-                    <template #item="{element, index}">
-                      <render-question
-                        :points="element.maxPoints"
-                        :variants="element.variants"
-                        :variant="element.idElement.variant"
-                        :question-index="element.number"
-                        variant-clickable
-                        demo
-                        class="create-test__render-question"
-                        :class="{
-                          'create-test__render-question--dragging': draggingCount > 0
-                        }"
-                      >
-                        <template #variant-menu>
-                          <q-tooltip>
-                            {{ $t('createTest.pickVariant') }}
-                          </q-tooltip>
-                          <q-menu
-                            cover
-                            auto-close
-                          >
-                            <question-variant-picker
-                              :variant-count="element.variants.length"
-                              :model-value="element.idElement.variant"
-                              @update:model-value="page.onVariantPicked(index, $event)"
-                            />
-                          </q-menu>
-                        </template>
-                      </render-question>
-                    </template>
-                  </draggable>
-                  <template #header>
-                    <div
-                      v-if="draggingCount > 0"
-                      class="create-test__trash"
+  <full-height-page class="create-test">
+    <q-splitter
+      v-model="splitter"
+      class="full-height"
+      :limits="[15, 60]"
+    >
+      <template #before>
+        <question-picker
+          class="create-test__question-picker"
+          :used-questions="usedQuestions"
+          :questions-map="questionsMap"
+          @add-question="onAddQuestion"
+        />
+      </template>
+      <template #after>
+        <div class="flex-grow full-height">
+          <q-scroll-area class="full-height full-width scrollarea-full-width overflow-hidden">
+            <div class="create-test__pages q-px-lg">
+              <div
+                v-for="(page, pageIndex) in pageItems"
+                :key="pageIndex"
+                class="create-test__page q-mx-auto q-my-lg relative-position shadow-4"
+                :class="{
+                  'create-test__page--overflow': page.overflow
+                }"
+              >
+                <preview-render>
+                  <template #default="{ renderMmPixels }">
+                    <page-render
+                      :page-index="pageIndex"
+                      :total-pages="pageItems.length"
+                      show-excess
+                      :dragging="draggingCount > 0"
                     >
-                      <div class="create-test__trash-body">
-                        <q-icon
-                          name="mdi-delete"
-                          color="negative"
-                        />
-                      </div>
                       <draggable
                         group="page"
-                        :items="[]"
+                        :model-value="page.elements"
                         item-key="key"
                         :component-data="{
-                          class: 'full-height full-width',
+                          class: (draggingCount > 0) ? 'flex-grow' : 'fill-height',
                         }"
-                        ghost-class="create-test__trash-ghost"
+                        @change="page.onQuestionOrderChange"
                         @start="draggingCount += 1"
                         @end="draggingCount -= 1"
                       >
-                        <template #item="item">
-                          {{ item }}
+                        <template #item="{element, index}">
+                          <render-question
+                            :points="element.maxPoints"
+                            :variants="element.variants"
+                            :variant="element.idElement.variant"
+                            :question-index="element.number"
+                            variant-clickable
+                            demo
+                            class="create-test__render-question"
+                            :class="{
+                              'create-test__render-question--dragging': draggingCount > 0
+                            }"
+                          >
+                            <template #variant-menu>
+                              <q-tooltip>
+                                {{ $t('createTest.pickVariant') }}
+                              </q-tooltip>
+                              <q-menu
+                                cover
+                                auto-close
+                              >
+                                <question-variant-picker
+                                  :variant-count="element.variants.length"
+                                  :model-value="element.idElement.variant"
+                                  @update:model-value="page.onVariantPicked(index, $event)"
+                                />
+                              </q-menu>
+                            </template>
+                          </render-question>
                         </template>
                       </draggable>
-                    </div>
+                      <template #header>
+                        <div
+                          v-if="draggingCount > 0"
+                          class="create-test__trash"
+                        >
+                          <div class="create-test__trash-body">
+                            <q-icon
+                              name="mdi-delete"
+                              color="negative"
+                            />
+                          </div>
+                          <draggable
+                            group="page"
+                            :items="[]"
+                            item-key="key"
+                            :component-data="{
+                              class: 'full-height full-width',
+                            }"
+                            ghost-class="create-test__trash-ghost"
+                            @start="draggingCount += 1"
+                            @end="draggingCount -= 1"
+                          >
+                            <template #item="item">
+                              {{ item }}
+                            </template>
+                          </draggable>
+                        </div>
+                      </template>
+                      <template #wrapper>
+                        <page-overflow-observer
+                          :freeze="draggingCount > 0"
+                          :render-mm-pixels="renderMmPixels"
+                          @update:overflow="page.onOverflowUpdate"
+                        />
+                      </template>
+                    </page-render>
                   </template>
-                  <template #wrapper>
-                    <page-overflow-observer
-                      :freeze="draggingCount > 0"
-                      :render-mm-pixels="renderMmPixels"
-                      @update:overflow="page.onOverflowUpdate"
-                    />
-                  </template>
-                </page-render>
-              </template>
-            </preview-render>
-            <div class="absolute-top-right q-ma-sm">
+                </preview-render>
+                <div class="absolute-top-right q-ma-sm">
+                  <q-btn
+                    v-if="draggingCount <= 0"
+                    color="negative"
+                    icon="mdi-file-remove"
+                    round
+                    size="md"
+                    :disable="page.elements.length !== 0 || pageItems.length === 1"
+                    @click="removePage(pageIndex)"
+                  >
+                    <q-tooltip>{{ $t('createTest.removePage') }}</q-tooltip>
+                  </q-btn>
+                  <q-tooltip v-if="pageItems.length === 1">
+                    {{ $t('createTest.removeError.only') }}
+                  </q-tooltip>
+                  <q-tooltip v-else-if="page.elements.length !== 0">
+                    {{ $t('createTest.removeError.hasContent') }}
+                  </q-tooltip>
+                </div>
+                <div
+                  v-if="page.overflow"
+                  class="create-test__page-overflow-info"
+                >
+                  {{ $t('createTest.overflow') }}
+                </div>
+              </div>
+            </div>
+            <div class="row justify-center q-mb-lg q-gutter-md">
               <q-btn
-                v-if="draggingCount <= 0"
-                color="negative"
-                icon="mdi-file-remove"
-                round
-                size="md"
-                :disable="page.elements.length !== 0 || pageItems.length === 1"
-                @click="removePage(pageIndex)"
+                color="primary"
+                icon="mdi-file-plus"
+                :label="$t('createTest.addPage')"
+                @click="addPage"
+              />
+              <q-btn
+                color="primary"
+                icon="mdi-check"
+                :label="$t('common.finish')"
+                outline
               >
-                <q-tooltip>{{ $t('createTest.removePage') }}</q-tooltip>
+                <q-popup-proxy
+                  anchor="top right"
+                  self="bottom right"
+                  :offset="[0, 8]"
+                  :persistent="createTestLoading"
+                >
+                  <q-card>
+                    <q-form @submit.prevent="onCreateSubmit">
+                      <q-card-section class="q-pb-none">
+                        <q-input
+                          v-model="testName"
+                          :label="$t('createTest.testName')"
+                          filled
+                          autofocus
+                        />
+                      </q-card-section>
+                      <q-card-actions align="right">
+                        <q-btn
+                          color="primary"
+                          type="submit"
+                          :disable="testNameInvalid"
+                          :loading="createTestLoading"
+                        >
+                          {{ $t('common.create') }}
+                        </q-btn>
+                      </q-card-actions>
+                    </q-form>
+                  </q-card>
+                </q-popup-proxy>
               </q-btn>
-              <q-tooltip v-if="pageItems.length === 1">
-                {{ $t('createTest.removeError.only') }}
-              </q-tooltip>
-              <q-tooltip v-else-if="page.elements.length !== 0">
-                {{ $t('createTest.removeError.hasContent') }}
-              </q-tooltip>
             </div>
-            <div
-              v-if="page.overflow"
-              class="create-test__page-overflow-info"
-            >
-              {{ $t('createTest.overflow') }}
-            </div>
-          </div>
+          </q-scroll-area>
         </div>
-        <div class="row justify-center q-mb-lg q-gutter-md">
-          <q-btn
-            color="primary"
-            icon="mdi-file-plus"
-            :label="$t('createTest.addPage')"
-            @click="addPage"
-          />
-          <q-btn
-            color="primary"
-            icon="mdi-check"
-            :label="$t('common.finish')"
-            outline
-          >
-            <q-popup-proxy
-              anchor="top right"
-              self="bottom right"
-              :offset="[0, 8]"
-              :persistent="createTestLoading"
-            >
-              <q-card>
-                <q-form @submit.prevent="onCreateSubmit">
-                  <q-card-section class="q-pb-none">
-                    <q-input
-                      v-model="testName"
-                      :label="$t('createTest.testName')"
-                      filled
-                      autofocus
-                    />
-                  </q-card-section>
-                  <q-card-actions align="right">
-                    <q-btn
-                      color="primary"
-                      type="submit"
-                      :disable="testNameInvalid"
-                      :loading="createTestLoading"
-                    >
-                      {{ $t('common.create') }}
-                    </q-btn>
-                  </q-card-actions>
-                </q-form>
-              </q-card>
-            </q-popup-proxy>
-          </q-btn>
-        </div>
-      </q-scroll-area>
-    </div>
+      </template>
+    </q-splitter>
   </full-height-page>
 </template>
 <script lang="ts">
@@ -401,12 +410,8 @@ export default defineComponent({
 @import "src/css/render";
 
 .create-test {
-  .create-test__question-picker {
-    width: 300px;
-  }
-
   .create-test__page {
-    max-width: 450px;
+    max-width: 500px;
     border-radius: $generic-border-radius;
 
     &.create-test__page--overflow {
