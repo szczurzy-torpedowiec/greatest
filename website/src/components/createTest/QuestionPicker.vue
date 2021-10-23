@@ -36,7 +36,6 @@
           <q-item
             v-for="question in selectedSetQuestions"
             :key="question.shortId"
-            class="q-px-none"
             clickable
             :disable="question.disable"
             @click="onAddQuestion(selectedQuestionSet.value, question)"

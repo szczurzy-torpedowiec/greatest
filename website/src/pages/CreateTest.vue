@@ -1,151 +1,145 @@
 <template>
-  <full-height-page class="create-test">
-    <q-splitter
-      v-model="splitter"
-      class="full-height"
-      :limits="[20, 80]"
-    >
-      <template #before>
-        <question-picker
-          :used-questions="usedQuestions"
-          :questions-map="questionsMap"
-          @add-question="onAddQuestion"
-        />
-      </template>
-      <template #after>
-        <q-scroll-area class="full-height full-width scrollarea-full-width overflow-hidden">
-          <div
-            v-for="(page, pageIndex) in pageItems"
-            :key="pageIndex"
-            class="q-ma-lg relative-position create-test__page shadow-4"
-            :class="{
-              'create-test__page--overflow': page.overflow
-            }"
-          >
-            <preview-render>
-              <template #default="{ renderMmPixels }">
-                <page-render
-                  :page-index="pageIndex"
-                  :total-pages="pageItems.length"
-                  show-excess
-                  :dragging="draggingCount > 0"
-                >
-                  <draggable
-                    group="page"
-                    :model-value="page.elements"
-                    item-key="key"
-                    :component-data="{
-                      class: (draggingCount > 0) ? 'flex-grow' : 'fill-height',
-                    }"
-                    @change="page.onQuestionOrderChange"
-                    @start="draggingCount += 1"
-                    @end="draggingCount -= 1"
-                  >
-                    <template #item="{element, index}">
-                      <render-question
-                        :points="element.maxPoints"
-                        :variants="element.variants"
-                        :variant="element.idElement.variant"
-                        :question-index="element.number"
-                        variant-clickable
-                        class="create-test__render-question"
-                        :class="{
-                          'create-test__render-question--dragging': draggingCount > 0
-                        }"
-                      >
-                        <template #variant-menu>
-                          <q-tooltip>
-                            Pick previewed variant
-                          </q-tooltip>
-                          <q-menu
-                            cover
-                            auto-close
-                          >
-                            <question-variant-picker
-                              :variant-count="element.variants.length"
-                              :model-value="element.idElement.variant"
-                              @update:model-value="page.onVariantPicked(index, $event)"
-                            />
-                          </q-menu>
-                        </template>
-                      </render-question>
-                    </template>
-                  </draggable>
-                  <template #header>
-                    <div
-                      v-if="draggingCount > 0"
-                      class="create-test__trash"
-                    >
-                      <draggable
-                        group="page"
-                        :items="[]"
-                        item-key="key"
-                        :component-data="{
-                          class: 'create-test__trash-zone full-height full-width',
-                        }"
-                        ghost-class="create-test__trash-ghost"
-                        @start="draggingCount += 1"
-                        @end="draggingCount -= 1"
-                      >
-                        <template #item="item">
-                          {{ item }}
-                        </template>
-                      </draggable>
-                      <div class="create-test__trash-body">
-                        <q-icon
-                          name="mdi-delete"
-                          color="negative"
-                        />
-                      </div>
-                    </div>
-                  </template>
-                  <template #wrapper>
-                    <page-overflow-observer
-                      :freeze="draggingCount > 0"
-                      :render-mm-pixels="renderMmPixels"
-                      @update:overflow="page.onOverflowUpdate"
-                    />
-                  </template>
-                </page-render>
-              </template>
-            </preview-render>
-            <div class="absolute-top-right q-ma-sm">
-              <q-btn
-                v-if="draggingCount <= 0"
-                color="negative"
-                icon="mdi-file-remove"
-                round
-                size="md"
-                :disable="page.elements.length !== 0 || pageItems.length === 1"
-                @click="removePage(pageIndex)"
+  <full-height-page class="create-test row">
+    <question-picker
+      class="create-test__question-picker"
+      :used-questions="usedQuestions"
+      :questions-map="questionsMap"
+      @add-question="onAddQuestion"
+    />
+    <q-separator vertical />
+    <div class="flex-grow full-height">
+      <q-scroll-area class="full-height full-width scrollarea-full-width overflow-hidden">
+        <div
+          v-for="(page, pageIndex) in pageItems"
+          :key="pageIndex"
+          class="q-ma-lg relative-position create-test__page shadow-4"
+          :class="{
+            'create-test__page--overflow': page.overflow
+          }"
+        >
+          <preview-render>
+            <template #default="{ renderMmPixels }">
+              <page-render
+                :page-index="pageIndex"
+                :total-pages="pageItems.length"
+                show-excess
+                :dragging="draggingCount > 0"
               >
-                <q-tooltip>Remove page</q-tooltip>
-              </q-btn>
-              <q-tooltip v-if="pageItems.length === 1">
-                Cannot remove all pages
-              </q-tooltip>
-              <q-tooltip v-else-if="page.elements.length !== 0">
-                Cannot remove page with content
-              </q-tooltip>
-            </div>
-            <div
-              v-if="page.overflow"
-              class="create-test__page-overflow-info"
-            >
-              Page content exceeds page height
-            </div>
-          </div>
-          <div class="row justify-center q-mb-lg">
+                <draggable
+                  group="page"
+                  :model-value="page.elements"
+                  item-key="key"
+                  :component-data="{
+                    class: (draggingCount > 0) ? 'flex-grow' : 'fill-height',
+                  }"
+                  @change="page.onQuestionOrderChange"
+                  @start="draggingCount += 1"
+                  @end="draggingCount -= 1"
+                >
+                  <template #item="{element, index}">
+                    <render-question
+                      :points="element.maxPoints"
+                      :variants="element.variants"
+                      :variant="element.idElement.variant"
+                      :question-index="element.number"
+                      variant-clickable
+                      class="create-test__render-question"
+                      :class="{
+                        'create-test__render-question--dragging': draggingCount > 0
+                      }"
+                    >
+                      <template #variant-menu>
+                        <q-tooltip>
+                          Pick previewed variant
+                        </q-tooltip>
+                        <q-menu
+                          cover
+                          auto-close
+                        >
+                          <question-variant-picker
+                            :variant-count="element.variants.length"
+                            :model-value="element.idElement.variant"
+                            @update:model-value="page.onVariantPicked(index, $event)"
+                          />
+                        </q-menu>
+                      </template>
+                    </render-question>
+                  </template>
+                </draggable>
+                <template #header>
+                  <div
+                    v-if="draggingCount > 0"
+                    class="create-test__trash"
+                  >
+                    <div class="create-test__trash-body">
+                      <q-icon
+                        name="mdi-delete"
+                        color="negative"
+                      />
+                    </div>
+                    <draggable
+                      group="page"
+                      :items="[]"
+                      item-key="key"
+                      :component-data="{
+                        class: 'full-height full-width',
+                      }"
+                      ghost-class="create-test__trash-ghost"
+                      @start="draggingCount += 1"
+                      @end="draggingCount -= 1"
+                    >
+                      <template #item="item">
+                        {{ item }}
+                      </template>
+                    </draggable>
+                  </div>
+                </template>
+                <template #wrapper>
+                  <page-overflow-observer
+                    :freeze="draggingCount > 0"
+                    :render-mm-pixels="renderMmPixels"
+                    @update:overflow="page.onOverflowUpdate"
+                  />
+                </template>
+              </page-render>
+            </template>
+          </preview-render>
+          <div class="absolute-top-right q-ma-sm">
             <q-btn
-              color="primary"
-              icon="mdi-file-plus"
-              label="Add page"
-              @click="addPage"
-            />
+              v-if="draggingCount <= 0"
+              color="negative"
+              icon="mdi-file-remove"
+              round
+              size="md"
+              :disable="page.elements.length !== 0 || pageItems.length === 1"
+              @click="removePage(pageIndex)"
+            >
+              <q-tooltip>Remove page</q-tooltip>
+            </q-btn>
+            <q-tooltip v-if="pageItems.length === 1">
+              Cannot remove all pages
+            </q-tooltip>
+            <q-tooltip v-else-if="page.elements.length !== 0">
+              Cannot remove page with content
+            </q-tooltip>
           </div>
-        </q-scroll-area>
-      </template>
-    </q-splitter>
+          <div
+            v-if="page.overflow"
+            class="create-test__page-overflow-info"
+          >
+            Page content exceeds page height
+          </div>
+        </div>
+        <div class="row justify-center q-mb-lg">
+          <q-btn
+            color="primary"
+            icon="mdi-file-plus"
+            label="Add page"
+            @click="addPage"
+          />
+        </div>
+      </q-scroll-area>
+    </div>
   </full-height-page>
 </template>
 <script lang="ts">
@@ -320,8 +314,14 @@ export default defineComponent({
 @import "src/css/render";
 
 .create-test {
+  .create-test__question-picker {
+    width: 300px;
+  }
+
   .create-test__page {
-    //outline: 1px solid black;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
     border-radius: $generic-border-radius;
 
     &.create-test__page--overflow {
@@ -345,6 +345,7 @@ export default defineComponent({
     background-color: rgba($negative, 40%);
     border: render-mm(1) solid $negative;
     border-radius: render-mm(2);
+    backdrop-filter: blur(2px);
     display: grid;
 
     .create-test__trash-zone {
@@ -368,6 +369,8 @@ export default defineComponent({
   }
 
   .create-test__render-question {
+    cursor: grab;
+
     &.create-test__render-question--dragging {
       .render-question__label-question-text {
         filter: blur(render-mm(0.75));
