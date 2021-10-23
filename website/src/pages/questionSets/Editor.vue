@@ -63,7 +63,6 @@ export default defineComponent({
     });
     const updateQuestions = async () => {
       try {
-        questionSet.value = null;
         questionSet.value = await getQuestionSet(questionSetId.value);
       } catch (error) {
         console.error(error);

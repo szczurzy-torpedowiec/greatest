@@ -104,7 +104,7 @@ export default defineComponent({
     const menuOpen = ref<boolean>(false);
 
     async function editRedirect() {
-      await router.push(`/question-sets/${props.id}/edit`);
+      await router.push(`/teacher/question-sets/${props.id}/edit`);
     }
 
     async function submitName() {

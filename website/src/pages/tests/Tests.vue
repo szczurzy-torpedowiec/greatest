@@ -3,15 +3,20 @@
     <q-card
       v-for="test in tests"
       :key="test.shortId"
-      class="q-mb-md"
+      class="q-mb-md text-h6 cursor-pointer q-hoverable"
     >
       <span class="q-focus-helper" />
       <q-card-section horizontal>
-        <q-card-section
-          v-ripple
-          class="text-h6 col q-hoverable cursor-pointer"
-        >
-          {{ test.name }}
+        <q-card-section class="col">
+          <router-link
+            v-ripple
+            style="text-decoration: none; color: inherit;"
+            :to="`tests/${test.shortId}/questions`"
+          >
+            <div>
+              {{ test.name }}
+            </div>
+          </router-link>
         </q-card-section>
         <q-card-actions>
           <q-btn

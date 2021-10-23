@@ -1,118 +1,122 @@
 {
-    "appName": "Greatest",
-    "questionSets": {
-      "questionCount": "Brak pytań | 1 pytanie | {count} pytań",
-      "edit": "Edytuj",
-      "use": "Użyj",
-      "newQuestionSet": "Nowy zestaw pytań",
-      "questionSetName": "Nazwa zestawu pytań",
-      "noVariants": "Brak wariantów",
-      "addVariant": "Dodaj wariant",
-      "addOpenQuestion": "Dodaj pytanie otwarte",
-      "addQuizQuestion": "Dodaj pytanie zamknięte",
-      "listTitle": "Zestawy pytań",
-      "editTitle": "Zestaw pytań {name}",
-      "updateQuestionsError": "Nie udało się pobrać listy pytań",
-      "deleteQuestionError": "Nie udało się usunąć pytania",
-      "createQuestionVariantError": "Nie udało się utworzyć wariantu pytania",
-      "deleteQuestionVariantError": "Nie udało się usunąć wariantu pytania",
-      "createQuestionSetError": "Nie udało się utworzyć zestawu pytań",
-      "deleteQuestionSetError": "Nie udało się usunąć zestawu pytań",
-      "renameQuestionSetError": "Nie udało się zmienić nazwy zestawu pytań"
+  "appName": "Greatest",
+  "languageName": "Polski",
+  "languageIcon": "https://flagicons.lipis.dev/flags/4x3/pl.svg",
+  "questionSets": {
+    "questionCount": "Brak pytań | 1 pytanie | {count} pytań",
+    "edit": "Edytuj",
+    "use": "Użyj",
+    "newQuestionSet": "Nowy zestaw pytań",
+    "questionSetName": "Nazwa zestawu pytań",
+    "noVariants": "Brak wariantów",
+    "addVariant": "Dodaj wariant",
+    "addOpenQuestion": "Dodaj pytanie otwarte",
+    "addQuizQuestion": "Dodaj pytanie zamknięte",
+    "listTitle": "Zestawy pytań",
+    "editTitle": "Zestaw pytań {name}",
+    "updateQuestionsError": "Nie udało się pobrać listy pytań",
+    "deleteQuestionError": "Nie udało się usunąć pytania",
+    "createQuestionVariantError": "Nie udało się utworzyć wariantu pytania",
+    "deleteQuestionVariantError": "Nie udało się usunąć wariantu pytania",
+    "createQuestionSetError": "Nie udało się utworzyć zestawu pytań",
+    "deleteQuestionSetError": "Nie udało się usunąć zestawu pytań",
+    "renameQuestionSetError": "Nie udało się zmienić nazwy zestawu pytań"
+  },
+  "common": {
+    "variants": "Warianty",
+    "points": "Punkty",
+    "question": "Pytanie",
+    "correctAnswer": "Poprawna odpowiedź",
+    "incorrectAnswer": "Niepoprawna odpowiedź",
+    "create": "Utwórz",
+    "save": "Zapisz",
+    "delete": "Usuń",
+    "deleteConfirmation": "Czy na pewno chcesz usunąć ten element?",
+    "add": "Dodaj",
+    "use": "Użyj",
+    "requestRefresh": "Odśwież stronę aby zapisać zmiany"
+  },
+  "test": {
+    "loadTestError": "Nie udało się załadować informacji o teście",
+    "listSheetsError": "Nie udało się załadować listy arkuszy",
+    "listScansError": "Nie udało się załadować listy skanów",
+    "title": "Test {name}",
+    "tabs": {
+      "questions": "Pytania",
+      "sheets": "Arkusze",
+      "scans": "Skany"
     },
-    "common": {
-      "variants": "Warianty",
-      "points": "Punkty",
-      "question": "Pytanie",
-      "correctAnswer": "Poprawna odpowiedź",
-      "incorrectAnswer": "Niepoprawna odpowiedź",
-      "create": "Utwórz",
-      "save": "Zapisz",
-      "delete": "Usuń",
-      "deleteConfirmation": "Czy na pewno chcesz usunąć ten element?",
-      "add": "Dodaj",
-      "use": "Użyj"
-    },
-    "test": {
-      "loadTestError": "Nie udało się załadować informacji o teście",
-      "listSheetsError": "Nie udało się załadować listy arkuszy",
-      "listScansError": "Nie udało się załadować listy skanów",
-      "title": "Test {name}",
-      "tabs": {
-        "questions": "Pytania",
-        "sheets": "Arkusze",
-        "scans": "Skany"
+    "sheets": {
+      "addStudent": "Dodaj ucznia",
+      "setStudent": {
+        "inputLabel": "Uczeń",
+        "error": "Nie udało się usunąć ucznia",
+        "hint": "Zostaw puste aby usunąć"
       },
-      "sheets": {
-        "addStudent": "Dodaj ucznia",
-        "setStudent": {
-          "inputLabel": "Uczeń",
-          "error": "Nie udało się usunąć ucznia",
-          "hint": "Zostaw puste aby usunąć"
-        },
-        "headers": {
-          "student": "Uczeń",
-          "phrase": "Fraza",
-          "pages": "Zeskanowane strony"
-        },
-        "allPagesScanned": "Wszystkie strony zeskanowane",
-        "pageTooltip": "Strona {page} nie została zeskanowana | Strona {page} została zeskanowana raz | Strona {page} została zeskanowana {times} razy",
-        "scansWithoutPage": "+{count}",
-        "scansWithoutPageTooltip": "1 skan bez numeru strony | {count} skanów bez numerów stron",
-        "copyWarning": {
-          "title": "Proszę nie kopiować/kserować sprawdzianów",
-          "body": "Każdy arkusz posiada swój unikalny identyfikator, aplikacja nie będzie działać ze sprawdzianami skserowanymi lub wydrukowanymi wiele razy."
-        },
-        "createSheetsButton": "Nowy arkusz",
-        "createSheets": {
-          "inputLabel": "Ilość arkuszy",
-          "error": "Nie udało się utworzyć arkuszy"
-        },
-        "delete": "Usuń",
-        "noSheetsSelected": "Brak zaznaczonych arkuszy",
-        "cannotDeleteScannedSheets": "Nie udało się usunąć zeskanowanych arkuszy",
-        "deleteSheetError": "Nie udało się usunąć arkusza"
-      }
-    },
-    "404": {
-      "title": "Strona nie znaleziona",
-      "header": "404",
-      "subtitle": "Strona nie znaleziona",
-      "notFunny": "Umówmy się, że tego nie widać i wszystko działa",
-      "goHome": "Strona główna"
-    },
-    "tests": {
-      "tests": "Testy",
-      "testName": "Nazwa testu",
-      "testNameEmptyError": "Nazwa testu jest pusta",
-      "questionSet": "Zestaw pytań",
-      "questionSetEmptyError": "Wybrany zestaw pytań jest pusty",
-      "getQuestionSetError": "Nie udało się załadować zestawu pytań",
-      "testCreateError": "Nie udało się utworzyć testu",
-      "createTest": "Create test",
-      "listTestsError": "Nie udało się załadować listy testów"
-    },
-    "signIn": {
-      "signIn": "Zaloguj się",
-      "apiTokens": "Tokeny API",
-      "signOut": "Wyloguj się",
-      "signInGoogle": "Zaloguj się przez Google",
-      "signInDemo": "Użytkownik demo",
-      "email": "E-mail",
-      "password": "Hasło",
-      "generateMessage": "Jeżeli nie posiadasz danych użytkownika demo, możesz je wygenerować",
-      "generate": "Generuj",
-      "noApiTokens": "Brak tokenów API",
-      "tokenCopied": "Token API skopiowany do schowka",
-      "tokenCopyFallback": "Wygenerowany token API: {token}",
-      "tokenError": "Nie udało się wygenerować tokenu API",
-      "tokenDeleteError": "Nie udało się usunąć tokenu API",
-      "tokenListError": "Nie udało się załadować listy tokenów API",
-      "created": "Stworzony:",
-      "fillCredentials": "Wypełnij"
-    },
-    "menu": {
-      "questionSets": "Zestawy pytań",
-      "tests": "Testy"
+      "headers": {
+        "student": "Uczeń",
+        "phrase": "Fraza",
+        "pages": "Zeskanowane strony"
+      },
+      "allPagesScanned": "Wszystkie strony zeskanowane",
+      "pageTooltip": "Strona {page} nie została zeskanowana | Strona {page} została zeskanowana raz | Strona {page} została zeskanowana {times} razy",
+      "scansWithoutPage": "+{count}",
+      "scansWithoutPageTooltip": "1 skan bez numeru strony | {count} skanów bez numerów stron",
+      "notGenerated": "Nie wygenerowane",
+      "copyWarning": {
+        "title": "Proszę nie kopiować/kserować sprawdzianów",
+        "body": "Każdy arkusz posiada swój unikalny identyfikator, aplikacja nie będzie działać ze sprawdzianami skserowanymi lub wydrukowanymi wiele razy."
+      },
+      "createSheetsButton": "Nowy arkusz",
+      "createSheets": {
+        "inputLabel": "Ilość arkuszy",
+        "error": "Nie udało się utworzyć arkuszy"
+      },
+      "delete": "Usuń",
+      "noSheetsSelected": "Brak zaznaczonych arkuszy",
+      "cannotDeleteScannedSheets": "Nie udało się usunąć zeskanowanych arkuszy",
+      "deleteSheetError": "Nie udało się usunąć arkusza"
     }
+  },
+  "404": {
+    "title": "Strona nie znaleziona",
+    "header": "404",
+    "subtitle": "Strona nie znaleziona",
+    "notFunny": "Umówmy się, że tego nie widać i wszystko działa",
+    "goHome": "Strona główna"
+  },
+  "tests": {
+    "tests": "Testy",
+    "testName": "Nazwa testu",
+    "testNameEmptyError": "Nazwa testu jest pusta",
+    "questionSet": "Zestaw pytań",
+    "questionSetEmptyError": "Wybrany zestaw pytań jest pusty",
+    "getQuestionSetError": "Nie udało się załadować zestawu pytań",
+    "testCreateError": "Nie udało się utworzyć testu",
+    "addTest": "Dodaj test",
+    "listTestsError": "Nie udało się załadować listy testów"
+  },
+  "signIn": {
+    "signIn": "Zaloguj się",
+    "apiTokens": "Tokeny API",
+    "signOut": "Wyloguj się",
+    "signInGoogle": "Zaloguj się przez Google",
+    "signInDemo": "Użytkownik demo",
+    "email": "E-mail",
+    "password": "Hasło",
+    "generateMessage": "Jeżeli nie posiadasz danych użytkownika demo, możesz je wygenerować",
+    "generate": "Generuj",
+    "noApiTokens": "Brak tokenów API",
+    "tokenCopied": "Token API skopiowany do schowka",
+    "tokenCopyFallback": "Wygenerowany token API: {token}",
+    "tokenError": "Nie udało się wygenerować tokenu API",
+    "tokenDeleteError": "Nie udało się usunąć tokenu API",
+    "tokenListError": "Nie udało się załadować listy tokenów API",
+    "created": "Stworzony:",
+    "fillCredentials": "Wypełnij"
+  },
+  "menu": {
+    "questionSets": "Zestawy pytań",
+    "tests": "Testy"
   }
+}

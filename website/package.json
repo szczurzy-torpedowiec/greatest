@@ -17,7 +17,7 @@
     "greatest-api-schemas": "file:../api-schemas",
     "ky": "^0.28.6",
     "ky-universal": "^0.9.1",
-    "quasar": "^2.1.3",
+    "quasar": "^2.1.9",
     "vue-i18n": "^9.0.0",
     "vue-router": "4.0.11",
     "vuedraggable": "^4.1.0"
