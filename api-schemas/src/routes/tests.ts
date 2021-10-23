@@ -17,19 +17,24 @@ export const listTestsReplySchema = Type.Object({
 });
 export type ListTestsReply = Static<typeof listTestsReplySchema>;
 
+export const pageElementQuestionSchema = Type.Object({
+  elementType: Type.Literal('question'),
+  questionSetShortId: Type.String(),
+  questionShortId: Type.String(),
+  variants: Type.Array(Type.String({
+    title: 'Question variant short id',
+  }), {
+    minItems: 1,
+    maxItems: 26,
+    uniqueItems: true,
+  }),
+});
+export type PageElementQuestion = Static<typeof pageElementQuestionSchema>;
+export const pageElementSchema = Type.Union([pageElementQuestionSchema]);
+export type PageElement = Static<typeof pageElementSchema>;
 export const createTestBodySchema = Type.Object({
   name: trimmedStringSchema(false),
-  questions: Type.Array(Type.Object({
-    questionSetShortId: Type.String(),
-    questionShortId: Type.String(),
-    variants: Type.Array(Type.String({
-      title: 'Question variant short id',
-    }), {
-      minItems: 1,
-      maxItems: 26,
-      uniqueItems: true,
-    }),
-  }), {
+  pages: Type.Array(Type.Array(pageElementSchema), {
     minItems: 1,
   }),
 });
@@ -51,16 +56,18 @@ export type PatchTestReply = Static<typeof patchTestReplySchema>;
 
 export const getTestReplySchema = Type.Object({
   name: Type.String(),
-  questions: Type.Array(Type.Union([
+  pages: Type.Array(Type.Array(Type.Union([
     Type.Object({
-      type: Type.Literal('open'),
+      elementType: Type.Literal('question'),
+      questionType: Type.Literal('open'),
       maxPoints: Type.Integer(),
       variants: Type.Array(Type.Object({
         content: Type.String(),
       })),
     }),
     Type.Object({
-      type: Type.Literal('quiz'),
+      elementType: Type.Literal('question'),
+      questionType: Type.Literal('quiz'),
       maxPoints: Type.Integer(),
       variants: Type.Array(Type.Object({
         content: Type.String(),
@@ -68,6 +75,6 @@ export const getTestReplySchema = Type.Object({
         incorrectAnswers: Type.Array(Type.String()),
       })),
     }),
-  ])),
+  ]))),
 });
 export type GetTestReply = Static<typeof getTestReplySchema>;

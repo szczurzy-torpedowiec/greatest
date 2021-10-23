@@ -59,7 +59,6 @@
         "pageTooltip": "Strona {page} nie została zeskanowana | Strona {page} została zeskanowana raz | Strona {page} została zeskanowana {times} razy",
         "scansWithoutPage": "+{count}",
         "scansWithoutPageTooltip": "1 skan bez numeru strony | {count} skanów bez numerów stron",
-        "notGenerated": "Nie wygenerowane",
         "copyWarning": {
           "title": "Proszę nie kopiować/kserować sprawdzianów",
           "body": "Każdy arkusz posiada swój unikalny identyfikator, aplikacja nie będzie działać ze sprawdzianami skserowanymi lub wydrukowanymi wiele razy."

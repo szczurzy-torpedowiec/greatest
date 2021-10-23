@@ -101,7 +101,7 @@
           <q-slider
             v-model="page"
             :min="0"
-            :max="selectedSheet.generated.pages - 1"
+            :max="totalPages - 1"
             snap
             markers
             :label-value="$t('test.scans.selectSheet.pageSlider', { page: page + 1 })"
@@ -148,6 +148,10 @@ export default defineComponent({
       type: Array as PropType<Sheet[] | null>,
       default: null,
     },
+    totalPages: {
+      type: Number,
+      required: true,
+    },
     submit: {
       type: Function as PropType<(
         sheetShortId: string,
@@ -191,12 +195,9 @@ export default defineComponent({
           || sheet.student.toLowerCase().includes(search)
           || sheet.shortId === search));
       }),
-      selectSheet: async (sheet: Sheet) => {
-        if (sheet.generated === null) await wrapSubmit(sheet.shortId, null);
-        else {
-          page.value = 0;
-          selectedSheetId.value = sheet.shortId;
-        }
+      selectSheet: (sheet: Sheet) => {
+        page.value = 0;
+        selectedSheetId.value = sheet.shortId;
       },
       wrapSubmit,
       onBeforeShow: () => {

@@ -18,6 +18,7 @@
       :sheets="sheets"
       :scans="scans"
       :test-short-id="testShortId"
+      :total-pages="totalPages"
       @add-ignored-request-id="onAddIgnoredRequestId"
       @sheet-student-changed="onSheetStudentChanged"
       @sheets-created="onSheetsCreated"
@@ -46,6 +47,10 @@ export default defineComponent({
     testShortId: {
       type: String,
       required: true,
+    },
+    totalPages: {
+      type: Number as PropType<number | null>,
+      default: null,
     },
   },
   emits: {

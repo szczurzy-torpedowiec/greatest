@@ -32,7 +32,7 @@ import { getSecurity, requireAuthentication, requireTest } from '../../guards';
 import { DbSheet, DbTest } from '../../database/types';
 import { mapTimes, randomInt } from '../../utils';
 import { getRandomString } from '../../string-generator';
-import { mapSheet } from '../../mappers';
+import { mapSheet, mapTestQuestions } from '../../mappers';
 import { WebsocketBus } from '../../websocket-bus';
 
 export function registerSheets(
@@ -87,20 +87,20 @@ export function registerSheets(
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
     const test = await requireTest(request, dbManager, user, request.params.testShortId);
-    if (test.questions.length !== request.body.questionVariants.length) {
+    const testQuestions = mapTestQuestions(test);
+    if (testQuestions.length !== request.body.questionVariants.length) {
       throw apiInstance.httpErrors.badRequest(
-        `Wrong number of question variants, expected ${test.questions.length}`,
+        `Wrong number of question variants, expected ${testQuestions.length}`,
       );
     }
     const newSheet: WithoutId<DbSheet> = {
       testId: test._id,
       shortId: nanoid(10),
       qrCodeId: await generateQrCodeId(),
-      generated: null,
       phrase: generatePhrase(),
       student: request.body.student ?? '',
       questions: request.body.questionVariants.map((variant, questionIndex) => {
-        if (variant >= test.questions[questionIndex].variants.length) {
+        if (variant >= testQuestions[questionIndex].variants.length) {
           throw apiInstance.httpErrors.badRequest(
             `Variant specified in question ${questionIndex} does not exist`,
           );
@@ -132,6 +132,7 @@ export function registerSheets(
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
     const test = await requireTest(request, dbManager, user, request.params.testShortId);
+    const testQuestions = mapTestQuestions(test);
     const sheets = await Promise.all(mapTimes<Promise<WithoutId<DbSheet>>>(async () => ({
       shortId: nanoid(10),
       testId: test._id,
@@ -139,7 +140,7 @@ export function registerSheets(
       generated: null,
       phrase: generatePhrase(),
       student: '',
-      questions: test.questions.map((question) => ({
+      questions: testQuestions.map((question) => ({
         variant: randomInt(question.variants.length),
         points: null,
       })),
@@ -232,10 +233,6 @@ export function registerSheets(
     const user = await requireAuthentication(request, dbManager, true);
     const test = await requireTest(request, dbManager, user, request.params.testShortId);
     const sheet = await getSheet(test, request.params.sheetShortId);
-    if (sheet.generated !== null) {
-      // TODO: Implement
-      throw apiInstance.httpErrors.notImplemented();
-    }
     const scanCount = await dbManager.scansCollection.countDocuments({
       'sheet.id': sheet._id,
     });

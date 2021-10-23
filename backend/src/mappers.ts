@@ -1,6 +1,7 @@
 import { WithoutId } from 'mongodb';
 import { Scan, Sheet } from 'greatest-api-schemas';
 import {
+  DbPageElementQuestion,
   DbScan, DbSheet, DbTest, DbUser,
 } from './database/types';
 import { filterNotNull } from './utils';
@@ -10,7 +11,6 @@ export function mapSheet(sheet: WithoutId<DbSheet>): Sheet {
   return {
     shortId: sheet.shortId,
     phrase: sheet.phrase,
-    generated: sheet.generated,
     questions: sheet.questions,
     student: sheet.student,
   };
@@ -67,4 +67,10 @@ export async function mapScan(
       return mapScanOtherTest(test, user);
     }))),
   };
+}
+
+export function mapTestQuestions(test: WithoutId<DbTest>) {
+  return test.pages.flatMap(
+    (page) => page.filter((element) => element.elementType === 'question') as DbPageElementQuestion[],
+  );
 }
