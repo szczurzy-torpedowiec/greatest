@@ -8,6 +8,7 @@
     "use": "Użyj",
     "newQuestionSet": "Nowy zestaw pytań",
     "questionSetName": "Nazwa zestawu pytań",
+    "newQuestion": "Nowe pytanie",
     "noVariants": "Brak wariantów",
     "addVariant": "Dodaj wariant",
     "addOpenQuestion": "Dodaj pytanie otwarte",
@@ -31,9 +32,12 @@
     "create": "Utwórz",
     "save": "Zapisz",
     "delete": "Usuń",
+    "reset": "Resetuj",
+    "select": "Wybierz",
     "deleteConfirmation": "Czy na pewno chcesz usunąć ten element?",
     "add": "Dodaj",
     "use": "Użyj",
+    "finish": "Zakończ",
     "requestRefresh": "Odśwież stronę aby zapisać zmiany"
   },
   "test": {
@@ -76,6 +80,54 @@
       "noSheetsSelected": "Brak zaznaczonych arkuszy",
       "cannotDeleteScannedSheets": "Nie udało się usunąć zeskanowanych arkuszy",
       "deleteSheetError": "Nie udało się usunąć arkusza"
+    },
+    "scans": {
+      "assignedScans": "Przypisane skany",
+      "unassignedScans": "Nieprzypisane skany",
+      "reason": {
+        "noDetected": "Arkusz niewykryty",
+        "multipleDetected": "Wiele arkuszy wykrytych",
+        "anotherTest": "Wykryty arkusz z innego testu",
+        "assignmentRemoved": "Zadanie usunięte"
+      },
+      "allAssigned": "Wszyskie skany są przypisane",
+      "filters": {
+        "otherTests": {
+          "label": "Inne testy wykryte",
+          "any": "Wszystkie",
+          "yes": "Wykryte",
+          "no": "Niewykryte"
+        },
+        "reassigned": {
+          "label": "Z przeniesionym arkuszem",
+          "any": "Wszystkie",
+          "yes": "Wykryte",
+          "no": "Niewykryte"
+        },
+        "noScans": "Żaden skan nie pasuje do wybranych filtrów"
+      },
+      "noStudent": "Brak przypisanego ucznia",
+      "page": "(strona {page})",
+      "imageAlt": "Zdjęcie wybranego skanu",
+      "detectedSheets": "Wykryte arkusze",
+      "hasAssigned": {
+        "yes": "Posiada przypisany arkusz",
+        "no": "Nie posiada przypisanego arkusza"
+      },
+      "removeAssignment": "Usuń zadanie",
+      "selectSheet": {
+        "title": "Wybierz arkusz",
+        "pageTitle": "Wybierz stronę",
+        "pageSlider": "Strona {page}",
+        "submitWithoutPage": "Bez stroną",
+        "submitWithPage": "Ze stroną {page}",
+        "noMatching": "Żaden arkusz nie pasuje do zapytania",
+        "search": "Szukaj",
+        "searchHint": "Szukaj przez frazę lub ucznia"
+      },
+      "assignSheetFailed": "Nie udało się wybrać arkusza",
+      "removeSheetAssignmentFailed": "Nie udało się odznaczyć arkusza",
+      "notSelected": "Brak zaznaczonych arkuszy"
     }
   },
   "404": {
@@ -113,10 +165,30 @@
     "tokenDeleteError": "Nie udało się usunąć tokenu API",
     "tokenListError": "Nie udało się załadować listy tokenów API",
     "created": "Stworzony:",
-    "fillCredentials": "Wypełnij"
+    "newToken": "Nowy token",
+    "tokenName": "Nazwa tokenu",
+    "fillCredentials": "Wypełnij",
+    "authRequired": "Musisz być zalogowanym żeby to zrobić"
   },
   "menu": {
     "questionSets": "Zestawy pytań",
     "tests": "Testy"
+  },
+  "createTest": {
+    "loadQuestionSetsError": "Nie udało się załadować zestawów pytań",
+    "loadQuestionsError": "Nie udało się załadować pytań",
+    "questionSet": "Zestaw pytań",
+    "setNotSelected": "Brak wybranego zestawu pytań",
+    "submitErrorOverflow": "Nie można utworzyć testu, jeżeli jest nadmiar tekstu na stronie",
+    "createTestError": "Nie udało się utworzyć testu",
+    "pickVariant": "Wybierz wariant do podglądu",
+    "removePage": "Usuń stronę",
+    "removeError": {
+      "only": "Nie można usunąć wszystkich stron",
+      "hasContent": "Nie można usunąć strony z zawartością"
+    },
+    "overflow": "Zawartość strony nie mieści się na kartce",
+    "addPage": "Dodaj stronę",
+    "testName": "Nazwa testu"
   }
 }
