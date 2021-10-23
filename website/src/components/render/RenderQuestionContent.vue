@@ -1,12 +1,23 @@
 <template>
   <div class="render-question-content">
-    <render-question-variant-open
+    <template
       v-for="(item, index) in variants"
       :key="index"
-      class="render-question-content__variant"
-      :hidden="variant !== index"
-      :variant="item"
-    />
+    >
+      <render-question-variant-open
+        v-if="item.type === 'open'"
+        class="render-question-content__variant"
+        :hidden="variant !== index"
+        :variant="item"
+      />
+      <render-question-variant-quiz
+        v-else-if="item.type === 'quiz'"
+        class="render-question-content__variant"
+        :hidden="variant !== index"
+        :variant="item"
+        :demo="demo"
+      />
+    </template>
   </div>
 </template>
 
@@ -14,9 +25,10 @@
 import { defineComponent, PropType } from 'vue';
 import { RenderVariant } from 'components/render/types';
 import RenderQuestionVariantOpen from 'components/render/RenderQuestionVariantOpen.vue';
+import RenderQuestionVariantQuiz from 'components/render/RenderQuestionVariantQuiz.vue';
 
 export default defineComponent({
-  components: { RenderQuestionVariantOpen },
+  components: { RenderQuestionVariantQuiz, RenderQuestionVariantOpen },
   props: {
     variant: {
       type: Number as PropType<number>,
@@ -25,6 +37,9 @@ export default defineComponent({
     variants: {
       type: Array as PropType<RenderVariant[]>,
       required: true,
+    },
+    demo: {
+      type: Boolean,
     },
   },
 });

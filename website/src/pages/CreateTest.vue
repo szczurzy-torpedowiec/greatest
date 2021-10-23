@@ -44,6 +44,7 @@
                         :variant="element.idElement.variant"
                         :question-index="element.number"
                         variant-clickable
+                        demo
                         class="create-test__render-question"
                         :class="{
                           'create-test__render-question--dragging': draggingCount > 0
@@ -302,8 +303,7 @@ export default defineComponent({
                       shortId: variant.shortId,
                       type: 'quiz',
                       content: variant.content,
-                      correctAnswer: variant.correctAnswer,
-                      incorrectAnswers: [...variant.incorrectAnswers],
+                      answers: [variant.correctAnswer, ...variant.incorrectAnswers],
                     })),
                   });
               }

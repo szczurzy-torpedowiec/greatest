@@ -68,6 +68,22 @@ import { getQuestionSet, listQuestionSets } from 'src/api';
 import PreviewRender from 'components/render/PreviewRender.vue';
 import { DefaultsMap, getTypeValidator } from 'src/utils';
 import RenderQuestionContent from 'components/render/RenderQuestionContent.vue';
+import { RenderVariantOpen, RenderVariantQuiz } from 'components/render/types';
+
+interface QuestionItemBase {
+  shortId: string;
+  disable: boolean;
+}
+
+interface QuestionItemOpen extends QuestionItemBase {
+  variants: RenderVariantOpen[];
+}
+
+interface QuestionItemQuiz extends QuestionItemBase {
+  variants: RenderVariantQuiz[];
+}
+
+type QuestionItem = QuestionItemOpen | QuestionItemQuiz;
 
 export default defineComponent({
   components: { RenderQuestionContent, PreviewRender },
@@ -138,18 +154,41 @@ export default defineComponent({
           value: questionSet.shortId,
         }));
       }),
-      selectedSetQuestions: computed(() => {
+      selectedSetQuestions: computed<QuestionItem[] | null>(() => {
         if (selectedQuestionSet.value === null) return null;
         const questionSetShortId = selectedQuestionSet.value.value;
         return props.questionsMap.get(questionSetShortId)
-          ?.map((question) => ({
-            ...question,
-            disable: props.usedQuestions
-              .get(questionSetShortId)
-              .has(question.shortId),
-          })) ?? null;
+          ?.map((question) => {
+            const baseItem = {
+              shortId: question.shortId,
+              disable: props.usedQuestions
+                .get(questionSetShortId)
+                .has(question.shortId),
+            };
+            switch (question.type) {
+              case 'quiz': return {
+                ...baseItem,
+                type: 'quiz',
+                variants: question.variants.map((variant) => ({
+                  shortId: variant.shortId,
+                  content: variant.content,
+                  answers: [variant.correctAnswer, ...variant.incorrectAnswers],
+                  type: 'quiz',
+                })),
+              };
+              case 'open': return {
+                ...baseItem,
+                type: 'open',
+                variants: question.variants.map((variant) => ({
+                  shortId: variant.shortId,
+                  content: variant.content,
+                  type: 'open',
+                })),
+              };
+            }
+          }) ?? null;
       }),
-      onAddQuestion: (questionSetShortId: string, question: QuestionWithIds) => {
+      onAddQuestion: (questionSetShortId: string, question: QuestionItem) => {
         emit(
           'addQuestion',
           questionSetShortId,

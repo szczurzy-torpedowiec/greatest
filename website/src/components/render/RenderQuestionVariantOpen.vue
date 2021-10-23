@@ -21,11 +21,6 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
-    return {
-      value: Math.random(),
-    };
-  },
 });
 </script>
 

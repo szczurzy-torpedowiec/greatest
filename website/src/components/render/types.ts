@@ -7,8 +7,7 @@ export interface RenderVariantOpen {
 export interface RenderVariantQuiz {
   type: 'quiz';
   content: string;
-  correctAnswer: string;
-  incorrectAnswers: string[];
+  answers: string[];
   shortId: string;
 }
 

@@ -25,6 +25,7 @@
       :variant="variant"
       :variants="variants"
       class="render-question__content"
+      :demo="demo"
     />
     <div class="render-question__points">
       <b>{{ points }}</b> punktów
@@ -61,6 +62,7 @@ export default defineComponent({
       required: true,
     },
     variantClickable: Boolean,
+    demo: Boolean,
   },
   setup(props) {
     return {
