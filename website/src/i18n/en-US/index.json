@@ -128,7 +128,8 @@
       },
       "assignSheetFailed": "Failed to select sheet",
       "removeSheetAssignmentFailed": "Failed to deselect sheet",
-      "notSelected": "No sheet selected"
+      "notSelected": "No sheet selected",
+      "addScans": "Add scans"
     }
   },
   "404": {

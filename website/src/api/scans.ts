@@ -1,5 +1,12 @@
 import ky from 'ky';
-import { ListScansReply, PatchScanBody, PatchScanReply } from 'greatest-api-schemas';
+import {
+  ListScansReply,
+  PatchScanBody,
+  PatchScanReply,
+  UploadScanBody,
+  UploadScanReply,
+} from 'greatest-api-schemas';
+import { uid } from 'quasar';
 
 export function listScans(testShortId: string) {
   return ky.get(`/api/tests/${testShortId}/scans`).json<ListScansReply>();

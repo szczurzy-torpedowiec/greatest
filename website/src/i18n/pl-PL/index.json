@@ -128,7 +128,8 @@
       },
       "assignSheetFailed": "Nie udało się wybrać arkusza",
       "removeSheetAssignmentFailed": "Nie udało się odznaczyć arkusza",
-      "notSelected": "Brak zaznaczonych arkuszy"
+      "notSelected": "Wybierz skan do podglądu",
+      "addScans": "Dodaj skany"
     }
   },
   "404": {
