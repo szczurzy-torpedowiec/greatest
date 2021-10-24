@@ -16,5 +16,14 @@ export const getStudentSheetReplySchema = Type.Object({
     points: nullable(Type.Integer()),
     maxPoints: Type.Integer(),
   })),
+  scans: Type.Array(Type.Object({
+    shortId: Type.String(),
+    page: nullable(Type.Integer()),
+  })),
 });
 export type GetStudentSheetReply = Static<typeof getStudentSheetReplySchema>;
+
+export const getStudentScanParamsSchema = Type.Object({
+  scanShortId: Type.String(),
+});
+export type GetStudentScanParams = Static<typeof getStudentScanParamsSchema>;

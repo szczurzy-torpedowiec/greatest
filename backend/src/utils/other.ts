@@ -1,3 +1,5 @@
+import path from 'path';
+
 export function requireEnv(name: string): string {
   const value = process.env[name];
   if (value === undefined) throw new Error(`Env variable "${name}" not set`);
@@ -54,3 +56,5 @@ export function getOnly<T>(array: readonly T[]): T | undefined {
   if (array.length === 1) return array[0];
   return undefined;
 }
+
+export const getScanPath = (imageFilename: string) => path.join('/data/scans', imageFilename);

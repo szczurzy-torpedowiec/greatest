@@ -19,7 +19,7 @@ export function patchScan(
 
 export function getScanImageUrl(
   testShortId: string,
-  sheetShortId: string,
+  scanShortId: string,
 ) {
-  return `/api/tests/${testShortId}/scans/${sheetShortId}.webp`;
+  return `/api/tests/${testShortId}/scans/${scanShortId}.webp`;
 }
