@@ -8,7 +8,7 @@
       field-name="file"
       :accept="['image/bmp', 'image/jpeg', 'image/png', 'image/webp'].join(', ')"
       :form-fields="[{name: 'requestId', value: uid}]"
-      label="Dodaj skany"
+      :label="$t('test.scans.addScans')"
     />
   </div>
 </template>
