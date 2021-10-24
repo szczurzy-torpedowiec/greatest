@@ -93,15 +93,29 @@ export interface DbTest {
   pages: DbPageElement[][];
 }
 
+export interface DbSheetQuestionBase {
+  variant: number;
+  points: number | null;
+  type: string;
+}
+
+export interface DbSheetQuestionOpen extends DbSheetQuestionBase {
+  type: 'open';
+}
+
+export interface DbSheetQuestionQuiz extends DbSheetQuestionBase {
+  type: 'quiz';
+  answerOrder: (null | number)[];
+}
+
+export type DbSheetQuestion = DbSheetQuestionOpen | DbSheetQuestionQuiz;
+
 export interface DbSheet {
   _id: ObjectId;
   shortId: string;
   testId: ObjectId;
   qrCodeId: string;
-  questions: {
-    variant: number;
-    points: number | null;
-  }[];
+  questions: DbSheetQuestion[];
   phrase: string;
   student: string;
 }

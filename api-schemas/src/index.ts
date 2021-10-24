@@ -8,5 +8,6 @@ export * from './routes/sheets';
 export * from './routes/tests';
 export * from './routes/user-info';
 
+export * from './print';
 export * from './websocket';
 export * from './auth';

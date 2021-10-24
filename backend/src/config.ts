@@ -1,5 +1,5 @@
 import fse from 'fs-extra';
-import { requireBooleanEnv, requireEnv } from './utils';
+import { createKey, requireBooleanEnv, requireEnv } from './utils';
 
 export const config = {
   port: requireEnv('PORT'),
@@ -8,6 +8,7 @@ export const config = {
   development: requireEnv('SERVER_MODE') === 'development',
   qrOrigin: requireEnv('QR_ORIGIN'),
   allowDemoLogin: requireBooleanEnv('ALLOW_DEMO_LOGIN'),
+  printTokenKey: createKey(),
 };
 
 export interface GoogleKeys {

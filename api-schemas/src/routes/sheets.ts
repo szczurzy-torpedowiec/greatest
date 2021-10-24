@@ -52,3 +52,9 @@ export const deleteSheetBodySchema = Type.Object({
 export type DeleteSheetBody = Static<typeof deleteSheetBodySchema>;
 export const deleteSheetReplySchema = emptyReplySchema;
 export type DeleteSheetReply = Static<typeof deleteSheetReplySchema>;
+
+export const printSheetsQuerySchema = Type.Object({
+  doubleSided: Type.Boolean(),
+  sheetShortIds: Type.Array(Type.String()),
+});
+export type PrintSheetsQuery = Static<typeof printSheetsQuerySchema>;

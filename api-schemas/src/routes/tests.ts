@@ -17,7 +17,7 @@ export const listTestsReplySchema = Type.Object({
 });
 export type ListTestsReply = Static<typeof listTestsReplySchema>;
 
-export const pageElementQuestionSchema = Type.Object({
+export const pageElementIdsQuestionSchema = Type.Object({
   elementType: Type.Literal('question'),
   questionSetShortId: Type.String(),
   questionShortId: Type.String(),
@@ -29,12 +29,12 @@ export const pageElementQuestionSchema = Type.Object({
     uniqueItems: true,
   }),
 });
-export type PageElementQuestion = Static<typeof pageElementQuestionSchema>;
-export const pageElementSchema = Type.Union([pageElementQuestionSchema]);
-export type PageElement = Static<typeof pageElementSchema>;
+export type PageElementIdsQuestion = Static<typeof pageElementIdsQuestionSchema>;
+export const pageElementIdsSchema = Type.Union([pageElementIdsQuestionSchema]);
+export type PageElementIds = Static<typeof pageElementIdsSchema>;
 export const createTestBodySchema = Type.Object({
   name: trimmedStringSchema(false),
-  pages: Type.Array(Type.Array(pageElementSchema), {
+  pages: Type.Array(Type.Array(pageElementIdsSchema), {
     minItems: 1,
   }),
 });

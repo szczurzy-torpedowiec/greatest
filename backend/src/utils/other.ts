@@ -30,17 +30,27 @@ export function randomInt(from: number, to?: number): number {
   return Math.floor(Math.random() * (to - from)) + from;
 }
 
-export function randomElement<T>(array: T[]): T {
+export function randomElement<T>(array: readonly T[]): T {
   return array[randomInt(array.length)];
+}
+
+// TODO: Fix O^2 complexity due to expensive pulling from array
+export function shuffle<T>(array: readonly T[]): T[] {
+  const result: T[] = [];
+  const tempArray = [...array];
+  while (tempArray.length > 0) {
+    result.push(...tempArray.splice(randomInt(tempArray.length), 1));
+  }
+  return result;
 }
 
 export const bindEquals = <T>(val: T) => (other: T) => val === other;
 
-export const bindNot = <T extends unknown[]>(
+export const bindNot = <T extends readonly unknown[]>(
   fn: (...args: T) => boolean,
 ) => (...args: T) => !fn(...args);
 
-export function getOnly<T>(array: T[]): T | undefined {
+export function getOnly<T>(array: readonly T[]): T | undefined {
   if (array.length === 1) return array[0];
   return undefined;
 }
