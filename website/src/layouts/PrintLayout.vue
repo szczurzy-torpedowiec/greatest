@@ -33,6 +33,16 @@
         />
       </page-render>
     </template>
+    <div
+      v-if="loading"
+      class="print-layout__loading"
+    >
+      <q-circular-progress
+        size="96px"
+        indeterminate
+        color="primary"
+      />
+    </div>
   </div>
 </template>
 
@@ -61,6 +71,7 @@ export default defineComponent({
     const token = route.query.token as string;
     const pages = ref<(Page | null)[]>([]);
     const showError = ref(false);
+    const loading = ref(true);
     const load = async () => {
       try {
         const printData = await getPrintData(token);
@@ -77,6 +88,7 @@ export default defineComponent({
         );
         await nextTick();
         setTimeout(() => {
+          loading.value = false;
           window.print();
         }, 1000);
       } catch (error) {
@@ -88,6 +100,7 @@ export default defineComponent({
     return {
       pages,
       showError,
+      loading,
     };
   },
 });
@@ -126,6 +139,22 @@ export default defineComponent({
 
   .print-layout__empty-page {
     height: 296mm;
+  }
+
+  .print-layout__loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #0006;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @media print {
+      display: none;
+    }
   }
 }
 </style>
