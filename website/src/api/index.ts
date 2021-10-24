@@ -15,3 +15,4 @@ export * from './tests';
 export * from './sheets';
 export * from './api-tokens';
 export * from './print';
+export * from './student-api';

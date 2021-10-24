@@ -16,7 +16,6 @@ import {
 import { nanoid } from 'nanoid';
 import { ObjectId } from 'mongodb';
 import sharp from 'sharp';
-import path from 'path';
 import fse from 'fs-extra';
 import { DbManager } from '../../database/database';
 import {
@@ -26,11 +25,9 @@ import {
 import { scanImage } from '../../scanner';
 import { DbTest } from '../../database/types';
 import { config } from '../../config';
-import { filterNotNull, getOnly } from '../../utils';
+import { filterNotNull, getOnly, getScanPath } from '../../utils';
 import { WebsocketBus } from '../../websocket-bus';
 import { mapScan, mapScanOtherTest } from '../../mappers';
-
-const getScanPath = (imageFilename: string) => path.join('/data/scans', imageFilename);
 
 export function registerScans(
   apiInstance: FastifyInstance,

@@ -11,6 +11,7 @@ import { getWebsocketBus } from '../websocket-bus';
 import { registerScans } from './api/scans';
 import { registerPrint } from './api/print';
 import { registerQr } from './api/qr';
+import { registerStudent } from './api/student';
 
 export interface ApiPluginOptions {
   dbManager: DbManager;
@@ -27,6 +28,7 @@ export async function ApiPlugin(apiInstance: FastifyInstance, { dbManager }: Api
   apiInstance.register(WebsocketPlugin, { dbManager, websocketBus, prefix: '/ws' });
   registerPrint(apiInstance, dbManager);
   registerQr(apiInstance);
+  registerStudent(apiInstance, dbManager);
 
   apiInstance.ready()
     .then(
