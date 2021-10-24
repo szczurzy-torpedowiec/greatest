@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@sinclair/typebox": "^0.20.5",
+    "base64url": "^3.0.1",
     "bcrypt": "^5.0.1",
     "busboy": "^0.3.1",
     "eol": "^0.9.1",
@@ -20,7 +21,8 @@
     "greatest-api-schemas": "file:../api-schemas",
     "mongodb": "^4.1.1",
     "nanoid": "^3.1.25",
-    "sharp": "^0.29.1"
+    "sharp": "^0.29.1",
+    "symbology": "^3.0.6"
   },
   "name": "greatest-backend",
   "version": "1.0.0",

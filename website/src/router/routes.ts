@@ -66,6 +66,10 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/print',
+    component: () => import('layouts/PrintLayout.vue'),
+  },
+  {
     path: '/:catchAll(.*)*',
     component: () => import('pages/Error404.vue'),
   },

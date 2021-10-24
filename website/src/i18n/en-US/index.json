@@ -84,7 +84,10 @@
       "noSheetsSelected": "No sheets selected",
       "cannotDeleteScannedSheets": "Cannot delete scanned sheets",
       "deleteSheetError": "Failed to delete sheet",
-      "print": "Print"
+      "print": "Print",
+      "printError": "Failed to generate print URL",
+      "singleSided": "Single-sided",
+      "doubleSided": "Double-sided"
     },
     "scans": {
       "assignedScans": "Assigned scans",
@@ -197,5 +200,8 @@
     "overflow": "Page content exceeds page height",
     "addPage": "Add page",
     "testName": "Test name"
+  },
+  "print": {
+    "error": "Failed to load pages"
   }
 }

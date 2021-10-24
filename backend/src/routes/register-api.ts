@@ -9,6 +9,8 @@ import { WebsocketPlugin } from './api/websocket';
 import { registerSheets } from './api/sheets';
 import { getWebsocketBus } from '../websocket-bus';
 import { registerScans } from './api/scans';
+import { registerPrint } from './api/print';
+import { registerQr } from './api/qr';
 
 export interface ApiPluginOptions {
   dbManager: DbManager;
@@ -23,6 +25,8 @@ export async function ApiPlugin(apiInstance: FastifyInstance, { dbManager }: Api
   registerSheets(apiInstance, dbManager, websocketBus);
   registerScans(apiInstance, dbManager, websocketBus);
   apiInstance.register(WebsocketPlugin, { dbManager, websocketBus, prefix: '/ws' });
+  registerPrint(apiInstance, dbManager);
+  registerQr(apiInstance);
 
   apiInstance.ready()
     .then(

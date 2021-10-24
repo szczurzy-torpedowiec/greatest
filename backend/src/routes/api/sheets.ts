@@ -24,16 +24,23 @@ import {
   sheetParamsSchema,
   TestParams,
   testParamsSchema,
+  PrintSheetsReply,
+  printSheetsReplySchema,
+  PrintSheetsBody, printSheetsBodySchema,
 } from 'greatest-api-schemas';
 import { UpdateFilter, WithoutId } from 'mongodb';
 import { nanoid } from 'nanoid';
 import { DbManager } from '../../database/database';
 import { getSecurity, requireAuthentication, requireTest } from '../../guards';
 import { DbSheet, DbTest } from '../../database/types';
-import { mapTimes, randomInt } from '../../utils';
+import {
+  encryptSymmetrical, mapTimes, randomInt, shuffle,
+} from '../../utils';
 import { getRandomString } from '../../string-generator';
 import { mapSheet, mapTestQuestions } from '../../mappers';
 import { WebsocketBus } from '../../websocket-bus';
+import { config } from '../../config';
+import { PrintTokenBody } from '../../types';
 
 export function registerSheets(
   apiInstance: FastifyInstance,
@@ -63,6 +70,44 @@ export function registerSheets(
     };
   });
 
+  const getSheet = async (test: DbTest, sheetShortId: string) => {
+    const sheet = await dbManager.sheetsCollection.findOne({
+      testId: test._id,
+      shortId: sheetShortId,
+    });
+    if (sheet === null) throw apiInstance.httpErrors.notFound(`Sheet ${sheetShortId} not found`);
+    return sheet;
+  };
+
+  apiInstance.post<{
+    Params: TestParams,
+    Body: PrintSheetsBody,
+    Reply: PrintSheetsReply,
+  }>('/tests/:testShortId/sheets/print', {
+    schema: {
+      params: testParamsSchema,
+      body: printSheetsBodySchema,
+      response: {
+        200: printSheetsReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const test = await requireTest(request, dbManager, user, request.params.testShortId);
+    await Promise.all(request.body.sheetShortIds.map(
+      async (sheetShortId) => { await getSheet(test, sheetShortId); },
+    ));
+    const tokenBody: PrintTokenBody = {
+      doubleSided: request.body.doubleSided,
+      sheetShortIds: request.body.sheetShortIds,
+      testShortId: request.params.testShortId,
+    };
+    const token = encryptSymmetrical(tokenBody, config.printTokenKey);
+    return {
+      token,
+    };
+  });
+
   const generateQrCodeId = async (): Promise<string> => {
     const qrCodeId = nanoid(6);
     if ((await dbManager.sheetsCollection.countDocuments({
@@ -70,6 +115,10 @@ export function registerSheets(
     })) > 0) return generateQrCodeId();
     return qrCodeId;
   };
+
+  const getAnswerRandomOrder = (incorrectAnswerCount: number) => shuffle([
+    null,
+    ...mapTimes((x) => x, incorrectAnswerCount)]);
 
   apiInstance.post<{
     Params: TestParams,
@@ -100,15 +149,29 @@ export function registerSheets(
       phrase: generatePhrase(),
       student: request.body.student ?? '',
       questions: request.body.questionVariants.map((variant, questionIndex) => {
-        if (variant >= testQuestions[questionIndex].variants.length) {
+        const testQuestion = testQuestions[questionIndex];
+        if (variant >= testQuestion.variants.length) {
           throw apiInstance.httpErrors.badRequest(
             `Variant specified in question ${questionIndex} does not exist`,
           );
         }
-        return ({
+        const variantBase = {
           variant,
           points: null,
-        });
+        } as const;
+        switch (testQuestion.questionType) {
+          case 'open': return {
+            ...variantBase,
+            type: 'open',
+          };
+          case 'quiz': return {
+            ...variantBase,
+            type: 'quiz',
+            answerOrder: getAnswerRandomOrder(
+              testQuestion.variants[variant].incorrectAnswers.length,
+            ), // TODO: Specify order in request body
+          };
+        }
       }),
     };
     await dbManager.sheetsCollection.insertOne(newSheet);
@@ -140,10 +203,29 @@ export function registerSheets(
       generated: null,
       phrase: generatePhrase(),
       student: '',
-      questions: testQuestions.map((question) => ({
-        variant: randomInt(question.variants.length),
-        points: null,
-      })),
+      questions: testQuestions.map((question) => {
+        const variantBase = {
+          variant: randomInt(question.variants.length),
+          points: null,
+        } as const;
+        switch (question.questionType) {
+          case 'open': {
+            return {
+              ...variantBase,
+              type: 'open',
+            };
+          }
+          case 'quiz': {
+            return {
+              ...variantBase,
+              type: 'quiz',
+              answerOrder: getAnswerRandomOrder(
+                question.variants[variantBase.variant].incorrectAnswers.length,
+              ),
+            };
+          }
+        }
+      }),
     }), request.body.count));
     await dbManager.sheetsCollection.insertMany(sheets);
     sheets.forEach(
@@ -153,15 +235,6 @@ export function registerSheets(
       newSheets: sheets.map(mapSheet),
     };
   });
-
-  const getSheet = async (test: DbTest, sheetShortId: string) => {
-    const sheet = await dbManager.sheetsCollection.findOne({
-      testId: test._id,
-      shortId: sheetShortId,
-    });
-    if (sheet === null) throw apiInstance.httpErrors.notFound('Sheet not found');
-    return sheet;
-  };
 
   const updateSheet = async (test: DbTest, sheetShortId: string, update: UpdateFilter<DbSheet>) => {
     const { value } = await dbManager.sheetsCollection.findOneAndUpdate({

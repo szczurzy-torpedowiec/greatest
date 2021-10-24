@@ -34,7 +34,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const height = ref(100);
-    const heightLimitMm = 297 - 10;
+    const heightLimitMm = 296 - 10;
     const overflow = computed(() => height.value > heightLimitMm * props.renderMmPixels);
     const frozenOverflow = useFreeze(overflow, computed(() => props.freeze));
     watch(frozenOverflow, (value) => {

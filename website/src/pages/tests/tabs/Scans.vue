@@ -1,6 +1,6 @@
 <template>
   <q-page v-if="$q.screen.lt.sm">
-    <ScanImport />
+    <scan-import :test-short-id="testShortId" />
     <scan-list
       :sheets="sheets"
       :scans="scans"
@@ -50,7 +50,7 @@
       </template>
       <template #after>
         <q-scroll-area class="full-height overflow-hidden">
-          <ScanImport />
+          <scan-import :test-short-id="testShortId" />
           <scan-list
             :sheets="sheets"
             :scans="scans"

@@ -2,7 +2,7 @@
   <div class="q-ma-md">
     <q-uploader
       style="width: 100%"
-      :url="`/api/tests/${$route.params.testShortId}/scans/upload`"
+      :url="`/api/tests/${testShortId}/scans/upload`"
       multiple
       auto-upload
       field-name="file"
@@ -21,6 +21,12 @@ import { uid } from 'quasar';
 
 export default defineComponent({
   name: 'ScanImport',
+  props: {
+    testShortId: {
+      type: String,
+      required: true,
+    },
+  },
   setup() {
     return {
       uid,
