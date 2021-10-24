@@ -85,7 +85,9 @@
       "cannotDeleteScannedSheets": "Cannot delete scanned sheets",
       "deleteSheetError": "Failed to delete sheet",
       "print": "Print",
-      "printError": "Failed to generate print URL"
+      "printError": "Failed to generate print URL",
+      "singleSided": "Single-sided",
+      "doubleSided": "Double-sided"
     },
     "scans": {
       "assignedScans": "Assigned scans",

@@ -85,7 +85,9 @@
       "cannotDeleteScannedSheets": "Nie udało się usunąć zeskanowanych arkuszy",
       "deleteSheetError": "Nie udało się usunąć arkusza",
       "print": "Drukuj",
-      "printError": "Nie udało się wygenerować URL drukowania"
+      "printError": "Nie udało się wygenerować URL drukowania",
+      "singleSided": "Jednostronnie",
+      "doubleSided": "Obustronnie"
     },
     "scans": {
       "assignedScans": "Przypisane skany",
@@ -94,7 +96,7 @@
         "noDetected": "Arkusz niewykryty",
         "multipleDetected": "Wiele arkuszy wykrytych",
         "anotherTest": "Wykryty arkusz z innego testu",
-        "assignmentRemoved": "Zadanie usunięte"
+        "assignmentRemoved": "Przypisanie usunięte"
       },
       "allAssigned": "Wszyskie skany są przypisane",
       "filters": {
@@ -120,7 +122,7 @@
         "yes": "Posiada przypisany arkusz",
         "no": "Nie posiada przypisanego arkusza"
       },
-      "removeAssignment": "Usuń zadanie",
+      "removeAssignment": "Usuń przypisanie",
       "selectSheet": {
         "title": "Wybierz arkusz",
         "pageTitle": "Wybierz stronę",

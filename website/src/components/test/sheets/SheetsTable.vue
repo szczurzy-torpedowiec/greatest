@@ -13,13 +13,31 @@
     <template #top>
       <div class="row items-center full-width">
         <span>
-          <q-btn
+          <q-btn-dropdown
             color="primary"
             icon="mdi-printer"
             :label="$t('test.sheets.print')"
             :disable="selected.length === 0"
-            @click="printSheets"
-          />
+          >
+            <q-list>
+              <q-item
+                clickable
+                @click="printSheets(false)"
+              >
+                <q-item-section>
+                  <q-item-label>{{ $t('test.sheets.singleSided') }}</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item
+                clickable
+                @click="printSheets(false)"
+              >
+                <q-item-section>
+                  <q-item-label>{{ $t('test.sheets.doubleSided') }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
           <q-tooltip v-if="selected.length === 0">
             {{ $t('test.sheets.noSheetsSelected') }}
           </q-tooltip>
@@ -288,10 +306,10 @@ export default defineComponent({
         ));
         selected.value = [];
       },
-      printSheets: async () => {
+      printSheets: async (doubleSided: boolean) => {
         try {
           const response = await printSheets(props.testShortId, {
-            doubleSided: true,
+            doubleSided,
             sheetShortIds: selected.value.map((sheet) => sheet.shortId),
           });
           window.open(`/print?token=${encodeURIComponent(response.token)}`, '_blank')?.focus();
