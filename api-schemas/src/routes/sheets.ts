@@ -1,5 +1,6 @@
 import { Static, Type } from '@sinclair/typebox';
 import { emptyReplySchema, sheetSchema, trimmedStringSchema } from '../common';
+import { nullable } from '../utility';
 
 export const createSheetBodySchema = Type.Object({
   questionVariants: Type.Array(Type.Integer({ minimum: 0 }), {
@@ -40,6 +41,10 @@ export type GetSheetReply = Static<typeof getSheetReplySchema>;
 
 export const patchSheetBodySchema = Type.Object({
   student: Type.Optional(trimmedStringSchema(true)),
+  questions: Type.Optional(Type.Array(Type.Object({
+    index: Type.Integer({ minimum: 0 }),
+    points: Type.Optional(nullable(Type.Integer({ minimum: 0 }))),
+  }))),
   requestId: Type.String(),
 });
 export type PatchSheetBody = Static<typeof patchSheetBodySchema>;

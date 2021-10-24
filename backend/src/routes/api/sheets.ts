@@ -28,7 +28,7 @@ import {
   printSheetsReplySchema,
   PrintSheetsBody, printSheetsBodySchema,
 } from 'greatest-api-schemas';
-import { UpdateFilter, WithoutId } from 'mongodb';
+import { WithoutId } from 'mongodb';
 import { nanoid } from 'nanoid';
 import { DbManager } from '../../database/database';
 import { getSecurity, requireAuthentication, requireTest } from '../../guards';
@@ -236,17 +236,6 @@ export function registerSheets(
     };
   });
 
-  const updateSheet = async (test: DbTest, sheetShortId: string, update: UpdateFilter<DbSheet>) => {
-    const { value } = await dbManager.sheetsCollection.findOneAndUpdate({
-      testId: test._id,
-      shortId: sheetShortId,
-    }, update, {
-      returnDocument: 'after',
-    });
-    if (value === null) throw apiInstance.httpErrors.notFound('Sheet not found');
-    return value;
-  };
-
   apiInstance.get<{
     Params: SheetParams,
     Reply: GetSheetReply,
@@ -280,11 +269,36 @@ export function registerSheets(
   }, async (request) => {
     const user = await requireAuthentication(request, dbManager, true);
     const test = await requireTest(request, dbManager, user, request.params.testShortId);
-    const changedSheet = await updateSheet(test, request.params.sheetShortId, {
+    const testQuestions = mapTestQuestions(test);
+    const sheet = await getSheet(test, request.params.sheetShortId);
+    const questionChanges: [string, number | null][] = request.body.questions?.flatMap(
+      (questionChange) => {
+        if (questionChange.index > sheet.questions.length) {
+          throw apiInstance.httpErrors.internalServerError(`Question with index ${questionChange.index} not found`);
+        }
+        if (questionChange.points !== undefined) {
+          if (
+            questionChange.points !== null
+            && questionChange.points > testQuestions[questionChange.index].maxPoints
+          ) {
+            throw apiInstance.httpErrors.internalServerError(`Too many points for question ${questionChange.index}`);
+          }
+          return [[`questions.${questionChange.index}.points`, questionChange.points]];
+        }
+        return [];
+      },
+    ) ?? [];
+    const { value: changedSheet } = await dbManager.sheetsCollection.findOneAndUpdate({
+      _id: sheet._id,
+    }, {
       $set: {
         student: request.body.student,
+        ...Object.fromEntries(questionChanges),
       },
+    }, {
+      returnDocument: 'after',
     });
+    if (changedSheet === null) throw apiInstance.httpErrors.internalServerError('Sheet not found after modifying');
     websocketBus.getTest(test._id).sheetChange.emit(changedSheet, request.body.requestId);
     return {};
   });
