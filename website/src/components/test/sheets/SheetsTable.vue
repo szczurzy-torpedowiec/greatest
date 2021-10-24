@@ -30,7 +30,7 @@
               </q-item>
               <q-item
                 clickable
-                @click="printSheets(false)"
+                @click="printSheets(true)"
               >
                 <q-item-section>
                   <q-item-label>{{ $t('test.sheets.doubleSided') }}</q-item-label>
