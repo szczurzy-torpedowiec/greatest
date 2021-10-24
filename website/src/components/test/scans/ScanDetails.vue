@@ -6,7 +6,7 @@
       round
       icon="mdi-arrow-left"
       class="q-mb-sm"
-      :to="`/tests/${testShortId}/scans`"
+      :to="`/teacher/tests/${testShortId}/scans`"
     />
     <q-card
       bordered
