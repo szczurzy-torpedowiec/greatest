@@ -26,6 +26,7 @@
         :sheets="sheets"
         :scans="scans"
         :test-short-id="testShortId"
+        :total-pages="totalPages"
       />
     </q-tab-panel>
   </q-tab-panels>

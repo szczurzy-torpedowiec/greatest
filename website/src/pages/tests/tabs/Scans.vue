@@ -18,6 +18,7 @@
           :test-short-id="testShortId"
           :scan="selectedScan"
           full-screen
+          :total-pages="totalPages"
         />
       </q-card>
     </q-dialog>
@@ -45,6 +46,7 @@
             :sheets="sheets"
             :test-short-id="testShortId"
             :scan="selectedScan"
+            :total-pages="totalPages"
           />
         </div>
       </template>
@@ -90,6 +92,10 @@ export default defineComponent({
     },
     testShortId: {
       type: String,
+      required: true,
+    },
+    totalPages: {
+      type: Number,
       required: true,
     },
   },

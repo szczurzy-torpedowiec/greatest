@@ -82,6 +82,7 @@
       v-model="showSheetSelect"
       :sheets="sheets"
       :submit="sheetSelectSubmit"
+      :total-pages="totalPages"
     />
   </div>
   <q-separator />
@@ -121,6 +122,10 @@ export default defineComponent({
     },
     scan: {
       type: Object as PropType<Scan & {scanImageUrl: string}>,
+      required: true,
+    },
+    totalPages: {
+      type: Number,
       required: true,
     },
   },
