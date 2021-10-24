@@ -203,5 +203,9 @@
   },
   "print": {
     "error": "Nie udało się wczytać stron"
+  },
+  "home": {
+    "studentSheetNotFound": "Nie znaleziono arkusza",
+    "studentSheetError": "Nie udało się sprawdzić, czy arkusz istnieje"
   }
 }

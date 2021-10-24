@@ -203,5 +203,9 @@
   },
   "print": {
     "error": "Failed to load pages"
+  },
+  "home": {
+    "studentSheetNotFound": "Sheet not found",
+    "studentSheetError": "Failed to check if sheet exists"
   }
 }
