@@ -7,6 +7,8 @@ website/dist
 api-schemas/node_modules
 api-schemas/package-lock.json
 api-schemas/dist
+scanner/.cache
+scanner/venv
 .gitignore
 .env
 google-keys.json

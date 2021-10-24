@@ -93,9 +93,9 @@
       "assignedScans": "Przypisane skany",
       "unassignedScans": "Nieprzypisane skany",
       "reason": {
-        "noDetected": "Arkusz niewykryty",
-        "multipleDetected": "Wiele arkuszy wykrytych",
-        "anotherTest": "Wykryty arkusz z innego testu",
+        "noDetected": "Nie wykryto arkusza",
+        "multipleDetected": "Wykryto wiele arkuszy",
+        "anotherTest": "Wykryto arkusz z innego testu",
         "assignmentRemoved": "Przypisanie usunięte"
       },
       "allAssigned": "Wszyskie skany są przypisane",

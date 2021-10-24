@@ -1,9 +1,11 @@
+import cv2
+import numpy
 from flask import Flask, request
-from PIL import Image
-from pyzbar import pyzbar
+from pyzxing import BarCodeReader
 
 app = Flask(__name__)
 
+reader = BarCodeReader()
 
 @app.route('/scan', methods=['POST'])
 def analyse():
@@ -14,9 +16,11 @@ def analyse():
         else:
             app.logger.info('"file" field is not set')
             return '"file" field is not set', 400
-    image = Image.open(request.files['file'])
+    nparr = numpy.frombuffer(request.files['file'].stream.read(), numpy.uint8)
+    frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    result = reader.decode_array(frame)
     return {
-        'codes': list(map(lambda x: x.data.decode('UTF-8'), pyzbar.decode(image)))
+        'codes': list(map(lambda x: x['parsed'].decode('UTF-8'), result))
     }
 
 

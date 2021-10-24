@@ -14,3 +14,6 @@ services:
   mongodb:
     ports:
       - "5001:27017"
+  scanner:
+    ports:
+      - "5003:80"
