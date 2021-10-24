@@ -3,3 +3,7 @@ export interface PrintTokenBody {
   testShortId: string;
   sheetShortIds: string[];
 }
+
+export interface StudentTokenBody {
+  sheetId: string;
+}

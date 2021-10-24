@@ -7,6 +7,7 @@ export * from './routes/scans';
 export * from './routes/sheets';
 export * from './routes/tests';
 export * from './routes/user-info';
+export * from './routes/student';
 
 export * from './print';
 export * from './qr';
