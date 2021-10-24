@@ -100,15 +100,15 @@
       "filters": {
         "otherTests": {
           "label": "Inne testy wykryte",
-          "any": "Wszystkie",
+          "any": "Dowolne",
           "yes": "Wykryte",
           "no": "Niewykryte"
         },
         "reassigned": {
           "label": "Z przeniesionym arkuszem",
-          "any": "Wszystkie",
-          "yes": "Wykryte",
-          "no": "Niewykryte"
+          "any": "Dowolne",
+          "yes": "Tak",
+          "no": "Nie"
         },
         "noScans": "Żaden skan nie pasuje do wybranych filtrów"
       },
@@ -125,7 +125,7 @@
         "title": "Wybierz arkusz",
         "pageTitle": "Wybierz stronę",
         "pageSlider": "Strona {page}",
-        "submitWithoutPage": "Bez stroną",
+        "submitWithoutPage": "Bez strony",
         "submitWithPage": "Ze stroną {page}",
         "noMatching": "Żaden arkusz nie pasuje do zapytania",
         "search": "Szukaj",
