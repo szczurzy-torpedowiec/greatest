@@ -31,7 +31,7 @@ export function registerStudent(apiInstance: FastifyInstance, dbManager: DbManag
     };
   });
 
-  apiInstance.post<{
+  apiInstance.get<{
     Querystring: StudentQuery,
     Reply: GetStudentSheetReply,
   }>('/student/sheet', {
@@ -60,6 +60,7 @@ export function registerStudent(apiInstance: FastifyInstance, dbManager: DbManag
     })).toArray();
     return {
       testName: test.name,
+      student: sheet.student,
       questions: sheet.questions.map((sheetQuestion, index) => ({
         points: sheetQuestion.points,
         maxPoints: testQuestions[index].maxPoints,

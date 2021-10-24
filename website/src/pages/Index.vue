@@ -93,7 +93,7 @@ import {
   computed,
   defineComponent, onMounted, ref,
 } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import DemoSignIn from 'components/signIn/DemoSignIn.vue';
@@ -108,6 +108,7 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const quasar = useQuasar();
     const i18n = useI18n();
 
@@ -139,9 +140,10 @@ export default defineComponent({
         if (!testCodeValid.value || testCodeLoading.value) return;
         testCodeLoading.value = true;
         try {
-          const response = await checkStudent(testCodeInput.value.trim());
+          const phrase = testCodeInput.value.trim();
+          const response = await checkStudent(phrase);
           if (response.found) {
-            // TODO: Implement
+            await router.push({ path: '/student', query: { phrase } });
           } else {
             quasar.notify({
               type: 'negative',

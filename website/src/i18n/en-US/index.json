@@ -207,5 +207,27 @@
   "home": {
     "studentSheetNotFound": "Sheet not found",
     "studentSheetError": "Failed to check if sheet exists"
+  },
+  "student": {
+    "loadError": "Failed to load sheet info",
+    "notGradedWarning": "Some questions have not been graded yet",
+    "questionNumber": "Question",
+    "pointsSeparator": "/",
+    "points": {
+      "label": "points",
+      "notGraded": "Not graded"
+    },
+    "tip": "Tip:",
+    "bookmarkTip": "bookmark this page",
+    "testName": "Test name",
+    "student": "Student",
+    "studentEmpty": "Not set",
+    "totalPoints": {
+      "label": "Total points"
+    },
+    "percent": {
+      "label": "Percent",
+      "symbol": "%"
+    }
   }
 }

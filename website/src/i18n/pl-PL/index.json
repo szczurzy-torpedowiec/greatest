@@ -207,5 +207,27 @@
   "home": {
     "studentSheetNotFound": "Nie znaleziono arkusza",
     "studentSheetError": "Nie udało się sprawdzić, czy arkusz istnieje"
+  },
+  "student": {
+    "loadError": "Nie udało się wczytać informacji o arkuszu",
+    "notGradedWarning": "Niektóre pytania nie zostały jeszcze ocenione",
+    "questionNumber": "Pytanie",
+      "pointsSeparator": "/",
+    "points": {
+      "label": "punktów",
+      "notGraded": "Nie oceniono"
+    },
+    "tip": "Porada:",
+    "bookmarkTip": "Dodaj tą stronę do zakładek",
+    "testName": "Nazwa testu",
+    "student": "Uczeń",
+    "studentEmpty": "Nie ustawiono",
+    "totalPoints": {
+      "label": "Łączna liczba punktów"
+    },
+    "percent": {
+      "label": "Wynik procentowy",
+      "symbol": "%"
+    }
   }
 }
