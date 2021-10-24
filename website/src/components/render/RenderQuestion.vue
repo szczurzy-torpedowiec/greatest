@@ -92,21 +92,22 @@ export default defineComponent({
       border: render-mm(0.2) solid black;
       border-radius: render-mm(1);
       display: flex;
-      height: render-mm(8);
-      line-height: render-mm(8);
+      height: render-mm(7);
+      line-height: render-mm(7);
       overflow: hidden;
 
       .render-question__label-question {
         background-color: black;
         color: white;
-        min-width: render-mm(8);
+        min-width: render-mm(7);
         text-align: center;
         padding: 0 render-mm(1.5);
         flex-grow: 1;
+        font-weight: 600;
       }
 
       .render-question__label-variant {
-        min-width: render-mm(8);
+        min-width: render-mm(7);
         padding: 0 render-mm(1.5);
         text-align: center;
 
