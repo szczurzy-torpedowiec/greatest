@@ -1,8 +1,9 @@
 import { Static, Type } from '@sinclair/typebox';
 import { nullable } from '../utility';
+import { trimmedStringSchema } from '../common';
 
 export const studentQuerySchema = Type.Object({
-  phrase: Type.String(),
+  phrase: trimmedStringSchema(false),
 });
 export type StudentQuery = Static<typeof studentQuerySchema>;
 export const checkStudentReplySchema = Type.Object({
@@ -12,6 +13,7 @@ export type CheckStudentReply = Static<typeof checkStudentReplySchema>;
 
 export const getStudentSheetReplySchema = Type.Object({
   testName: Type.String(),
+  student: Type.String(),
   questions: Type.Array(Type.Object({
     points: nullable(Type.Integer()),
     maxPoints: Type.Integer(),

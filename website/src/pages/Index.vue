@@ -9,21 +9,28 @@
           flat
           bordered
         >
-          <q-card-section class="text-h6">
-            {{ $t('common.student') }}
-          </q-card-section>
-          <q-card-section class="q-py-none">
-            <q-input
-              :label="$t('common.testCode')"
-              outlined
-            />
-          </q-card-section>
-          <q-card-actions class="justify-end q-mr-sm">
-            <q-btn
-              color="primary"
-              :label="$t('common.check')"
-            />
-          </q-card-actions>
+          <q-form @submit.prevent="onStudentSubmit">
+            <q-card-section class="text-h6">
+              {{ $t('common.student') }}
+            </q-card-section>
+            <q-card-section class="q-py-none">
+              <q-input
+                v-model="testCodeInput"
+                :label="$t('common.testCode')"
+                outlined
+                autofocus
+              />
+            </q-card-section>
+            <q-card-actions class="justify-end q-mr-sm">
+              <q-btn
+                color="primary"
+                :label="$t('common.check')"
+                :disable="!testCodeValid"
+                :loading="testCodeLoading"
+                type="submit"
+              />
+            </q-card-actions>
+          </q-form>
         </q-card>
         <q-card
           flat
@@ -83,13 +90,14 @@
 
 <script lang="ts">
 import {
+  computed,
   defineComponent, onMounted, ref,
 } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import DemoSignIn from 'components/signIn/DemoSignIn.vue';
-import { getViewer } from 'src/api';
+import { checkStudent, getViewer } from 'src/api';
 import { Viewer } from 'greatest-api-schemas';
 import readme from 'assets/readme.md';
 
@@ -100,8 +108,10 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const quasar = useQuasar();
     const i18n = useI18n();
+
     const demoUserDialog = ref<boolean>(false);
     const viewer = ref<Viewer | null>(null);
 
@@ -115,10 +125,40 @@ export default defineComponent({
       }
     });
 
+    const testCodeInput = ref('');
+    const testCodeValid = computed(() => testCodeInput.value.trim() !== '');
+    const testCodeLoading = ref(false);
+
     return {
       readme,
       demoUserDialog,
       viewer,
+      testCodeInput,
+      testCodeValid,
+      testCodeLoading,
+      onStudentSubmit: async () => {
+        if (!testCodeValid.value || testCodeLoading.value) return;
+        testCodeLoading.value = true;
+        try {
+          const phrase = testCodeInput.value.trim();
+          const response = await checkStudent(phrase);
+          if (response.found) {
+            await router.push({ path: '/student', query: { phrase } });
+          } else {
+            quasar.notify({
+              type: 'negative',
+              message: i18n.t('home.studentSheetNotFound'),
+            });
+          }
+        } catch (error) {
+          console.error(error);
+          quasar.notify({
+            type: 'negative',
+            message: i18n.t('home.studentSheetError'),
+          });
+        }
+        testCodeLoading.value = false;
+      },
     };
   },
 });

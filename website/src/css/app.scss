@@ -21,6 +21,10 @@
   flex-grow: 1;
 }
 
+.flex-no-basis {
+  flex-basis: 0;
+}
+
 .step-no-padding {
   .q-stepper__step-inner {
     padding: 0;
