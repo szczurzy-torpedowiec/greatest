@@ -21,12 +21,7 @@
             width="200px"
           />
           <template v-else>
-            <router-link
-              style="text-decoration: none; color: inherit;"
-              to="/"
-            >
-              {{ titleState ?? $t('appName') }}
-            </router-link>
+            {{ titleState ?? $t('appName') }}
           </template>
         </q-toolbar-title>
         <div class="row items-center">
