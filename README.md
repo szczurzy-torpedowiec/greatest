@@ -61,3 +61,4 @@ The API is documented using Swagger. Open /api/docs in your browser (after start
 - Answer comments, instead of just number of points (potentialy as chat)
 - Marking comments directly on scans
 - Exporting prints as PDF
+- School grade calculator based on points
