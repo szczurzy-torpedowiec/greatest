@@ -46,7 +46,7 @@ docker compose -f ./docker-compose.yml -f ./docker-compose.production.yml -f ./d
 ```
 
 ## Docs
-The API is documented using Swagger. Open /api/docs in your browser (after starting) to see the docs.
+The API is documented using Swagger. Open https://greatest.dominik-korsa.tk/api/docs to see the docs.
 
 ## Implemented features
 - Google login system
