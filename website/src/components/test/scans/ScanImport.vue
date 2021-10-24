@@ -7,7 +7,7 @@
       auto-upload
       field-name="file"
       :accept="['image/bmp', 'image/jpeg', 'image/png', 'image/webp'].join(', ')"
-      :form-fields="[{name: 'requestId', value: uid}]"
+      :form-fields="[{name: 'requestId', value: uid()}]"
       :label="$t('test.scans.addScans')"
     />
   </div>

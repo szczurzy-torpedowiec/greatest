@@ -26,13 +26,3 @@ export function getScanImageUrl(
 ) {
   return `/api/tests/${testShortId}/scans/${sheetShortId}.webp`;
 }
-
-export function uploadScan(
-  testShortId: string,
-  file: string,
-) {
-  const formData = new FormData();
-  formData.append('requestId', uid());
-  formData.append('file', file);
-  return ky.post(`/api/tests/${testShortId}/scans/upload`, { body: formData }).json<UploadScanReply>();
-}
