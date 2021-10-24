@@ -46,4 +46,33 @@ docker compose -f ./docker-compose.yml -f ./docker-compose.production.yml -f ./d
 ```
 
 ## Docs
-The API is documented using Swagger. Open /api/docs in your browser (after starting) to see the docs.
+The API is documented using Swagger. Open https://greatest.dominik-korsa.tk/api/docs to see the docs.
+
+## Implemented features
+- Google login system
+- Demo accounts
+- Question set creation and editing
+- Test composing
+- Sheet list
+- Sheet generation and printing
+- Scan list, uploading, barcode scanning and assigning to sheets
+- Grading
+- Exposed API
+- API token management
+- Student view
+- Translations (currently supported Polish and English)
+
+## Planned features
+- Automatic answer recognition in quiz questions
+- Rich content questions (images, math expressions, code, etc.)
+- QR code redirection after scanning via mobile device
+- Question list
+- Explainers/usage guides
+- Improved navigation
+- Total points list in sheet list
+- Results export to CSV
+- Questions stats among class (for students and teachers)
+- Answer comments, instead of just number of points (potentialy as chat)
+- Marking comments directly on scans
+- Exporting prints as PDF
+- School grade calculator based on points
