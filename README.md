@@ -48,10 +48,24 @@ docker compose -f ./docker-compose.yml -f ./docker-compose.production.yml -f ./d
 ## Docs
 The API is documented using Swagger. Open /api/docs in your browser (after starting) to see the docs.
 
+## Implemented features
+- Google login system
+- Demo accounts
+- Question set creation and editing
+- Test composing
+- Sheet list
+- Sheet generation and printing
+- Scan list, uploading, barcode scanning and assigning to sheets
+- Grading
+- Exposed API
+- API token management
+- Student view
+- Translations (currently supported Polish and English)
+
 ## Planned features
-- Automatic answer recognition
+- Automatic answer recognition in quiz questions
 - Rich content questions (images, math expressions, code, etc.)
-- QR code redirection
+- QR code redirection after scanning via mobile device
 - Question list
 - Explainers/usage guides
 - Improved navigation
