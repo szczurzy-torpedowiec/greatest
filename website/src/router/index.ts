@@ -4,7 +4,7 @@ import {
   createRouter,
   createWebHashHistory,
   createWebHistory,
-} from '@quasar/app/node_modules/vue-router';
+} from 'vue-router';
 import { getViewer } from 'src/api';
 import routes from './routes';
 
