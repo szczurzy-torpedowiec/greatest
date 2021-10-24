@@ -18,6 +18,7 @@
             icon="mdi-printer"
             :label="$t('test.sheets.print')"
             :disable="selected.length === 0"
+            @click="printSheets"
           />
           <q-tooltip v-if="selected.length === 0">
             {{ $t('test.sheets.noSheetsSelected') }}
@@ -157,7 +158,9 @@ import {
 } from 'vue';
 import SetStudentPopup from 'components/test/sheets/SetStudentPopup.vue';
 import { uid, useQuasar } from 'quasar';
-import { createRandomSheets, deleteSheet, patchSheet } from 'src/api';
+import {
+  createRandomSheets, deleteSheet, patchSheet, printSheets,
+} from 'src/api';
 import { getTypeValidator, DefaultsMap } from 'src/utils';
 import { useI18n } from 'vue-i18n';
 import CreateSheetsPopup from 'components/test/sheets/CreateSheetsPopup.vue';
@@ -284,6 +287,21 @@ export default defineComponent({
           (sheet) => deleteSheetAndHandle(sheet.shortId),
         ));
         selected.value = [];
+      },
+      printSheets: async () => {
+        try {
+          const response = await printSheets(props.testShortId, {
+            doubleSided: true,
+            sheetShortIds: selected.value.map((sheet) => sheet.shortId),
+          });
+          window.open(`/print?token=${encodeURIComponent(response.token)}`, '_blank')?.focus();
+        } catch (error) {
+          console.error(error);
+          quasar.notify({
+            type: 'negative',
+            message: i18n.t('test.sheets.printError'),
+          });
+        }
       },
       columns: computed(() => [
         {

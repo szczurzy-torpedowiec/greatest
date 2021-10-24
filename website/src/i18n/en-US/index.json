@@ -80,7 +80,8 @@
       "noSheetsSelected": "No sheets selected",
       "cannotDeleteScannedSheets": "Cannot delete scanned sheets",
       "deleteSheetError": "Failed to delete sheet",
-      "print": "Print"
+      "print": "Print",
+      "printError": "Failed to generate print URL"
     },
     "scans": {
       "assignedScans": "Assigned scans",
