@@ -191,5 +191,8 @@
     "overflow": "Zawartość strony nie mieści się na kartce",
     "addPage": "Dodaj stronę",
     "testName": "Nazwa testu"
+  },
+  "print": {
+    "error": "Nie udało się wczytać stron"
   }
 }

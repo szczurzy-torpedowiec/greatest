@@ -52,6 +52,7 @@ export function registerPrint(apiInstance: FastifyInstance, dbManager: DbManager
                   elementType: 'question',
                   variant: sheetQuestion.variant,
                   maxPoints: dbElement.maxPoints,
+                  questionIndex: questionNumber,
                 } as const;
                 let element: PrintDataQuestionElement;
                 switch (dbElement.questionType) {
@@ -60,7 +61,10 @@ export function registerPrint(apiInstance: FastifyInstance, dbManager: DbManager
                     element = {
                       ...elementBase,
                       questionType: 'open',
-                      variants: dbElement.variants,
+                      variants: dbElement.variants.map((variant) => ({
+                        ...variant,
+                        type: 'open',
+                      })),
                     };
                     break;
                   }
@@ -70,14 +74,18 @@ export function registerPrint(apiInstance: FastifyInstance, dbManager: DbManager
                       ...elementBase,
                       questionType: 'quiz',
                       variants: dbElement.variants.map((dbVariant, variantIndex) => {
+                        const variantBase = {
+                          type: 'quiz',
+                          content: dbVariant.content,
+                        } as const;
                         if (variantIndex !== sheetQuestion.variant) {
                           return {
-                            content: dbVariant.content,
+                            ...variantBase,
                             answers: [dbVariant.correctAnswer, ...dbVariant.incorrectAnswers],
                           };
                         }
                         return {
-                          content: dbVariant.content,
+                          ...variantBase,
                           answers: sheetQuestion.answerOrder.map(
                             (answerIndex) => (answerIndex === null
                               ? dbVariant.correctAnswer

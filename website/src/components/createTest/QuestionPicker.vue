@@ -71,17 +71,25 @@ import { DefaultsMap, getTypeValidator } from 'src/utils';
 import RenderQuestionContent from 'components/render/RenderQuestionContent.vue';
 import { RenderVariantOpen, RenderVariantQuiz } from 'components/render/types';
 
+interface QuestionVariantOpen extends RenderVariantOpen {
+  shortId: string;
+}
+
+interface QuestionVariantQuiz extends RenderVariantQuiz {
+  shortId: string;
+}
+
 interface QuestionItemBase {
   shortId: string;
   disable: boolean;
 }
 
 interface QuestionItemOpen extends QuestionItemBase {
-  variants: RenderVariantOpen[];
+  variants: QuestionVariantOpen[];
 }
 
 interface QuestionItemQuiz extends QuestionItemBase {
-  variants: RenderVariantQuiz[];
+  variants: QuestionVariantQuiz[];
 }
 
 type QuestionItem = QuestionItemOpen | QuestionItemQuiz;

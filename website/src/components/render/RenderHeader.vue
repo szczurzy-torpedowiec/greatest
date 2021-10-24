@@ -39,28 +39,34 @@
     </div>
     <div class="render-header__generated">
       <div>Strona <b>{{ pageIndex + 1 }}</b>/<b>{{ totalPages }}</b></div>
-      <code>eksperymentalnie</code><br>
-      <code>przykład</code>
+      <code>{{ phraseParts[0] }}</code><br>
+      <code>{{ phraseParts[1] }}</code>
     </div>
-    <!--    <img-->
-    <!--      class="render-header__qr"-->
-    <!--      :src="require('src/assets/demo-code.svg')"-->
-    <!--      alt="Kod arkusza"-->
-    <!--    >-->
     <img
+      v-if="qrSrc === null"
       class="render-header__qr render-header__qr--demo"
       :src="require('src/assets/demo-code.svg')"
       alt="Przykładowy kod arkusza"
+    >
+    <img
+      v-else
+      class="render-header__qr"
+      :src="qrSrc"
+      alt="Kod arkusza"
     >
     <slot />
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   props: {
+    qrCodeId: {
+      type: String as PropType<string | null>,
+      default: null,
+    },
     pageIndex: {
       type: Number,
       required: true,
@@ -78,6 +84,10 @@ export default defineComponent({
     return {
       phraseParts: computed(() => props.phrase.split(' ')),
       reducedInfo: computed(() => props.pageIndex !== 0),
+      qrSrc: computed(() => {
+        if (props.qrCodeId === null) return null;
+        return `/api/qr/sheet/${props.qrCodeId}/${props.pageIndex}`;
+      }),
     };
   },
 });

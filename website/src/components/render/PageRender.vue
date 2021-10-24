@@ -8,9 +8,10 @@
   >
     <div class="page-render__wrapper">
       <render-header
-        phrase="eksperymentalnie przykład"
+        :phrase="phrase"
         :page-index="pageIndex"
         :total-pages="totalPages"
+        :qr-code-id="qrCodeId"
       >
         <slot name="header" />
       </render-header>
@@ -23,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import RenderHeader from './RenderHeader.vue';
 
 export default defineComponent({
@@ -36,6 +37,14 @@ export default defineComponent({
     totalPages: {
       type: Number,
       required: true,
+    },
+    phrase: {
+      type: String,
+      required: true,
+    },
+    qrCodeId: {
+      type: String as PropType<string | null>,
+      default: null,
     },
     showExcess: Boolean,
     dragging: Boolean,

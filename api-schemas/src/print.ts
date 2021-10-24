@@ -4,18 +4,22 @@ export const printDataQuestionElementSchema = Type.Union([
   Type.Object({
     elementType: Type.Literal('question'),
     questionType: Type.Literal('open'),
+    questionIndex: Type.Integer(),
     maxPoints: Type.Integer(),
-    variant: Type.Number(),
+    variant: Type.Integer(),
     variants: Type.Array(Type.Object({
+      type: Type.Literal('open'),
       content: Type.String(),
     })),
   }),
   Type.Object({
     elementType: Type.Literal('question'),
     questionType: Type.Literal('quiz'),
+    questionIndex: Type.Integer(),
     maxPoints: Type.Integer(),
-    variant: Type.Number(),
+    variant: Type.Integer(),
     variants: Type.Array(Type.Object({
+      type: Type.Literal('quiz'),
       content: Type.String(),
       answers: Type.Array(Type.String()),
     })),

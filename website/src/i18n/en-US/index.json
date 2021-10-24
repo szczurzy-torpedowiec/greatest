@@ -191,5 +191,8 @@
     "overflow": "Page content exceeds page height",
     "addPage": "Add page",
     "testName": "Test name"
+  },
+  "print": {
+    "error": "Failed to load pages"
   }
 }

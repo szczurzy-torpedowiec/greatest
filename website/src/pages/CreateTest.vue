@@ -32,6 +32,7 @@
                       :total-pages="pageItems.length"
                       show-excess
                       :dragging="draggingCount > 0"
+                      phrase="eksperymentalnie przykład"
                     >
                       <draggable
                         group="page"
@@ -196,10 +197,7 @@ import {
 } from 'vue';
 import PreviewRender from 'components/render/PreviewRender.vue';
 import {
-  PageElement,
-  PageIdElement,
-  QuestionElementOpen,
-  QuestionElementQuiz,
+  RenderVariantOpen, RenderVariantQuiz,
 } from 'components/render/types';
 import { QuestionWithIds } from 'greatest-api-schemas';
 import QuestionVariantPicker from 'components/createTest/QuestionVariantPicker.vue';
@@ -214,6 +212,43 @@ import QuestionPicker from '../components/createTest/QuestionPicker.vue';
 import PageRender from '../components/render/PageRender.vue';
 import { DefaultsMap, typed, useStorage } from '../utils';
 import FullHeightPage from '../components/FullHeightPage.vue';
+
+interface QuestionVariantOpen extends RenderVariantOpen {
+  shortId: string;
+}
+
+interface QuestionVariantQuiz extends RenderVariantQuiz {
+  shortId: string;
+}
+
+export interface QuestionIdElement {
+  type: 'question',
+  questionSetShortId: string;
+  questionShortId: string;
+  variants: string[];
+  variant: number;
+}
+
+export type PageIdElement = QuestionIdElement;
+
+interface QuestionElementBase {
+  key: string;
+  number: number;
+  maxPoints: number;
+  idElement: QuestionIdElement;
+}
+
+export interface QuestionElementOpen extends QuestionElementBase {
+  questionType: 'open';
+  variants: QuestionVariantOpen[];
+}
+
+export interface QuestionElementQuiz extends QuestionElementBase {
+  questionType: 'quiz';
+  variants: QuestionVariantQuiz[];
+}
+
+export type PageElement = QuestionElementOpen | QuestionElementQuiz;
 
 type DraggableChangeEvent<T> = {
   added: {

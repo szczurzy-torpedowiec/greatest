@@ -1,9 +1,17 @@
 import ky from 'ky';
 import {
-  CreateRandomSheetsBody, CreateRandomSheetsReply,
+  CreateRandomSheetsBody,
+  CreateRandomSheetsReply,
   CreateSheetBody,
-  CreateSheetReply, DeleteSheetBody, DeleteSheetReply, GetSheetReply,
-  ListSheetsReply, PatchSheetBody, PatchSheetReply,
+  CreateSheetReply,
+  DeleteSheetBody,
+  DeleteSheetReply,
+  GetSheetReply,
+  ListSheetsReply,
+  PatchSheetBody,
+  PatchSheetReply,
+  PrintSheetsBody,
+  PrintSheetsReply,
 } from 'greatest-api-schemas';
 
 export function listSheets(testShortId: string) {
@@ -28,4 +36,8 @@ export function patchSheet(testShortId: string, sheetShortId: string, body: Patc
 
 export function deleteSheet(testShortId: string, sheetShortId: string, body: DeleteSheetBody) {
   return ky.delete(`/api/tests/${testShortId}/sheets/${sheetShortId}`, { json: body }).json<DeleteSheetReply>();
+}
+
+export function printSheets(testShortId: string, body: PrintSheetsBody) {
+  return ky.post(`/api/tests/${testShortId}/sheets/print`, { json: body }).json<PrintSheetsReply>();
 }

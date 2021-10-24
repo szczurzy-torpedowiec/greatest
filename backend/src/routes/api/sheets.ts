@@ -24,7 +24,9 @@ import {
   sheetParamsSchema,
   TestParams,
   testParamsSchema,
-  PrintSheetsQuery, printSheetsQuerySchema, binarySchema,
+  PrintSheetsReply,
+  printSheetsReplySchema,
+  PrintSheetsBody, printSheetsBodySchema,
 } from 'greatest-api-schemas';
 import { UpdateFilter, WithoutId } from 'mongodb';
 import { nanoid } from 'nanoid';
@@ -65,6 +67,44 @@ export function registerSheets(
       sheets: await dbManager.sheetsCollection.find({
         testId: test._id,
       }).map(mapSheet).toArray(),
+    };
+  });
+
+  const getSheet = async (test: DbTest, sheetShortId: string) => {
+    const sheet = await dbManager.sheetsCollection.findOne({
+      testId: test._id,
+      shortId: sheetShortId,
+    });
+    if (sheet === null) throw apiInstance.httpErrors.notFound(`Sheet ${sheetShortId} not found`);
+    return sheet;
+  };
+
+  apiInstance.post<{
+    Params: TestParams,
+    Body: PrintSheetsBody,
+    Reply: PrintSheetsReply,
+  }>('/tests/:testShortId/sheets/print', {
+    schema: {
+      params: testParamsSchema,
+      body: printSheetsBodySchema,
+      response: {
+        200: printSheetsReplySchema,
+      },
+    },
+  }, async (request) => {
+    const user = await requireAuthentication(request, dbManager, true);
+    const test = await requireTest(request, dbManager, user, request.params.testShortId);
+    await Promise.all(request.body.sheetShortIds.map(
+      async (sheetShortId) => { await getSheet(test, sheetShortId); },
+    ));
+    const tokenBody: PrintTokenBody = {
+      doubleSided: request.body.doubleSided,
+      sheetShortIds: request.body.sheetShortIds,
+      testShortId: request.params.testShortId,
+    };
+    const token = encryptSymmetrical(tokenBody, config.printTokenKey);
+    return {
+      token,
     };
   });
 
@@ -196,15 +236,6 @@ export function registerSheets(
     };
   });
 
-  const getSheet = async (test: DbTest, sheetShortId: string) => {
-    const sheet = await dbManager.sheetsCollection.findOne({
-      testId: test._id,
-      shortId: sheetShortId,
-    });
-    if (sheet === null) throw apiInstance.httpErrors.notFound(`Sheet ${sheetShortId} not found`);
-    return sheet;
-  };
-
   const updateSheet = async (test: DbTest, sheetShortId: string, update: UpdateFilter<DbSheet>) => {
     const { value } = await dbManager.sheetsCollection.findOneAndUpdate({
       testId: test._id,
@@ -215,32 +246,6 @@ export function registerSheets(
     if (value === null) throw apiInstance.httpErrors.notFound('Sheet not found');
     return value;
   };
-
-  apiInstance.get<{
-    Params: TestParams,
-    Querystring: PrintSheetsQuery,
-  }>('/tests/:testShortId/sheets/print', {
-    schema: {
-      params: testParamsSchema,
-      querystring: printSheetsQuerySchema,
-      response: {
-        200: binarySchema,
-      },
-    },
-  }, async (request, reply) => {
-    const user = await requireAuthentication(request, dbManager, true);
-    const test = await requireTest(request, dbManager, user, request.params.testShortId);
-    await Promise.all(request.query.sheetShortIds.map(
-      async (sheetShortId) => { await getSheet(test, sheetShortId); },
-    ));
-    const tokenBody: PrintTokenBody = {
-      doubleSided: request.query.doubleSided,
-      sheetShortIds: request.query.sheetShortIds,
-      testShortId: request.params.testShortId,
-    };
-    const token = encryptSymmetrical(tokenBody, config.printTokenKey);
-    console.log(token);
-  });
 
   apiInstance.get<{
     Params: SheetParams,

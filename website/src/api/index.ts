@@ -14,3 +14,4 @@ export * from './scans';
 export * from './tests';
 export * from './sheets';
 export * from './api-tokens';
+export * from './print';
