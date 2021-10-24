@@ -38,7 +38,11 @@
     "add": "Add",
     "use": "Use",
     "finish": "Finish",
-    "requestRefresh": "Reload the page to apply changes"
+    "requestRefresh": "Reload the page to apply changes",
+    "student": "Student",
+    "teacher": "Teacher",
+    "testCode": "Test code",
+    "check": "Check"
   },
   "test": {
     "loadTestError": "Failed to load test info",
@@ -169,7 +173,8 @@
     "newToken": "New token",
     "tokenName": "Token name",
     "fillCredentials": "Fill",
-    "authRequired": "You need to be signed in to access this function"
+    "authRequired": "You need to be signed in to access this function",
+    "goToPanel": "Go to panel"
   },
   "menu": {
     "questionSets": "Question sets",

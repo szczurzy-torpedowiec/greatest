@@ -38,7 +38,11 @@
     "add": "Dodaj",
     "use": "Użyj",
     "finish": "Zakończ",
-    "requestRefresh": "Odśwież stronę aby zapisać zmiany"
+    "requestRefresh": "Odśwież stronę aby zapisać zmiany",
+    "student": "Uczeń",
+    "teacher": "Nauczyciel",
+    "testCode": "Kod testu",
+    "check": "Sprawdź"
   },
   "test": {
     "loadTestError": "Nie udało się załadować informacji o teście",
@@ -169,7 +173,8 @@
     "newToken": "Nowy token",
     "tokenName": "Nazwa tokenu",
     "fillCredentials": "Wypełnij",
-    "authRequired": "Musisz być zalogowanym żeby to zrobić"
+    "authRequired": "Musisz być zalogowanym żeby to zrobić",
+    "goToPanel": "Przejdź do panelu"
   },
   "menu": {
     "questionSets": "Zestawy pytań",
