@@ -4,7 +4,7 @@ import {
   GetSheetQrCodeParams,
   getSheetQrCodeParamsSchema,
 } from 'greatest-api-schemas';
-import { createStream, OutputType, SymbologyType } from 'symbology';
+import { createStream, OutputType, SymbologyType } from 'symbology-fix';
 import { config } from '../../config';
 
 export function registerQr(apiInstance: FastifyInstance) {

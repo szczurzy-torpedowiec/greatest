@@ -22,7 +22,7 @@
     "mongodb": "^4.1.1",
     "nanoid": "^3.1.25",
     "sharp": "^0.29.1",
-    "symbology": "^3.0.6"
+    "symbology-fix": "^3.0.7"
   },
   "name": "greatest-backend",
   "version": "1.0.0",
