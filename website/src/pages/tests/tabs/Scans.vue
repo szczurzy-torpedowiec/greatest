@@ -1,5 +1,6 @@
 <template>
   <q-page v-if="$q.screen.lt.sm">
+    <ScanImport />
     <scan-list
       :sheets="sheets"
       :scans="scans"
@@ -49,6 +50,7 @@
       </template>
       <template #after>
         <q-scroll-area class="full-height overflow-hidden">
+          <ScanImport />
           <scan-list
             :sheets="sheets"
             :scans="scans"
@@ -71,9 +73,12 @@ import { getScanImageUrl } from 'src/api';
 import ScanDetails from 'components/test/scans/ScanDetails.vue';
 import ScanList from 'components/test/scans/ScanList.vue';
 import FullHeightPage from 'components/FullHeightPage.vue';
+import ScanImport from 'components/test/scans/ScanImport.vue';
 
 export default defineComponent({
-  components: { FullHeightPage, ScanList, ScanDetails },
+  components: {
+    FullHeightPage, ScanList, ScanDetails, ScanImport,
+  },
   props: {
     scans: {
       type: Array as PropType<Scan[] | null>,
@@ -105,7 +110,7 @@ export default defineComponent({
       splitter: useStorage<number>('scans-splitter-position', () => 80),
       selectedScan,
       onDialogHide: async () => {
-        if ('scanShortId' in route.params) await router.push(`/tests/${props.testShortId}/scans`);
+        if ('scanShortId' in route.params) await router.push(`/teacher/tests/${props.testShortId}/scans`);
       },
     };
   },

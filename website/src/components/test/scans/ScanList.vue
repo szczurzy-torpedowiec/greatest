@@ -298,7 +298,7 @@ export default defineComponent({
           otherTestsDetected,
           reason,
           sheet,
-          to: `/tests/${props.testShortId}/scans/${scan.shortId}`,
+          to: `/teacher/tests/${props.testShortId}/scans/${scan.shortId}`,
           reassigned,
         };
       });
