@@ -12,12 +12,12 @@ export default function registerSwagger(server: FastifyInstance) {
         version: process.env.npm_package_version ?? 'unknown',
         license: {
           name: 'MIT',
-          url: 'https://github.com/dominik-korsa/greatest/blob/main/LICENSE',
+          url: 'https://github.com/szczurzy-torpedowiec/greatest/blob/main/LICENSE',
         },
         title: 'Greatest',
         contact: {
           name: 'Dominik Korsa',
-          url: 'https://github.com/dominik-korsa',
+          url: 'https://github.com/szczurzy-torpedowiec',
           email: 'dominik.korsa@gmail.com',
         },
       },
