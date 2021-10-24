@@ -172,7 +172,7 @@ export default defineComponent({
       });
       return {
         ...total,
-        percent: total.maxPoints === 0 ? null : Math.ceil(total.points / total.maxPoints),
+        percent: total.maxPoints === 0 ? null : Math.ceil((total.points / total.maxPoints) * 100),
         hasNotGraded,
       };
     });
