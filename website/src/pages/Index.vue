@@ -91,7 +91,7 @@ import { useI18n } from 'vue-i18n';
 import DemoSignIn from 'components/signIn/DemoSignIn.vue';
 import { getViewer } from 'src/api';
 import { Viewer } from 'greatest-api-schemas';
-import readme from '../../../README.md';
+import readme from 'assets/readme.md';
 
 export default defineComponent({
   name: 'PageIndex',
