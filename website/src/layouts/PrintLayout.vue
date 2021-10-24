@@ -84,7 +84,7 @@ export default defineComponent({
             elements,
           })));
         pages.value = sheetPages.flatMap(
-          (sheet) => ((sheet.length % 2 === 1) ? [...sheet, null] : sheet),
+          (sheet) => ((printData.doubleSided && sheet.length % 2 === 1) ? [...sheet, null] : sheet),
         );
         await nextTick();
         setTimeout(() => {
