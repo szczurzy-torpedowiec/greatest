@@ -87,7 +87,8 @@
       "print": "Print",
       "printError": "Failed to generate print URL",
       "singleSided": "Single-sided",
-      "doubleSided": "Double-sided"
+      "doubleSided": "Double-sided",
+      "noScans": "No scans"
     },
     "scans": {
       "assignedScans": "Assigned scans",

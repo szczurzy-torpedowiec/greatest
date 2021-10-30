@@ -58,6 +58,12 @@ const routes: RouteRecordRaw[] = [
             path: 'sheets',
             component: () => import('pages/tests/tabs/Sheets.vue'),
             meta: { testTab: 'sheets' },
+            children: [
+              {
+                path: ':sheetShortId',
+                component: () => import('pages/tests/tabs/Sheets.vue'),
+              },
+            ],
           },
           {
             name: 'TestScanTab',

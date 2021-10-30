@@ -87,7 +87,8 @@
       "print": "Drukuj",
       "printError": "Nie udało się wygenerować URL drukowania",
       "singleSided": "Jednostronnie",
-      "doubleSided": "Obustronnie"
+      "doubleSided": "Obustronnie",
+      "noScans": "Brak skanów"
     },
     "scans": {
       "assignedScans": "Przypisane skany",

@@ -167,12 +167,37 @@
         </template>
       </q-td>
     </template>
+    <template
+      #body-cell-review="cell"
+    >
+      <q-td :props="cell">
+        <div v-if="scans">
+          <q-btn
+            flat
+            dense
+            rounded
+            icon="navigate_next"
+            @click="showReviewDialog(cell.value)"
+          />
+        </div>
+      </q-td>
+    </template>
   </q-table>
+  <q-dialog
+    v-model="reviewDialog"
+    maximized
+  >
+    <review-dialog
+      :scans="scansBySheetId.get(showedDialog)"
+      :sheet-id="showedDialog"
+      :test-id="testShortId"
+    />
+  </q-dialog>
 </template>
 
 <script lang="ts">
 import {
-  computed, defineComponent, PropType, ref,
+  computed, defineComponent, PropType, ref, watch,
 } from 'vue';
 import SetStudentPopup from 'components/test/sheets/SetStudentPopup.vue';
 import { uid, useQuasar } from 'quasar';
@@ -184,8 +209,10 @@ import { useI18n } from 'vue-i18n';
 import CreateSheetsPopup from 'components/test/sheets/CreateSheetsPopup.vue';
 import { Scan, Sheet } from 'greatest-api-schemas';
 import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
+import ReviewDialog from 'components/test/ReviewDialog.vue';
+import { useRoute, useRouter } from 'vue-router';
 
-interface ScanWithSheet extends Scan {
+export interface ScanWithSheet extends Scan {
   sheet: NonNullable<Scan['sheet']>;
 }
 
@@ -225,7 +252,9 @@ function mapPages(
 }
 
 export default defineComponent({
-  components: { DeleteConfirmMenu, CreateSheetsPopup, SetStudentPopup },
+  components: {
+    DeleteConfirmMenu, CreateSheetsPopup, SetStudentPopup, ReviewDialog,
+  },
   props: {
     testShortId: {
       type: String,
@@ -253,6 +282,14 @@ export default defineComponent({
   setup(props, { emit }) {
     const i18n = useI18n();
     const quasar = useQuasar();
+    const route = useRoute();
+    const router = useRouter();
+    const showedDialog = ref<string>(route.params.sheetShortId as string);
+    const reviewDialog = ref<boolean>(!!route.params.sheetShortId);
+
+    watch(() => route.params.sheetShortId, (sheetId) => {
+      reviewDialog.value = !!sheetId;
+    });
 
     const scansBySheetId = computed(() => {
       if (props.scans === null) return null;
@@ -321,6 +358,10 @@ export default defineComponent({
           });
         }
       },
+      showReviewDialog: async (id: string) => {
+        showedDialog.value = id;
+        await router.push(`/teacher/tests/${props.testShortId}/sheets/${id}`);
+      },
       columns: computed(() => [
         {
           name: 'student',
@@ -339,6 +380,10 @@ export default defineComponent({
           label: i18n.t('test.sheets.headers.pages'),
           field: 'pages',
         },
+        {
+          name: 'review',
+          field: 'shortId',
+        },
       ]),
       rows: computed<Row[]>(() => props.sheets.map((sheet) => ({
         shortId: sheet.shortId,
@@ -355,6 +400,9 @@ export default defineComponent({
           emit('sheetStudentChanged', sheet.shortId, student);
         },
       }))),
+      showedDialog,
+      reviewDialog,
+      scansBySheetId,
     };
   },
 });
