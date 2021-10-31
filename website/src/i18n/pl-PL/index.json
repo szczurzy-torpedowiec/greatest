@@ -42,7 +42,9 @@
     "student": "Uczeń",
     "teacher": "Nauczyciel",
     "testCode": "Kod testu",
-    "check": "Sprawdź"
+    "check": "Sprawdź",
+    "percentSymbol": "%",
+    "pointsSeparator": "/"
   },
   "test": {
     "loadTestError": "Nie udało się załadować informacji o teście",
@@ -213,7 +215,6 @@
     "loadError": "Nie udało się wczytać informacji o arkuszu",
     "notGradedWarning": "Niektóre pytania nie zostały jeszcze ocenione",
     "questionNumber": "Pytanie",
-      "pointsSeparator": "/",
     "points": {
       "label": "punktów",
       "notGraded": "Nie oceniono"
@@ -226,9 +227,6 @@
     "totalPoints": {
       "label": "Łączna liczba punktów"
     },
-    "percent": {
-      "label": "Wynik procentowy",
-      "symbol": "%"
-    }
+    "percent": "Wynik procentowy"
   }
 }

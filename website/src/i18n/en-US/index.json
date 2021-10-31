@@ -42,7 +42,9 @@
     "student": "Student",
     "teacher": "Teacher",
     "testCode": "Test code",
-    "check": "Check"
+    "check": "Check",
+    "percentSymbol": "%",
+    "pointsSeparator": "/"
   },
   "test": {
     "loadTestError": "Failed to load test info",
@@ -213,7 +215,6 @@
     "loadError": "Failed to load sheet info",
     "notGradedWarning": "Some questions have not been graded yet",
     "questionNumber": "Question",
-    "pointsSeparator": "/",
     "points": {
       "label": "points",
       "notGraded": "Not graded"
@@ -226,9 +227,6 @@
     "totalPoints": {
       "label": "Total points"
     },
-    "percent": {
-      "label": "Percent",
-      "symbol": "%"
-    }
+    "percent": "Percent"
   }
 }

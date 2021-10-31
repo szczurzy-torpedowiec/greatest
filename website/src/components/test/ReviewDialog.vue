@@ -7,7 +7,7 @@
         dense
         icon="mdi-arrow-left"
         class="q-mr-sm"
-        :to="`/teacher/tests/${testId}/sheets/`"
+        :to="`/teacher/tests/${testId}/sheets`"
       />
     </q-toolbar>
     <div
@@ -37,62 +37,65 @@
           </q-page>
         </template>
         <template #after>
-          <q-scroll-area style="height: 100%">
-            <div class="q-ma-md q-gutter-y-md q-mb-xl">
-              <q-card
-                v-for="(question, index) in questions"
-                :key="index"
-                flat
-                bordered
-                :style="question.points === null
-                  ? 'border-color: Orange'
-                  : 'border-color: rgba(0, 0, 0, 0.12)'
-                "
-              >
-                <q-card-section>
-                  {{ index }}. {{ question.usedVariant.content }}
-                  <div
-                    v-if="question.usedVariant.correctAnswer"
-                    class="text-green text-subtitle2"
-                  >
-                    {{ $t('common.correctAnswer') }}: {{ question.usedVariant.correctAnswer }}
-                  </div>
-                </q-card-section>
-                <q-card-section class="row justify-end">
-                  <q-input
-                    v-model.number="question.points"
-                    debounce="1000"
-                    type="number"
-                    :label="$t('common.points')"
-                    dense
-                    filled
-                    class="q-mx-sm"
-                    min="0"
-                    :max="question.maxPoints"
-                    clearable
-                    @blur="pointsUpdate(index, question.points)"
-                    @clear="pointsUpdate(index, null)"
-                  >
-                    <template #after>
-                      /{{ question.maxPoints }}
-                    </template>
-                  </q-input>
-                </q-card-section>
-              </q-card>
-            </div>
-          </q-scroll-area>
-          <q-card
-            square
-            class="bg-primary text-white"
-            style="position: absolute; bottom: 0; width: 100%"
-          >
-            <q-card-section class="text-h6 row">
-              <div class="col">
-                {{ $t('common.points') }}: {{ result.points }}/{{ result.maxPoints }}
+          <div class="column full-height">
+            <q-scroll-area class="flex-grow">
+              <div class="q-ma-md q-gutter-y-md q-mb-xl">
+                <q-card
+                  v-for="(question, index) in questions"
+                  :key="index"
+                  flat
+                  bordered
+                  :style="question.points === null
+                    ? 'border-color: Orange'
+                    : 'border-color: rgba(0, 0, 0, 0.12)'
+                  "
+                >
+                  <q-card-section>
+                    {{ index + 1 }}. {{ question.usedVariant.content }}
+                    <div
+                      v-if="question.usedVariant.correctAnswer"
+                      class="text-green text-subtitle2"
+                    >
+                      {{ $t('common.correctAnswer') }}: {{ question.usedVariant.correctAnswer }}
+                    </div>
+                  </q-card-section>
+                  <q-card-section class="row justify-end">
+                    <q-input
+                      v-model.number="question.points"
+                      debounce="1000"
+                      type="number"
+                      :label="$t('common.points')"
+                      dense
+                      filled
+                      class="q-mx-sm"
+                      min="0"
+                      :max="question.maxPoints"
+                      clearable
+                      @change="pointsUpdate(index, question.points)"
+                      @clear="pointsUpdate(index, null)"
+                    >
+                      <template #after>
+                        {{ $t('common.pointsSeparator') }}{{ question.maxPoints }}
+                      </template>
+                    </q-input>
+                  </q-card-section>
+                </q-card>
               </div>
-              {{ result.percentage }}%
-            </q-card-section>
-          </q-card>
+            </q-scroll-area>
+            <q-card
+              square
+              class="bg-primary text-white"
+            >
+              <q-card-section class="text-h6 row">
+                <div class="col">
+                  <b>{{ result.points }}</b>{{
+                    $t('common.pointsSeparator')
+                  }}{{ result.maxPoints }}
+                </div>
+                <b>{{ result.percentage ?? '-' }}</b>{{ $t('common.percentSymbol') }}
+              </q-card-section>
+            </q-card>
+          </div>
         </template>
       </q-splitter>
     </div>
@@ -103,13 +106,13 @@
 import {
   defineComponent, PropType, onMounted, ref, computed,
 } from 'vue';
-import { useStorage } from 'src/utils';
+import { percent, useStorage } from 'src/utils';
 import { ScanWithSheet } from 'components/test/sheets/SheetsTable.vue';
 import {
   getScanImageUrl, getSheet, getTest, patchSheet,
 } from 'src/api';
 import { GetTestReply } from 'greatest-api-schemas';
-import { uid } from 'quasar';
+import { debounce, uid } from 'quasar';
 
 type SheetQuestion = GetTestReply['pages'][0][0] & {
   usedVariant: {
@@ -141,17 +144,18 @@ export default defineComponent({
   setup(props) {
     const questions = ref<SheetQuestion[]>([]);
     const result = computed(() => {
-      const values = {
+      const total = {
         points: 0,
         maxPoints: 0,
-        percentage: 0,
       };
       questions.value.forEach((question) => {
-        values.points += question.points ? question.points : 0;
-        values.maxPoints += question.maxPoints;
+        total.points += question.points ? question.points : 0;
+        total.maxPoints += question.maxPoints;
       });
-      values.percentage = Math.round((values.points / values.maxPoints) * 100);
-      return values;
+      return {
+        ...total,
+        percentage: percent(total.points, total.maxPoints),
+      };
     });
 
     async function getQuestions() {
@@ -178,7 +182,7 @@ export default defineComponent({
 
     return {
       getScanImageUrl,
-      pointsUpdate,
+      pointsUpdate: debounce(pointsUpdate, 200),
       questions,
       splitter: useStorage<number>('review-splitter-position', () => 80),
       result,

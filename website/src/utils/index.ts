@@ -41,6 +41,11 @@ export function parsePxString(value: string): number | null {
   return parseFloat(regexResult[1]);
 }
 
+export function percent(value: number, max: number) {
+  if (max === 0) return null;
+  return Math.ceil((value / max) * 100);
+}
+
 export * from './defaults-map';
 export * from './freeze';
 export * from './storage';

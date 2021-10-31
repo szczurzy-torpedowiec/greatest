@@ -184,12 +184,13 @@
     </template>
   </q-table>
   <q-dialog
-    v-model="reviewDialog"
+    :model-value="'sheetShortId' in $route.params"
     maximized
+    @before-hide="onDialogHide"
   >
     <review-dialog
-      :scans="scansBySheetId.get(showedDialog)"
-      :sheet-id="showedDialog"
+      :scans="scansBySheetId.get($route.params.sheetShortId)"
+      :sheet-id="$route.params.sheetShortId"
       :test-id="testShortId"
     />
   </q-dialog>
@@ -197,7 +198,7 @@
 
 <script lang="ts">
 import {
-  computed, defineComponent, PropType, ref, watch,
+  computed, defineComponent, PropType, ref,
 } from 'vue';
 import SetStudentPopup from 'components/test/sheets/SetStudentPopup.vue';
 import { uid, useQuasar } from 'quasar';
@@ -284,12 +285,6 @@ export default defineComponent({
     const quasar = useQuasar();
     const route = useRoute();
     const router = useRouter();
-    const showedDialog = ref<string>(route.params.sheetShortId as string);
-    const reviewDialog = ref<boolean>(!!route.params.sheetShortId);
-
-    watch(() => route.params.sheetShortId, (sheetId) => {
-      reviewDialog.value = !!sheetId;
-    });
 
     const scansBySheetId = computed(() => {
       if (props.scans === null) return null;
@@ -359,7 +354,6 @@ export default defineComponent({
         }
       },
       showReviewDialog: async (id: string) => {
-        showedDialog.value = id;
         await router.push(`/teacher/tests/${props.testShortId}/sheets/${id}`);
       },
       columns: computed(() => [
@@ -400,9 +394,10 @@ export default defineComponent({
           emit('sheetStudentChanged', sheet.shortId, student);
         },
       }))),
-      showedDialog,
-      reviewDialog,
       scansBySheetId,
+      onDialogHide: async () => {
+        if ('sheetShortId' in route.params) await router.push(`/teacher/tests/${props.testShortId}/sheets`);
+      },
     };
   },
 });
