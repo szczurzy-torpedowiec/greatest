@@ -177,7 +177,7 @@
             dense
             rounded
             icon="navigate_next"
-            @click="showReviewDialog(cell.value)"
+            :to="cell.value"
           />
         </div>
       </q-td>
@@ -229,6 +229,7 @@ interface Row {
   student: string;
   phrase: string;
   pages: Pages | null;
+  reviewTo: string;
   setStudentSubmit: (student: string) => Promise<void>;
 }
 
@@ -353,9 +354,6 @@ export default defineComponent({
           });
         }
       },
-      showReviewDialog: async (id: string) => {
-        await router.push(`/teacher/tests/${props.testShortId}/sheets/${id}`);
-      },
       columns: computed(() => [
         {
           name: 'student',
@@ -376,7 +374,7 @@ export default defineComponent({
         },
         {
           name: 'review',
-          field: 'shortId',
+          field: 'reviewTo',
         },
       ]),
       rows: computed<Row[]>(() => props.sheets.map((sheet) => ({
@@ -393,6 +391,7 @@ export default defineComponent({
           });
           emit('sheetStudentChanged', sheet.shortId, student);
         },
+        reviewTo: `/teacher/tests/${props.testShortId}/sheets/${sheet.shortId}`,
       }))),
       scansBySheetId,
       onDialogHide: async () => {
