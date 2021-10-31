@@ -167,7 +167,33 @@
         </template>
       </q-td>
     </template>
+    <template
+      #body-cell-review="cell"
+    >
+      <q-td :props="cell">
+        <div v-if="scans">
+          <q-btn
+            flat
+            dense
+            rounded
+            icon="navigate_next"
+            :to="cell.value"
+          />
+        </div>
+      </q-td>
+    </template>
   </q-table>
+  <q-dialog
+    :model-value="scansBySheetId !== null && 'sheetShortId' in $route.params"
+    maximized
+    @before-hide="onDialogHide"
+  >
+    <review-dialog
+      :scans="scansBySheetId.get($route.params.sheetShortId)"
+      :sheet-id="$route.params.sheetShortId"
+      :test-id="testShortId"
+    />
+  </q-dialog>
 </template>
 
 <script lang="ts">
@@ -184,8 +210,10 @@ import { useI18n } from 'vue-i18n';
 import CreateSheetsPopup from 'components/test/sheets/CreateSheetsPopup.vue';
 import { Scan, Sheet } from 'greatest-api-schemas';
 import DeleteConfirmMenu from 'components/DeleteConfirmMenu.vue';
+import ReviewDialog from 'components/test/ReviewDialog.vue';
+import { useRoute, useRouter } from 'vue-router';
 
-interface ScanWithSheet extends Scan {
+export interface ScanWithSheet extends Scan {
   sheet: NonNullable<Scan['sheet']>;
 }
 
@@ -201,6 +229,7 @@ interface Row {
   student: string;
   phrase: string;
   pages: Pages | null;
+  reviewTo: string;
   setStudentSubmit: (student: string) => Promise<void>;
 }
 
@@ -225,7 +254,9 @@ function mapPages(
 }
 
 export default defineComponent({
-  components: { DeleteConfirmMenu, CreateSheetsPopup, SetStudentPopup },
+  components: {
+    DeleteConfirmMenu, CreateSheetsPopup, SetStudentPopup, ReviewDialog,
+  },
   props: {
     testShortId: {
       type: String,
@@ -253,6 +284,8 @@ export default defineComponent({
   setup(props, { emit }) {
     const i18n = useI18n();
     const quasar = useQuasar();
+    const route = useRoute();
+    const router = useRouter();
 
     const scansBySheetId = computed(() => {
       if (props.scans === null) return null;
@@ -339,6 +372,10 @@ export default defineComponent({
           label: i18n.t('test.sheets.headers.pages'),
           field: 'pages',
         },
+        {
+          name: 'review',
+          field: 'reviewTo',
+        },
       ]),
       rows: computed<Row[]>(() => props.sheets.map((sheet) => ({
         shortId: sheet.shortId,
@@ -354,7 +391,12 @@ export default defineComponent({
           });
           emit('sheetStudentChanged', sheet.shortId, student);
         },
+        reviewTo: `/teacher/tests/${props.testShortId}/sheets/${sheet.shortId}`,
       }))),
+      scansBySheetId,
+      onDialogHide: async () => {
+        if ('sheetShortId' in route.params) await router.push(`/teacher/tests/${props.testShortId}/sheets`);
+      },
     };
   },
 });

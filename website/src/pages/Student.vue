@@ -59,16 +59,16 @@
               {{ $t('student.totalPoints.label') }}
             </div>
             <div class="text-h2">
-              <b>{{ points.points }}</b>{{ $t('student.pointsSeparator') }}{{ points.maxPoints }}
+              <b>{{ points.points }}</b>{{ $t('common.pointsSeparator') }}{{ points.maxPoints }}
             </div>
           </q-card-section>
           <q-separator vertical />
           <q-card-section class="flex-grow flex-no-basis text-center">
             <div class="text-overline">
-              {{ $t('student.percent.label') }}
+              {{ $t('student.percent') }}
             </div>
             <div class="text-h2">
-              <b>{{ points.percent ?? '-' }}</b>{{ $t('student.percent.symbol') }}
+              <b>{{ points.percent ?? '-' }}</b>{{ $t('common.percentSymbol') }}
             </div>
           </q-card-section>
         </q-card-section>
@@ -97,7 +97,7 @@
             </q-item-label>
             <q-item-label v-else>
               <b>{{ question.points }}</b>{{
-                $t('student.pointsSeparator')
+                $t('common.pointsSeparator')
               }}{{ question.maxPoints }}
               {{ $t('student.points.label') }}
             </q-item-label>
@@ -120,6 +120,7 @@ import { GetStudentSheetReply } from 'greatest-api-schemas';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { getStudentSheet } from 'src/api';
+import { percent } from 'src/utils';
 
 export default defineComponent({
   beforeRouteEnter(to, from, next) {
@@ -172,7 +173,7 @@ export default defineComponent({
       });
       return {
         ...total,
-        percent: total.maxPoints === 0 ? null : Math.ceil((total.points / total.maxPoints) * 100),
+        percent: percent(total.points, total.maxPoints),
         hasNotGraded,
       };
     });
