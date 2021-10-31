@@ -184,7 +184,7 @@
     </template>
   </q-table>
   <q-dialog
-    :model-value="'sheetShortId' in $route.params"
+    :model-value="scansBySheetId !== null && 'sheetShortId' in $route.params"
     maximized
     @before-hide="onDialogHide"
   >
