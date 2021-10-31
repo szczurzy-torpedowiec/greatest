@@ -44,6 +44,10 @@
                 :key="index"
                 flat
                 bordered
+                :style="question.points === null
+                  ? 'border-color: Orange'
+                  : 'border-color: rgba(0, 0, 0, 0.12)'
+                "
               >
                 <q-card-section>
                   {{ index }}. {{ question.usedVariant.content }}
@@ -65,7 +69,9 @@
                     class="q-mx-sm"
                     min="0"
                     :max="question.maxPoints"
+                    clearable
                     @blur="pointsUpdate(index, question.points)"
+                    @clear="pointsUpdate(index, null)"
                   >
                     <template #after>
                       /{{ question.maxPoints }}
@@ -160,7 +166,7 @@ export default defineComponent({
 
     onMounted(getQuestions);
 
-    async function pointsUpdate(index: number, questionPoints: number) {
+    async function pointsUpdate(index: number, questionPoints: number | null) {
       await patchSheet(props.testId, props.sheetId, {
         questions: [{
           index,
